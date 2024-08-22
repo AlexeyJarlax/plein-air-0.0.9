@@ -1,6 +1,4 @@
-package com.pavlovalexey.pleinair
-
-import com.pavlovalexey.pleinair.model.User
+package com.pavlovalexey.pleinair.model
 
 data class ChatMessage(
     val id: String,
