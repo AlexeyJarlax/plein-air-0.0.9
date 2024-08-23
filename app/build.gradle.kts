@@ -1,5 +1,6 @@
 plugins {
     id("com.android.application")
+    id("com.google.gms.google-services")
     id("org.jetbrains.kotlin.android")
     id("dagger.hilt.android.plugin") // Плагин Hilt для внедрения зависимостей.
     kotlin("kapt") // Плагин для KAPT, необходим для работы аннотаций Hilt и Room.
@@ -90,6 +91,10 @@ dependencies {
 
     // Jetpack Security (EncryptedSharedPreferences)
     implementation(libs.androidx.security.crypto)
+
+    // Firebase BoM
+    implementation(libs.firebase.bom.v3312)
+    implementation(libs.firebase.analytics)
 }
 kapt {
     correctErrorTypes = true // Коррекция ошибок типа для KAPT.

@@ -7,6 +7,7 @@ appcompatVersion = "1.6.1"
 coreKtxVersion = "1.10.1"
 espressoCoreVersion = "3.5.1"
 firebaseBom = "33.2.0"
+firebaseBomVersion = "33.1.2"
 hiltAndroid = "2.44"
 hiltAndroidCompilerVersion = "2.44"
 hiltAndroidGradlePlugin = "2.46.1"
@@ -45,8 +46,10 @@ androidx-security-crypto = { module = "androidx.security:security-crypto", versi
 androidx-ui = { module = "androidx.compose.ui:ui", version.ref = "ui" }
 androidx-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "ui" }
 dagger-hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroidCompilerVersion" }
+firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 firebase-auth = { module = "com.google.firebase:firebase-auth" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
+firebase-bom-v3312 = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBomVersion" }
 google-hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hiltAndroidGradlePlugin" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroidGradlePlugin" }
 hilt-android-gradle-plugin = { module = "com.google.dagger:hilt-android-gradle-plugin", version.ref = "hiltAndroidGradlePlugin" }
