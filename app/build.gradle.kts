@@ -58,6 +58,11 @@ dependencies {
     // Hilt для внедрения зависимостей
     implementation(libs.hilt.android)
     kapt(libs.google.hilt.compiler)
+    implementation(libs.hilt.android.v244)
+    kapt(libs.dagger.hilt.android.compiler)
+
+    // Jetpack Compose Hilt Integration
+    implementation(libs.androidx.hilt.navigation.compose)
 
     // Kotlin Coroutines
     implementation(libs.kotlinx.coroutines.core)
@@ -78,8 +83,14 @@ dependencies {
     // Hilt тестирование
     androidTestImplementation(libs.hilt.android.testing)
     kaptAndroidTest(libs.google.hilt.compiler)
-}
 
+    // Firebase Authentication
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.auth)
+
+    // Jetpack Security (EncryptedSharedPreferences)
+    implementation(libs.androidx.security.crypto)
+}
 kapt {
     correctErrorTypes = true // Коррекция ошибок типа для KAPT.
 }
