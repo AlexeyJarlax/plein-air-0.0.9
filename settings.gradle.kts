@@ -5,10 +5,7 @@ pluginManagement {
         gradlePluginPortal()
     }
 }
-
-rootProject.name = "pleinair"
-include(":app")
-
+// ❓ Для загрузки обложки трека используется Glide, подключённый к проекту в виде библиотеки.
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
@@ -16,3 +13,6 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
+
+rootProject.name = "pleinair"
+include(":app")

@@ -5,59 +5,60 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
-import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
+import kotlinx.coroutines.launch
 
-@HiltViewModel
-class AuthViewModel @Inject constructor(
-    private val auth: FirebaseAuth,
-    private val sharedPreferences: SharedPreferences
-) : ViewModel() {
+class AuthViewModel : ViewModel() {
+    private val auth = FirebaseAuth.getInstance()
 
-    var email by mutableStateOf("")
-    var password by mutableStateOf("")
-    var isLoggedIn by mutableStateOf(false)
+    var email = mutableStateOf("")
+    var password = mutableStateOf("")
+    var isLoggedIn = mutableStateOf(false)
+    var errorMessage = mutableStateOf("")
 
-    init {
-        // Проверяем, сохранены ли данные пользователя
-        val savedEmail = sharedPreferences.getString("email", null)
-        val savedPassword = sharedPreferences.getString("password", null)
-
-        if (!savedEmail.isNullOrEmpty() && !savedPassword.isNullOrEmpty()) {
-            email = savedEmail
-            password = savedPassword
-            signIn(savedEmail, savedPassword)
-        }
+    fun onEmailChanged(newEmail: String) {
+        email.value = newEmail
     }
 
-    fun signIn(email: String, password: String) {
-        auth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                isLoggedIn = true
-                saveCredentials(email, password)
-            } else {
-                isLoggedIn = false
+    fun onPasswordChanged(newPassword: String) {
+        password.value = newPassword
+    }
+
+    fun signIn() {
+        viewModelScope.launch {
+            try {
+                auth.signInWithEmailAndPassword(email.value, password.value).addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        isLoggedIn.value = true
+                    } else {
+                        errorMessage.value = task.exception?.message ?: "Authentication failed."
+                    }
+                }
+            } catch (e: Exception) {
+                errorMessage.value = e.message ?: "Unknown error occurred."
             }
         }
     }
 
-    fun register(email: String, password: String) {
-        auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                isLoggedIn = true
-                saveCredentials(email, password)
-            } else {
-                isLoggedIn = false
+    fun register() {
+        viewModelScope.launch {
+            try {
+                auth.createUserWithEmailAndPassword(email.value, password.value).addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        isLoggedIn.value = true
+                    } else {
+                        errorMessage.value = task.exception?.message ?: "Registration failed."
+                    }
+                }
+            } catch (e: Exception) {
+                errorMessage.value = e.message ?: "Unknown error occurred."
             }
         }
     }
 
-    private fun saveCredentials(email: String, password: String) {
-        with(sharedPreferences.edit()) {
-            putString("email", email)
-            putString("password", password)
-            apply()
-        }
+    fun signOut() {
+        auth.signOut()
+        isLoggedIn.value = false
     }
 }

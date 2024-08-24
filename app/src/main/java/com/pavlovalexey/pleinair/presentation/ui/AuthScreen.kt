@@ -12,6 +12,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -21,12 +22,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
-import com.pavlovalexey.pleinair.presentation.AuthViewModel
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.pavlovalexey.pleinair.presentation.AuthViewModel
 
 @Composable
 fun AuthScreen(viewModel: AuthViewModel = hiltViewModel()) {
-    var isLoginScreen by remember { mutableStateOf(true) }
+    val isLoginScreen = remember { mutableStateOf(true) }
+    val email by viewModel.email
+    val password by viewModel.password
+    val isLoggedIn by viewModel.isLoggedIn
+    val errorMessage by viewModel.errorMessage
 
     Column(
         modifier = Modifier
@@ -35,18 +40,15 @@ fun AuthScreen(viewModel: AuthViewModel = hiltViewModel()) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        val email = viewModel.email
-        val password = viewModel.password
-
         TextField(
             value = email,
-            onValueChange = { viewModel.email = it },
+            onValueChange = { viewModel.onEmailChanged(it) },
             label = { Text("Email") },
             modifier = Modifier.fillMaxWidth()
         )
         TextField(
             value = password,
-            onValueChange = { viewModel.password = it },
+            onValueChange = { viewModel.onPasswordChanged(it) },
             label = { Text("Password") },
             visualTransformation = PasswordVisualTransformation(),
             modifier = Modifier.fillMaxWidth()
@@ -56,27 +58,31 @@ fun AuthScreen(viewModel: AuthViewModel = hiltViewModel()) {
 
         Button(
             onClick = {
-                if (isLoginScreen) {
-                    viewModel.signIn(email, password)
+                if (isLoginScreen.value) {
+                    viewModel.signIn()
                 } else {
-                    viewModel.register(email, password)
+                    viewModel.register()
                 }
             },
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text(if (isLoginScreen) "Login" else "Register")
+            Text(if (isLoginScreen.value) "Login" else "Register")
         }
 
         Spacer(modifier = Modifier.height(8.dp))
 
         TextButton(
-            onClick = { isLoginScreen = !isLoginScreen }
+            onClick = { isLoginScreen.value = !isLoginScreen.value }
         ) {
-            Text(if (isLoginScreen) "Don't have an account? Register" else "Already have an account? Login")
+            Text(if (isLoginScreen.value) "Don't have an account? Register" else "Already have an account? Login")
         }
 
-        if (viewModel.isLoggedIn) {
+        if (isLoggedIn) {
             Text("You are logged in!", color = Color.Green)
+        }
+
+        if (errorMessage.isNotEmpty()) {
+            Text(errorMessage, color = Color.Red)
         }
     }
 }

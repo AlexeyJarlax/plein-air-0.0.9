@@ -1,66 +1,130 @@
 [versions]
 activityCompose = "1.9.1"
+activityComposeVersion = "1.7.0"
 agp = "8.5.0"
+androidxActivityCompose = "1.7.2"
 androidxJunit = "1.1.5"
 androidxMaterial = "1.6.8"
+androidxMaterialVersion = "1.5.0"
 appcompatVersion = "1.6.1"
 coreKtxVersion = "1.10.1"
 espressoCoreVersion = "3.5.1"
+firebaseAuth = "23.6.0"
 firebaseBom = "33.2.0"
 firebaseBomVersion = "33.1.2"
+firebaseCrashlyticsGradle = "3.0.2"
+firebaseCrashlyticsGradleVersion = "2.10.1"
+googleFirebaseBom = "32.3.1"
+googleHiltAndroidCompiler = "2.49"
+googleHiltAndroidGradlePlugin = "2.48"
+googleHiltAndroidGradlePluginVersion = "2.49"
+googleServices = "4.4.2"
+googleServicesVersion = "4.3.15"
+gradle = "8.2.2"
 hiltAndroid = "2.44"
 hiltAndroidCompilerVersion = "2.44"
 hiltAndroidGradlePlugin = "2.46.1"
+hiltAndroidGradlePluginVersion = "2.44"
+hiltAndroidTesting = "2.49"
+hiltAndroidVersion = "2.49"
 hiltNavigationCompose = "1.2.0"
+hiltNavigationComposeVersion = "1.0.0"
 kotlin = "1.9.0"
 coreKtx = "1.13.1"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
 appcompat = "1.7.0"
+kotlinGradlePlugin = "1.9.0"
+kotlinGradlePluginVersion = "1.8.10"
+kotlinxCoroutinesAndroid = "1.7.3"
 kotlinxCoroutinesCore = "1.7.2"
+kotlinxCoroutinesCoreVersion = "1.7.3"
 lifecycleRuntimeKtx = "2.8.4"
+lifecycleRuntimeKtxVersion = "2.6.1"
 material = "1.12.0"
 materialVersion = "1.9.0"
 navigationCompose = "2.7.7"
+navigationComposeVersion = "2.7.1"
+roomCompiler = "2.5.2"
+roomKtx = "2.5.2"
 roomRuntime = "2.6.1"
+roomRuntimeVersion = "2.5.2"
 runtimeAndroid = "1.6.8"
+runtimeLivedata = "1.6.8"
 securityCrypto = "1.1.0-alpha06"
 ui = "1.6.8"
+uiToolingPreview = "1.5.0"
+uiVersion = "1.5.0"
 
 [libraries]
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
+androidx-activity-compose-v170 = { module = "androidx.activity:activity-compose", version.ref = "activityComposeVersion" }
+androidx-activity-compose-v172 = { module = "androidx.activity:activity-compose", version.ref = "androidxActivityCompose" }
 androidx-appcompat-v161 = { module = "androidx.appcompat:appcompat", version.ref = "appcompatVersion" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-core-ktx-v1101 = { module = "androidx.core:core-ktx", version.ref = "coreKtxVersion" }
 androidx-espresso-core-v351 = { module = "androidx.test.espresso:espresso-core", version.ref = "espressoCoreVersion" }
 androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
+androidx-hilt-navigation-compose-v100 = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationComposeVersion" }
 androidx-junit-v115 = { module = "androidx.test.ext:junit", version.ref = "androidxJunit" }
+androidx-lifecycle-livedata-ktx = { module = "androidx.lifecycle:lifecycle-livedata-ktx", version.ref = "lifecycleRuntimeKtx" }
 androidx-lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
+androidx-lifecycle-runtime-ktx-v261 = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtxVersion" }
+androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx" }
 androidx-material = { module = "androidx.compose.material:material", version.ref = "androidxMaterial" }
+androidx-material-v150 = { module = "androidx.compose.material:material", version.ref = "androidxMaterialVersion" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
+androidx-navigation-compose-v271 = { module = "androidx.navigation:navigation-compose", version.ref = "navigationComposeVersion" }
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomRuntime" }
+androidx-room-compiler-v252 = { module = "androidx.room:room-compiler", version.ref = "roomCompiler" }
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomRuntime" }
+androidx-room-ktx-v252 = { module = "androidx.room:room-ktx", version.ref = "roomKtx" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomRuntime" }
+androidx-room-runtime-v252 = { module = "androidx.room:room-runtime", version.ref = "roomRuntimeVersion" }
+androidx-runtime-livedata = { module = "androidx.compose.runtime:runtime-livedata", version.ref = "runtimeLivedata" }
 androidx-security-crypto = { module = "androidx.security:security-crypto", version.ref = "securityCrypto" }
 androidx-ui = { module = "androidx.compose.ui:ui", version.ref = "ui" }
 androidx-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "ui" }
+androidx-ui-tooling-preview-v150 = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "uiToolingPreview" }
+androidx-ui-v150 = { module = "androidx.compose.ui:ui", version.ref = "uiVersion" }
+com-google-firebase-firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
+com-google-firebase-firebase-auth = { module = "com.google.firebase:firebase-auth" }
+com-google-firebase-firebase-auth2 = { module = "com.google.firebase:firebase-auth" }
 dagger-hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroidCompilerVersion" }
+dagger-hilt-android-compiler-v249 = { module = "com.google.dagger:hilt-android-compiler", version.ref = "googleHiltAndroidCompiler" }
 firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 firebase-auth = { module = "com.google.firebase:firebase-auth" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
+firebase-bom-v3231 = { module = "com.google.firebase:firebase-bom", version.ref = "googleFirebaseBom" }
 firebase-bom-v3312 = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBomVersion" }
+firebase-crashlytics-gradle = { module = "com.google.firebase:firebase-crashlytics-gradle", version.ref = "firebaseCrashlyticsGradle" }
+firebase-crashlytics-gradle-v2101 = { module = "com.google.firebase:firebase-crashlytics-gradle", version.ref = "firebaseCrashlyticsGradleVersion" }
+google-firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
+google-firebase-auth = { module = "com.google.firebase:firebase-auth", version.ref = "firebaseAuth" }
 google-hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hiltAndroidGradlePlugin" }
+google-services = { module = "com.google.gms:google-services", version.ref = "googleServices" }
+google-services-v4315 = { module = "com.google.gms:google-services", version.ref = "googleServicesVersion" }
+gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroidGradlePlugin" }
 hilt-android-gradle-plugin = { module = "com.google.dagger:hilt-android-gradle-plugin", version.ref = "hiltAndroidGradlePlugin" }
+hilt-android-gradle-plugin-v244 = { module = "com.google.dagger:hilt-android-gradle-plugin", version.ref = "hiltAndroidGradlePluginVersion" }
+hilt-android-gradle-plugin-v248 = { module = "com.google.dagger:hilt-android-gradle-plugin", version.ref = "googleHiltAndroidGradlePlugin" }
+hilt-android-gradle-plugin-v249 = { module = "com.google.dagger:hilt-android-gradle-plugin", version.ref = "googleHiltAndroidGradlePluginVersion" }
 hilt-android-testing = { module = "com.google.dagger:hilt-android-testing", version.ref = "hiltAndroidGradlePlugin" }
+hilt-android-testing-v249 = { module = "com.google.dagger:hilt-android-testing", version.ref = "hiltAndroidTesting" }
 hilt-android-v244 = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
+hilt-android-v249 = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroidVersion" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlinGradlePlugin" }
+kotlin-gradle-plugin-v1810 = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlinGradlePluginVersion" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinxCoroutinesCore" }
+kotlinx-coroutines-android-v173 = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinxCoroutinesAndroid" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesCore" }
+kotlinx-coroutines-core-v173 = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesCoreVersion" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 androidx-runtime-android = { group = "androidx.compose.runtime", name = "runtime-android", version.ref = "runtimeAndroid" }
 material-v190 = { module = "com.google.android.material:material", version.ref = "materialVersion" }
