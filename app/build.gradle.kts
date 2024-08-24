@@ -2,7 +2,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     kotlin("plugin.serialization") version "1.9.21"
-//    id("kotlin-kapt") // плагин kotlin-kapt для работы зависимостей kapt("
+    id("kotlin-kapt") // плагин kotlin-kapt для работы зависимостей kapt("
     id("com.google.devtools.ksp")
     id("dagger.hilt.android.plugin") // Плагин Hilt для внедрения зависимостей.
 }
@@ -126,16 +126,16 @@ dependencies {
     // библиотека Room
     implementation("androidx.room:room-runtime:2.6.1")
     implementation("androidx.room:room-ktx:2.6.1")
-    ksp("androidx.room:room-compiler:2.6.1")
+    kapt("androidx.room:room-compiler:2.6.1")
 
     // поддержка легаси для ярлычков (надо или нет я хз)
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
 
     // Hilt для внедрения зависимостей
     implementation(libs.hilt.android)
-    ksp(libs.google.hilt.compiler)
+    kapt(libs.google.hilt.compiler)
     implementation(libs.hilt.android.v244)
-    ksp(libs.dagger.hilt.android.compiler)
+    kapt(libs.dagger.hilt.android.compiler)
 
     // Jetpack Compose Hilt Integration
     implementation(libs.androidx.hilt.navigation.compose)
