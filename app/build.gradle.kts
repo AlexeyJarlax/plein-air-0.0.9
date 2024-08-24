@@ -1,10 +1,11 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
-    kotlin("plugin.serialization") version "1.9.21"
+    kotlin("plugin.serialization") version "2.0.0"
     id("kotlin-kapt") // плагин kotlin-kapt для работы зависимостей kapt("
     id("com.google.devtools.ksp")
     id("dagger.hilt.android.plugin") // Плагин Hilt для внедрения зависимостей.
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -32,10 +33,12 @@ android {
         }
         debug {
             isMinifyEnabled = false
-            applicationIdSuffix = ".debug"
-
+            // applicationIdSuffix = ".debug" не делаю суфикс, чтобы файл нашелся файрбазой
+            // Включаем отладку
+//            isDebuggable = true
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17 // более новая сборка виртуальной машины: 17
         targetCompatibility = JavaVersion.VERSION_17 // более новая сборка виртуальной машины: 17
@@ -52,99 +55,107 @@ android {
 dependencies {
 // БАЗОВЫЕ
 
+
     // Расширения Kotlin для работы с Activity.
-    implementation("androidx.activity:activity:1.9.0")
-    implementation("androidx.activity:activity-ktx:1.9.0")
+    implementation(libs.androidx.activity)
+    implementation(libs.androidx.activity.ktx)
 
     // Библиотека для работы с API Android.
-    implementation("androidx.core:core-ktx:1.13.1")
+    implementation(libs.androidx.core.ktx)
 
     // Библиотека для поддержки современного дизайна пользовательского интерфейса.
-    implementation("com.google.android.material:material:1.12.0")
+    implementation(libs.material)
 
     // Библиотека для обеспечения совместимости с новыми возможностями платформы Android на более старых устройствах.
-    implementation("androidx.appcompat:appcompat:1.7.0")
+    implementation(libs.androidx.appcompat)
 
     // Библиотека для создания сложных макетов пользовательского интерфейса.
-    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+    implementation(libs.androidx.constraintlayout)
 
     // Библиотеки для работы с изображениями и их кэширования.
-    implementation("com.github.bumptech.glide:glide:4.16.0")
-    annotationProcessor("com.github.bumptech.glide:compiler:4.14.2")
+    implementation(libs.glide)
+    ksp(libs.compiler)
 
 //ДАННЫЕ
 
     // Библиотека для сериализации и десериализации JSON.
-    implementation("com.google.code.gson:gson:2.10.1")
+    implementation(libs.gson)
 
     // Библиотека для работы с JSON на Kotlin.
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
+    implementation(libs.kotlinx.serialization.json)
 
     // HTTP-клиент для обмена данными с удаленными серверами.
-    implementation("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
-    implementation("com.squareup.okhttp3:okhttp:4.10.0")
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
+    implementation(libs.okhttp)
 
     // Библиотека для создания функций отправки в Intents с помощью mailto: URI
-    implementation("de.cketti.mailto:email-intent-builder:2.0.0")
+    implementation(libs.email.intent.builder)
 
 // ТЕСТИРОВАНИЕ
 
     // Фреймворк для написания и запуска тестов в Java.
-    testImplementation("junit:junit:4.13.2")
+    testImplementation(libs.junit)
 
     // Библиотека для написания и запуска тестов на Android.
-    androidTestImplementation("androidx.test.ext:junit:1.2.1")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
 
 // ПРОДВИНУТЫЕ
 
     // Библиотека для управления зависимостями.
-    implementation("io.insert-koin:koin-android:3.3.0")
+    implementation(libs.koin.android)
 
     // Расширения Kotlin для работы с жизненным циклом компонентов.
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.3")
-    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.8.3")
+    implementation(libs.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.lifecycle.livedata.ktx.v283)
 
     // Расширения Kotlin для фрагментов
-    implementation("androidx.fragment:fragment-ktx:1.8.1")
+    implementation(libs.androidx.fragment.ktx)
 
     // Компонент ViewPager2 для реализации горизонтальных и вертикальных листалок.
-    implementation("androidx.viewpager2:viewpager2:1.1.0")
+    implementation(libs.androidx.viewpager2)
 
     // Jetpack Navigation Component
-    implementation("androidx.navigation:navigation-fragment-ktx:2.7.7")
-    implementation("androidx.navigation:navigation-ui-ktx:2.7.7")
-    implementation("androidx.fragment:fragment-ktx:1.8.1")
+//    implementation(libs.androidx.navigation.fragment.ktx)
+//    implementation(libs.androidx.navigation.ui.ktx)
+//    implementation(libs.androidx.fragment.ktx.v181)
 
     // корутин
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+    implementation(libs.kotlinx.coroutines.android.v180)
 
     // Permission для работы с корутин
-    implementation("com.markodevcic:peko:3.0.5")
+    implementation(libs.peko)
 
     // библиотека Room
-    implementation("androidx.room:room-runtime:2.6.1")
-    implementation("androidx.room:room-ktx:2.6.1")
-    kapt("androidx.room:room-compiler:2.6.1")
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    ksp(libs.androidx.room.compiler)
 
     // поддержка легаси для ярлычков (надо или нет я хз)
-    implementation("androidx.legacy:legacy-support-v4:1.0.0")
+    implementation(libs.androidx.legacy.support.v4)
 
     // Hilt для внедрения зависимостей
     implementation(libs.hilt.android)
     kapt(libs.google.hilt.compiler)
     implementation(libs.hilt.android.v244)
     kapt(libs.dagger.hilt.android.compiler)
+    kapt(libs.dagger.compiler)
 
     // Jetpack Compose Hilt Integration
-    implementation(libs.androidx.hilt.navigation.compose)
+//    implementation(libs.androidx.hilt.navigation.compose)
 
     // Firebase Authentication
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.auth)
+//    implementation 'com.google.firebase:firebase-auth-ktx'
+//    implementation 'com.google.firebase:firebase-firestore-ktx'
+//    implementation 'com.google.firebase:firebase-storage-ktx'
+//    implementation 'com.google.firebase:firebase-crashlytics-ktx'
+//    implementation 'com.google.firebase:firebase-analytics-ktx'
+//    implementation 'com.google.firebase:firebase-messaging-ktx'
+
 
     // Jetpack Compose
     implementation(libs.androidx.material)
 }
-

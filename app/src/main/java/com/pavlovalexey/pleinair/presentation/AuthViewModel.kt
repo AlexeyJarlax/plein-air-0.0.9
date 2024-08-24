@@ -1,9 +1,8 @@
 package com.pavlovalexey.pleinair.presentation
 
-import android.content.SharedPreferences
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
+import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
@@ -12,31 +11,40 @@ import kotlinx.coroutines.launch
 class AuthViewModel : ViewModel() {
     private val auth = FirebaseAuth.getInstance()
 
-    var email = mutableStateOf("")
-    var password = mutableStateOf("")
-    var isLoggedIn = mutableStateOf(false)
-    var errorMessage = mutableStateOf("")
+    private val _email = MutableLiveData<String>("")
+    val email: LiveData<String> get() = _email
+
+    private val _password = MutableLiveData<String>("")
+    val password: LiveData<String> get() = _password
+
+    private val _isLoggedIn = MutableLiveData<Boolean>(false)
+    val isLoggedIn: LiveData<Boolean> get() = _isLoggedIn
+
+    private val _errorMessage = MutableLiveData<String>("")
+    val errorMessage: LiveData<String> get() = _errorMessage
+
+    var isLoginScreen = MutableLiveData<Boolean>(true)
 
     fun onEmailChanged(newEmail: String) {
-        email.value = newEmail
+        _email.value = newEmail
     }
 
     fun onPasswordChanged(newPassword: String) {
-        password.value = newPassword
+        _password.value = newPassword
     }
 
     fun signIn() {
         viewModelScope.launch {
             try {
-                auth.signInWithEmailAndPassword(email.value, password.value).addOnCompleteListener { task ->
+                auth.signInWithEmailAndPassword(email.value!!, password.value!!).addOnCompleteListener { task ->
                     if (task.isSuccessful) {
-                        isLoggedIn.value = true
+                        _isLoggedIn.value = true
                     } else {
-                        errorMessage.value = task.exception?.message ?: "Authentication failed."
+                        _errorMessage.value = task.exception?.message ?: "Authentication failed."
                     }
                 }
             } catch (e: Exception) {
-                errorMessage.value = e.message ?: "Unknown error occurred."
+                _errorMessage.value = e.message ?: "Unknown error occurred."
             }
         }
     }
@@ -44,21 +52,21 @@ class AuthViewModel : ViewModel() {
     fun register() {
         viewModelScope.launch {
             try {
-                auth.createUserWithEmailAndPassword(email.value, password.value).addOnCompleteListener { task ->
+                auth.createUserWithEmailAndPassword(email.value!!, password.value!!).addOnCompleteListener { task ->
                     if (task.isSuccessful) {
-                        isLoggedIn.value = true
+                        _isLoggedIn.value = true
                     } else {
-                        errorMessage.value = task.exception?.message ?: "Registration failed."
+                        _errorMessage.value = task.exception?.message ?: "Registration failed."
                     }
                 }
             } catch (e: Exception) {
-                errorMessage.value = e.message ?: "Unknown error occurred."
+                _errorMessage.value = e.message ?: "Unknown error occurred."
             }
         }
     }
 
     fun signOut() {
         auth.signOut()
-        isLoggedIn.value = false
+        _isLoggedIn.value = false
     }
 }
