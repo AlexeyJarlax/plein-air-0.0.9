@@ -1,3 +1,79 @@
 <resources>
-    <string name="app_name">pleinair</string>
+    <string name="app_name">Pleinair</string>
+    <string name="playlist_maker">Pleinair</string>
+    <string name="button_search">Поиск</string>
+    <string name="button_back">Назад</string>
+    <string name="button_media_lib">Медиатека</string>
+    <string name="button_settings">Настройки</string>
+    <string name="dark_mod">Темная тема</string>
+    <string name="share_the_app">Поделиться приложением</string>
+    <string name="write_to_support">Написать в поддержку</string>
+    <string name="user_agreement">Пользовательское соглашение</string>
+    <string name="share_app_text">https://play.google.com/store/apps/details?id=</string>
+    <string name="app_id">com.pavlovalexey.torpedo</string>
+    <string name="share_app_title">Поделиться приложением</string>
+    <string name="support_email">a9633238@gmail.com</string>
+    <string name="support_email_subject">Сообщение разработчику этого приложения</string>
+    <string name="support_email_text">Ты! Да, ты! Ты супер красавчик!</string>
+    <string name="user_agreement_url">https://raw.githubusercontent.com/AlexeyJarlax/Privacy-Policy-1.8.txt/main/Privacy-Policy-1.8.txt</string>
+    <string name="heading_search_history_list_view">История запросов поисковой строки:</string>
+    <string name="todo">TODO</string>
+    <string name="there_wil_be_media_library">в этом окне будет медиатека</string>
+    <string name="placeholder_track_name">Название песни</string>
+    <string name="placeholder_artist_name">Имя исполнителя</string>
+    <string name="placeholder_track_time">5:12</string>
+    <string name="error_text_web">Проблемы со связью \n
+        \n Загрузка не удалась. Проверьте\n
+        подключение к интернету</string>
+    <string name="nothing_was_found">Ничего не нашлось</string>
+    <string name="refresh">Обновить</string>
+    <string name="any_mistake">тут будет сообщение об ошибке,\nиконка поменяется в зависимости\nот характера ошибки</string>
+    <string name="you_were_looking_for">Вы искали</string>
+    <string name="clear_the_history">Очистить историю</string>
+    <string name="error400">400 - ошибка запроса</string>
+    <string name="error401">401 - неавторизованный запрос</string>
+    <string name="error403">403 - запрещенный запрос</string>
+    <string name="error404">404 - не найдено</string>
+    <string name="error500">500 - внутренняя ошибка сервера</string>
+    <string name="error503">503 - сервис временно недоступен</string>
+    <string name="error0">неустановленная ошибка</string>
+    <string name="added">Добавлен:&#160;&#160;&#160;</string>
+    <string name="duration">Длительность&#160;&#160;&#160;</string>
+    <string name="album">Альбом&#160;&#160;&#160;</string>
+    <string name="year">Год&#160;&#160;&#160;</string>
+    <string name="genre">Жанр&#160;&#160;&#160;</string>
+    <string name="country">Страна&#160;&#160;&#160;</string>
+    <string name="toast">toast</string>
+    <string name="zero_time">00:00</string>
+    <string name="favorite_tracks">Избранные треки</string>
+    <string name="playlists">Плейлисты</string>
+    <string name="media_library_is_empty">Ваша медиатека пуста</string>
+    <string name="havent_created_any_playlists">Вы не создали ни одного плейлиста</string>
+    <string name="new_play_list">Новый плейлист</string>
+    <string name="dialog_title">title</string>
+    <string name="name">Название*</string>
+    <string name="description">Описание</string>
+    <string name="addToPlaylist">Добавить в плейлист</string>
+    <string name="addToPlaylistSuccess">Трек добавлен в плейлист</string>
+    <string name="addToPlaylistDefeat">Трек уже добавлен в плейлист</string>
+    <string name="finishCreatingPlaylist">Завершить создание плейлиста?</string>
+    <string name="unsavedDataWillBeLost">Все несохраненные данные будут потеряны</string>
+    <string name="create">Создать</string>
+    <string name="cancel">Отменить</string>
+    <string name="end">Завершить</string>
+    <string name="save">Сохранить</string>
+    <string name="share_playlist">Поделиться</string>
+    <string name="edit_info">Редактировать информацию</string>
+    <string name="deletePlaylist">Удалить плейлист</string>
+    <string name="delete_track">Удалить трек</string>
+    <string name="deletePlaylist2">Хотите удалить плейлист?</string>
+    <string name="delete_track2">Вы уверены, что хотите удалить трек из плейлиста?</string>
+    <string name="yes">Да</string>
+    <string name="no">Нет</string>
+    <string name="havent_created_any_track">Вы не добавили ни одного трека</string>
+    <string name="about_this_app">Pleinair\n\n\nStack: Kotlin, MVVM, Koin, SingleActivity(+Fragments),
+    ViewPager2, Jetpack Navigation Component, Корутины, БД Room.</string>
+    <string name="about_this_app2">ВНИМАНИЕ:\n\nЭто приложение является учебным творческим проектом.
+        Приложение опубликовано для демонстрации возможностей стека, разработчика и учебного курса ЯндексПрактикума,
+        на котором оно делалось. Приложение не является готовым продуктом и не подлежит коммерческому использованию.</string>
 </resources>
