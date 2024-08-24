@@ -13,6 +13,6 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("com.android.tools.build:gradle:8.0.2") // Убедитесь, что версия соответствует вашей
-        classpath("com.google.gms:google-services:4.3.15") // Версия может отличаться, проверьте актуальную
+        classpath("com.android.tools.build:gradle:8.0.2")
+        classpath("com.google.gms:google-services:4.3.15")
     }}
