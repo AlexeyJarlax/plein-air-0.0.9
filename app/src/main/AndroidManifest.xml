@@ -41,6 +41,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <meta-data
+            android:name="com.google.android.gms.auth.api.credentials.CREDENTIALS_API_KEY"
+            android:value="@string/default_web_client_id" />
     </application>
 
 </manifest>
