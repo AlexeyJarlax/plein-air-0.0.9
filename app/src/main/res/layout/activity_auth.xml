@@ -5,12 +5,30 @@
     android:orientation="vertical"
     android:gravity="center"
     android:padding="16dp">
+<TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:textSize="@dimen/text_size_sp19"
+    android:text="Авторизоваться:"/>
 
-    <!-- Добавьте кнопки для входа (например, по Email, через Google и т.д.) -->
-    <Button
-        android:id="@+id/btnSignInWithEmail"
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp6" />
+
+    <com.google.android.gms.common.SignInButton
+        android:id="@+id/btnSignInWithGoogle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Войти через Email" />
+        android:text="Google аккаунт" />
 
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp6" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/emailSignInButton"
+        style="@style/Widget.App.EmailSignInButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sign in with Email" />
 </LinearLayout>
