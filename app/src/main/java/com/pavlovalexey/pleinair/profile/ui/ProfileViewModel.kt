@@ -1,16 +1,12 @@
 package com.pavlovalexey.pleinair.profile.ui
 
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.net.Uri
-import android.provider.MediaStore
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
@@ -38,10 +34,10 @@ class ProfileViewModel : ViewModel() {
         firestore.collection("users").document(userId)
             .update("profileImageUrl", imageUrl)
             .addOnSuccessListener {
-                // Обновление URL успешно
+                // URL обновлен успешно
             }
             .addOnFailureListener { e ->
-                // Обработка ошибок
+                // Обработка ошибки
             }
     }
 
@@ -53,13 +49,31 @@ class ProfileViewModel : ViewModel() {
         imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
         val data = baos.toByteArray()
 
-        storageRef.putBytes(data)
-            .addOnSuccessListener {
-                storageRef.downloadUrl.addOnSuccessListener { uri ->
-                    onSuccess(uri)
+        // Получение URL старого изображения профиля и его удаление, если оно существует
+        firestore.collection("users").document(userId).get()
+            .addOnSuccessListener { document ->
+                val oldImageUrl = document.getString("profileImageUrl")
+                if (oldImageUrl != null) {
+                    val oldImageRef = storage.getReferenceFromUrl(oldImageUrl)
+                    oldImageRef.delete()
+                        .addOnFailureListener { e ->
+                            // Обработка ошибки удаления старого изображения
+                        }
                 }
+
+                // Загрузка нового изображения
+                storageRef.putBytes(data)
+                    .addOnSuccessListener {
+                        storageRef.downloadUrl.addOnSuccessListener { uri ->
+                            onSuccess(uri)
+                        }
+                    }
+                    .addOnFailureListener { e ->
+                        onFailure(e)
+                    }
             }
             .addOnFailureListener { e ->
+                // Обработка ошибки при получении документа
                 onFailure(e)
             }
     }
@@ -68,13 +82,31 @@ class ProfileViewModel : ViewModel() {
         val userId = auth.currentUser?.uid ?: return
         val storageRef: StorageReference = storage.reference.child("profile_images/$userId/${UUID.randomUUID()}.jpg")
 
-        storageRef.putFile(uri)
-            .addOnSuccessListener {
-                storageRef.downloadUrl.addOnSuccessListener { uri ->
-                    onSuccess(uri)
+        // Получение URL старого изображения профиля и его удаление, если оно существует
+        firestore.collection("users").document(userId).get()
+            .addOnSuccessListener { document ->
+                val oldImageUrl = document.getString("profileImageUrl")
+                if (oldImageUrl != null) {
+                    val oldImageRef = storage.getReferenceFromUrl(oldImageUrl)
+                    oldImageRef.delete()
+                        .addOnFailureListener { e ->
+                            // Обработка ошибки удаления старого изображения
+                        }
                 }
+
+                // Загрузка нового изображения
+                storageRef.putFile(uri)
+                    .addOnSuccessListener {
+                        storageRef.downloadUrl.addOnSuccessListener { uri ->
+                            onSuccess(uri)
+                        }
+                    }
+                    .addOnFailureListener { e ->
+                        onFailure(e)
+                    }
             }
             .addOnFailureListener { e ->
+                // Обработка ошибки при получении документа
                 onFailure(e)
             }
     }
