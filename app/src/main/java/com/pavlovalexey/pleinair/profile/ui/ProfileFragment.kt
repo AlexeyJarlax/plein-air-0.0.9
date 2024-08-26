@@ -85,7 +85,7 @@ class ProfileFragment : Fragment() {
         AlertDialog.Builder(requireContext())
             .setTitle("Выход")
             .setMessage("Вы уверены, что хотите выйти?")
-            .setPositiveButton("✔") { _, _ ->
+            .setPositiveButton("✔️") { _, _ ->
                 viewModel.logout()
                 requireActivity().recreate() // Перезапуск активности
             }
