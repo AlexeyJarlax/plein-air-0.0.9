@@ -1,50 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
     android:padding="16dp">
+<TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:textSize="@dimen/text_size_sp19"
+    android:text="Авторизоваться:"/>
 
-    <EditText
-        android:id="@+id/emailEditText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Email"
-        android:inputType="textEmailAddress" />
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp6" />
 
-    <EditText
-        android:id="@+id/passwordEditText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Password"
-        android:layout_below="@id/emailEditText"
-        android:inputType="textPassword" />
-
-    <Button
-        android:id="@+id/signInButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/passwordEditText"
-        android:text="Login" />
-
-    <Button
-        android:id="@+id/toggleButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/signInButton"
-        android:text="Don't have an account? Register" />
-
-    <TextView
-        android:id="@+id/statusTextView"
+    <com.google.android.gms.common.SignInButton
+        android:id="@+id/btnSignInWithGoogle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@android:color/holo_green_dark"
-        android:layout_below="@id/toggleButton" />
+        android:text="Google аккаунт" />
 
-    <TextView
-        android:id="@+id/errorTextView"
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp6" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/emailSignInButton"
+        style="@style/Widget.App.EmailSignInButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@android:color/holo_red_dark"
-        android:layout_below="@id/statusTextView" />
-
-</RelativeLayout>
+        android:text="Sign in with Email" />
+</LinearLayout>

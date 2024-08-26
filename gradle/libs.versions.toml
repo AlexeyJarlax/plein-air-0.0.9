@@ -15,10 +15,12 @@ daggerCompiler = "2.49"
 emailIntentBuilder = "2.0.0"
 espressoCoreVersion = "3.5.1"
 firebaseAuth = "23.6.0"
+firebaseAuthVersion = "22.0.0"
 firebaseBom = "33.2.0"
 firebaseBomVersion = "33.1.2"
 firebaseCrashlyticsGradle = "3.0.2"
 firebaseCrashlyticsGradleVersion = "2.10.1"
+firebaseFirestore = "25.1.0"
 fragmentKtx = "1.8.2"
 fragmentKtxVersion = "1.8.1"
 glide = "4.16.0"
@@ -64,6 +66,8 @@ navigationFragmentKtx = "2.7.7"
 navigationUiKtx = "2.7.7"
 okhttp = "4.10.0"
 peko = "3.0.5"
+picasso = "2.71828"
+playServicesAuth = "21.2.0"
 retrofit = "2.9.0"
 roomCompiler = "2.5.2"
 roomKtx = "2.5.2"
@@ -76,6 +80,7 @@ ui = "1.6.8"
 uiToolingPreview = "1.5.0"
 uiVersion = "1.5.0"
 viewpager2 = "1.1.0"
+firebaseStorageKtx = "21.0.0"
 
 [libraries]
 androidx-activity = { module = "androidx.activity:activity", version.ref = "activityCompose" }
@@ -129,11 +134,13 @@ dagger-hilt-android-compiler-v249 = { module = "com.google.dagger:hilt-android-c
 email-intent-builder = { module = "de.cketti.mailto:email-intent-builder", version.ref = "emailIntentBuilder" }
 firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 firebase-auth = { module = "com.google.firebase:firebase-auth" }
+firebase-auth-v2200 = { module = "com.google.firebase:firebase-auth", version.ref = "firebaseAuthVersion" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 firebase-bom-v3231 = { module = "com.google.firebase:firebase-bom", version.ref = "googleFirebaseBom" }
 firebase-bom-v3312 = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBomVersion" }
 firebase-crashlytics-gradle = { module = "com.google.firebase:firebase-crashlytics-gradle", version.ref = "firebaseCrashlyticsGradle" }
 firebase-crashlytics-gradle-v2101 = { module = "com.google.firebase:firebase-crashlytics-gradle", version.ref = "firebaseCrashlyticsGradleVersion" }
+firebase-firestore = { module = "com.google.firebase:firebase-firestore", version.ref = "firebaseFirestore" }
 glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
 google-firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 google-firebase-auth = { module = "com.google.firebase:firebase-auth", version.ref = "firebaseAuth" }
@@ -170,7 +177,10 @@ androidx-runtime-android = { group = "androidx.compose.runtime", name = "runtime
 material-v190 = { module = "com.google.android.material:material", version.ref = "materialVersion" }
 okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
 peko = { module = "com.markodevcic:peko", version.ref = "peko" }
+picasso = { module = "com.squareup.picasso:picasso", version.ref = "picasso" }
+play-services-auth = { module = "com.google.android.gms:play-services-auth", version.ref = "playServicesAuth" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
+firebase-storage-ktx = { group = "com.google.firebase", name = "firebase-storage-ktx", version.ref = "firebaseStorageKtx" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
