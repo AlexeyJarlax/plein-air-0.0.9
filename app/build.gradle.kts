@@ -49,12 +49,12 @@ android {
 
     buildFeatures {
         viewBinding = true
+        dataBinding = true
     }
 }
 
 dependencies {
 // БАЗОВЫЕ
-
 
     // Расширения Kotlin для работы с Activity.
     implementation(libs.androidx.activity)
@@ -151,6 +151,7 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.auth)
     implementation(libs.play.services.auth)
+    implementation(libs.firebase.storage.ktx)
 //    implementation 'com.google.firebase:firebase-auth-ktx'
 //    implementation 'com.google.firebase:firebase-firestore-ktx'
 //    implementation 'com.google.firebase:firebase-storage-ktx'

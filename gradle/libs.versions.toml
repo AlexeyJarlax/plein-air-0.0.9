@@ -78,6 +78,7 @@ ui = "1.6.8"
 uiToolingPreview = "1.5.0"
 uiVersion = "1.5.0"
 viewpager2 = "1.1.0"
+firebaseStorageKtx = "21.0.0"
 
 [libraries]
 androidx-activity = { module = "androidx.activity:activity", version.ref = "activityCompose" }
@@ -175,6 +176,7 @@ okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
 peko = { module = "com.markodevcic:peko", version.ref = "peko" }
 play-services-auth = { module = "com.google.android.gms:play-services-auth", version.ref = "playServicesAuth" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
+firebase-storage-ktx = { group = "com.google.firebase", name = "firebase-storage-ktx", version.ref = "firebaseStorageKtx" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
