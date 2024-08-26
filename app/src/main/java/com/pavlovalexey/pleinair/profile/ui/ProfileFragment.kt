@@ -4,6 +4,7 @@ import android.app.Activity.RESULT_OK
 import android.app.AlertDialog
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -11,14 +12,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import com.pavlovalexey.pleinair.R
 import com.pavlovalexey.pleinair.databinding.FragmentProfileBinding
-import com.pavlovalexey.pleinair.auth.AuthActivity
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 import com.squareup.picasso.Picasso
+import java.io.ByteArrayOutputStream
+import java.io.IOException
 
 class ProfileFragment : Fragment() {
 
@@ -60,7 +65,7 @@ class ProfileFragment : Fragment() {
             if (user?.photoUrl != null) {
                 Picasso.get().load(user.photoUrl).into(binding.userAvatar)
             } else {
-                binding.userAvatar.setImageResource(R.drawable.ic_launcher_foreground) // Предполагается наличие стандартной картинки
+                binding.userAvatar.setImageResource(R.drawable.default_avatar) // Предполагается наличие стандартной картинки
             }
             binding.logoutButton.visibility = if (user != null) View.VISIBLE else View.GONE
         }
@@ -80,11 +85,11 @@ class ProfileFragment : Fragment() {
         AlertDialog.Builder(requireContext())
             .setTitle("Выход")
             .setMessage("Вы уверены, что хотите выйти?")
-            .setPositiveButton("Да") { _, _ ->
+            .setPositiveButton("✔") { _, _ ->
                 viewModel.logout()
                 requireActivity().recreate() // Перезапуск активности
             }
-            .setNegativeButton("Нет", null)
+            .setNegativeButton("❌", null)
             .show()
     }
 

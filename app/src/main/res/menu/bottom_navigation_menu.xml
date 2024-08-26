@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/profileFragment"
+        android:icon="@android:drawable/ic_menu_my_calendar"
+        android:title="@string/user" />
     <item
         android:id="@+id/searchFragment"
         android:icon="@drawable/ic_btn_search"
@@ -12,8 +17,4 @@
         android:id="@+id/settingsFragment"
         android:icon="@drawable/ic_btn_settings"
         android:title="@string/button_settings" />
-    <item
-        android:id="@+id/profileFragment"
-        android:icon="@android:drawable/ic_menu_my_calendar"
-        android:title="@string/user" />
 </menu>

@@ -48,14 +48,14 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-        bottomNavigationView.menu.findItem(R.id.profileFragment).setOnMenuItemClickListener {
-            if (auth.currentUser != null) {
-                navController.navigate(R.id.profileFragment)
-            } else {
-                startActivity(Intent(this, AuthActivity::class.java))
-            }
-            true
-        }
+//        bottomNavigationView.menu.findItem(R.id.profileFragment).setOnMenuItemClickListener {
+//            if (auth.currentUser != null) {
+//                navController.navigate(R.id.profileFragment)
+//            } else {
+//                startActivity(Intent(this, AuthActivity::class.java))
+//            }
+//            true
+//        }
     }
 }
 
