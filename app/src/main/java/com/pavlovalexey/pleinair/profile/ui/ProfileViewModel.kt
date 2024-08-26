@@ -10,10 +10,13 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.storage.FirebaseStorage
 import java.io.ByteArrayOutputStream
 import java.util.UUID
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.StorageReference
 
 class ProfileViewModel : ViewModel() {
 
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
+    private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
     private val storage: FirebaseStorage = FirebaseStorage.getInstance()
 
     private val _user = MutableLiveData<FirebaseUser?>().apply {
@@ -26,26 +29,49 @@ class ProfileViewModel : ViewModel() {
         _user.value = null
     }
 
-    fun uploadImageToFirebase(bitmap: Bitmap, onSuccess: (Uri) -> Unit, onFailure: (Exception) -> Unit) {
-        val storageRef = storage.reference.child("avatars/${UUID.randomUUID()}.jpg")
+    fun updateProfileImageUrl(imageUrl: String) {
+        val userId = auth.currentUser?.uid ?: return
+        firestore.collection("users").document(userId)
+            .update("profileImageUrl", imageUrl)
+            .addOnSuccessListener {
+                // Обновление URL успешно
+            }
+            .addOnFailureListener { e ->
+                // Обработка ошибок
+            }
+    }
+
+    fun uploadImageToFirebase(imageBitmap: Bitmap, onSuccess: (Uri) -> Unit, onFailure: (Exception) -> Unit) {
+        val userId = auth.currentUser?.uid ?: return
+        val storageRef: StorageReference = storage.reference.child("profile_images/$userId/${UUID.randomUUID()}.jpg")
 
         val baos = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+        imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
         val data = baos.toByteArray()
 
-        val uploadTask = storageRef.putBytes(data)
-        uploadTask.addOnSuccessListener {
-            storageRef.downloadUrl.addOnSuccessListener(onSuccess)
-        }.addOnFailureListener(onFailure)
+        storageRef.putBytes(data)
+            .addOnSuccessListener {
+                storageRef.downloadUrl.addOnSuccessListener { uri ->
+                    onSuccess(uri)
+                }
+            }
+            .addOnFailureListener { e ->
+                onFailure(e)
+            }
     }
 
     fun uploadImageToFirebase(uri: Uri, onSuccess: (Uri) -> Unit, onFailure: (Exception) -> Unit) {
-        val storageRef = storage.reference.child("avatars/${UUID.randomUUID()}.jpg")
+        val userId = auth.currentUser?.uid ?: return
+        val storageRef: StorageReference = storage.reference.child("profile_images/$userId/${UUID.randomUUID()}.jpg")
 
         storageRef.putFile(uri)
             .addOnSuccessListener {
-                storageRef.downloadUrl.addOnSuccessListener(onSuccess)
+                storageRef.downloadUrl.addOnSuccessListener { uri ->
+                    onSuccess(uri)
+                }
             }
-            .addOnFailureListener(onFailure)
+            .addOnFailureListener { e ->
+                onFailure(e)
+            }
     }
 }

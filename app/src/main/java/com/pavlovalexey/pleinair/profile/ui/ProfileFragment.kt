@@ -1,23 +1,24 @@
 package com.pavlovalexey.pleinair.profile.ui
 
 import android.app.Activity.RESULT_OK
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
-import com.pavlovalexey.pleinair.R
-import com.pavlovalexey.pleinair.databinding.FragmentProfileBinding
 import android.app.AlertDialog
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
+import android.os.Bundle
 import android.provider.MediaStore
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import com.pavlovalexey.pleinair.R
+import com.pavlovalexey.pleinair.databinding.FragmentProfileBinding
 import com.pavlovalexey.pleinair.auth.AuthActivity
+import com.squareup.picasso.Picasso
 
 class ProfileFragment : Fragment() {
 
@@ -56,7 +57,11 @@ class ProfileFragment : Fragment() {
 
         viewModel.user.observe(viewLifecycleOwner) { user ->
             binding.userName.text = user?.displayName ?: getString(R.string.default_user_name)
-            binding.userAvatar.setImageURI(user?.photoUrl)
+            if (user?.photoUrl != null) {
+                Picasso.get().load(user.photoUrl).into(binding.userAvatar)
+            } else {
+                binding.userAvatar.setImageResource(R.drawable.ic_launcher_foreground) // Предполагается наличие стандартной картинки
+            }
             binding.logoutButton.visibility = if (user != null) View.VISIBLE else View.GONE
         }
 
@@ -77,7 +82,7 @@ class ProfileFragment : Fragment() {
             .setMessage("Вы уверены, что хотите выйти?")
             .setPositiveButton("Да") { _, _ ->
                 viewModel.logout()
-                requireActivity().recreate()
+                requireActivity().recreate() // Перезапуск активности
             }
             .setNegativeButton("Нет", null)
             .show()
@@ -106,7 +111,7 @@ class ProfileFragment : Fragment() {
 
     private fun onUploadSuccess(uri: Uri) {
         Toast.makeText(requireContext(), "Аватарка успешно загружена!", Toast.LENGTH_SHORT).show()
-        // Здесь можно обновить URL аватарки в профиле пользователя
+        viewModel.updateProfileImageUrl(uri.toString())
     }
 
     private fun onUploadFailure(exception: Exception) {
