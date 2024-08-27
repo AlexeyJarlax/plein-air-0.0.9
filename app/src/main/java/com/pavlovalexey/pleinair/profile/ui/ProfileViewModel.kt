@@ -1,4 +1,5 @@
 package com.pavlovalexey.pleinair.profile.ui
+
 import android.graphics.Bitmap
 import android.net.Uri
 import android.util.Log
@@ -30,15 +31,12 @@ class ProfileViewModel : ViewModel() {
         _user.value = null
     }
 
+    // Метод для обновления URL изображения профиля
     fun updateProfileImageUrl(imageUrl: String) {
         val userId = auth.currentUser?.uid ?: return
 
-        val user = hashMapOf(
-            "profileImageUrl" to imageUrl,
-        )
-
         firestore.collection("users").document(userId)
-            .set(user)
+            .update("profileImageUrl", imageUrl)
             .addOnSuccessListener {
                 Log.d(TAG, "Profile image URL updated")
             }
@@ -47,15 +45,12 @@ class ProfileViewModel : ViewModel() {
             }
     }
 
+    // Метод для обновления имени пользователя
     fun updateUserName(newName: String) {
         val userId = auth.currentUser?.uid ?: return
 
-        val user = hashMapOf(
-            "name" to newName,
-        )
-
         firestore.collection("users").document(userId)
-            .set(user)
+            .update("name", newName)
             .addOnSuccessListener {
                 Log.d(TAG, "User name updated")
             }
@@ -64,6 +59,7 @@ class ProfileViewModel : ViewModel() {
             }
     }
 
+    // Метод для загрузки изображения в Firebase Storage и обновления URL профиля
     fun uploadImageToFirebase(imageBitmap: Bitmap, onSuccess: (Uri) -> Unit, onFailure: (Exception) -> Unit) {
         val userId = auth.currentUser?.uid ?: return
         val storageRef: StorageReference = storage.reference.child("profile_images/$userId/${UUID.randomUUID()}.jpg")
@@ -84,6 +80,7 @@ class ProfileViewModel : ViewModel() {
             }
     }
 
+    // Метод для загрузки изображения из URI в Firebase Storage и обновления URL профиля
     fun uploadImageToFirebase(uri: Uri, onSuccess: (Uri) -> Unit, onFailure: (Exception) -> Unit) {
         val userId = auth.currentUser?.uid ?: return
         val storageRef: StorageReference = storage.reference.child("profile_images/$userId/${UUID.randomUUID()}.jpg")
