@@ -1,10 +1,11 @@
 package com.pavlovalexey.pleinair.profile.ui
-
 import android.graphics.Bitmap
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.firebase.appcheck.internal.util.Logger.TAG
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
@@ -31,13 +32,35 @@ class ProfileViewModel : ViewModel() {
 
     fun updateProfileImageUrl(imageUrl: String) {
         val userId = auth.currentUser?.uid ?: return
+
+        val user = hashMapOf(
+            "profileImageUrl" to imageUrl,
+        )
+
         firestore.collection("users").document(userId)
-            .update("profileImageUrl", imageUrl)
+            .set(user)
             .addOnSuccessListener {
-                // URL обновлен успешно
+                Log.d(TAG, "Profile image URL updated")
             }
             .addOnFailureListener { e ->
-                // Обработка ошибки
+                Log.w(TAG, "Error updating profile image URL", e)
+            }
+    }
+
+    fun updateUserName(newName: String) {
+        val userId = auth.currentUser?.uid ?: return
+
+        val user = hashMapOf(
+            "name" to newName,
+        )
+
+        firestore.collection("users").document(userId)
+            .set(user)
+            .addOnSuccessListener {
+                Log.d(TAG, "User name updated")
+            }
+            .addOnFailureListener { e ->
+                Log.w(TAG, "Error updating user name", e)
             }
     }
 
@@ -49,31 +72,14 @@ class ProfileViewModel : ViewModel() {
         imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
         val data = baos.toByteArray()
 
-        // Получение URL старого изображения профиля и его удаление, если оно существует
-        firestore.collection("users").document(userId).get()
-            .addOnSuccessListener { document ->
-                val oldImageUrl = document.getString("profileImageUrl")
-                if (oldImageUrl != null) {
-                    val oldImageRef = storage.getReferenceFromUrl(oldImageUrl)
-                    oldImageRef.delete()
-                        .addOnFailureListener { e ->
-                            // Обработка ошибки удаления старого изображения
-                        }
+        storageRef.putBytes(data)
+            .addOnSuccessListener {
+                storageRef.downloadUrl.addOnSuccessListener { uri ->
+                    onSuccess(uri)
+                    updateProfileImageUrl(uri.toString())
                 }
-
-                // Загрузка нового изображения
-                storageRef.putBytes(data)
-                    .addOnSuccessListener {
-                        storageRef.downloadUrl.addOnSuccessListener { uri ->
-                            onSuccess(uri)
-                        }
-                    }
-                    .addOnFailureListener { e ->
-                        onFailure(e)
-                    }
             }
             .addOnFailureListener { e ->
-                // Обработка ошибки при получении документа
                 onFailure(e)
             }
     }
@@ -82,31 +88,14 @@ class ProfileViewModel : ViewModel() {
         val userId = auth.currentUser?.uid ?: return
         val storageRef: StorageReference = storage.reference.child("profile_images/$userId/${UUID.randomUUID()}.jpg")
 
-        // Получение URL старого изображения профиля и его удаление, если оно существует
-        firestore.collection("users").document(userId).get()
-            .addOnSuccessListener { document ->
-                val oldImageUrl = document.getString("profileImageUrl")
-                if (oldImageUrl != null) {
-                    val oldImageRef = storage.getReferenceFromUrl(oldImageUrl)
-                    oldImageRef.delete()
-                        .addOnFailureListener { e ->
-                            // Обработка ошибки удаления старого изображения
-                        }
+        storageRef.putFile(uri)
+            .addOnSuccessListener {
+                storageRef.downloadUrl.addOnSuccessListener { uri ->
+                    onSuccess(uri)
+                    updateProfileImageUrl(uri.toString())
                 }
-
-                // Загрузка нового изображения
-                storageRef.putFile(uri)
-                    .addOnSuccessListener {
-                        storageRef.downloadUrl.addOnSuccessListener { uri ->
-                            onSuccess(uri)
-                        }
-                    }
-                    .addOnFailureListener { e ->
-                        onFailure(e)
-                    }
             }
             .addOnFailureListener { e ->
-                // Обработка ошибки при получении документа
                 onFailure(e)
             }
     }
