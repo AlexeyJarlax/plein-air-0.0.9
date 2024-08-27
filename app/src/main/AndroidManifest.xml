@@ -27,7 +27,7 @@
         android:theme="@style/Theme.MyApp"
         tools:targetApi="31">
 
-        <!-- Установка AuthActivity в качестве точки входа -->
+        <!-- AuthActivity точкf входа -->
         <activity
             android:name=".auth.AuthActivity"
             android:exported="true">
@@ -37,7 +37,6 @@
             </intent-filter>
         </activity>
 
-        <!-- MainActivity теперь не является точкой входа -->
         <activity
             android:name=".main.ui.MainActivity"
             android:exported="true"
