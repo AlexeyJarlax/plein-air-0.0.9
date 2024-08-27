@@ -1,5 +1,7 @@
 package com.pavlovalexey.pleinair.auth
 
+/** точка входа в приложение*/
+
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log

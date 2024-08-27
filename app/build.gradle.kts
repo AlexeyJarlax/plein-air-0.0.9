@@ -153,6 +153,9 @@ dependencies {
     implementation(libs.play.services.auth)
     implementation(libs.firebase.storage.ktx)
     implementation(libs.firebase.firestore)
+    implementation(libs.com.google.firebase.firebase.analytics2)
+    implementation(libs.firebase.storage)
+    implementation(libs.firebase.appcheck.playintegrity)
 //    implementation 'com.google.firebase:firebase-auth-ktx'
 //    implementation 'com.google.firebase:firebase-firestore-ktx'
 //    implementation 'com.google.firebase:firebase-storage-ktx'
