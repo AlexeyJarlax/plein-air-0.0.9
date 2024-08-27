@@ -59,6 +59,20 @@ class ProfileViewModel : ViewModel() {
             }
     }
 
+    // Метод для удаления старого изображения профиля
+    private fun deleteOldProfileImage(oldImageUrl: String?) {
+        oldImageUrl?.let {
+            val oldImageRef = storage.getReferenceFromUrl(it)
+            oldImageRef.delete()
+                .addOnSuccessListener {
+                    Log.d(TAG, "Old profile image deleted")
+                }
+                .addOnFailureListener { e ->
+                    Log.w(TAG, "Error deleting old profile image", e)
+                }
+        }
+    }
+
     // Метод для загрузки изображения в Firebase Storage и обновления URL профиля
     fun uploadImageToFirebase(imageBitmap: Bitmap, onSuccess: (Uri) -> Unit, onFailure: (Exception) -> Unit) {
         val userId = auth.currentUser?.uid ?: return
@@ -68,14 +82,26 @@ class ProfileViewModel : ViewModel() {
         imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
         val data = baos.toByteArray()
 
-        storageRef.putBytes(data)
-            .addOnSuccessListener {
-                storageRef.downloadUrl.addOnSuccessListener { uri ->
-                    onSuccess(uri)
-                    updateProfileImageUrl(uri.toString())
-                }
+        // Сначала получаем URL старого изображения профиля
+        firestore.collection("users").document(userId).get()
+            .addOnSuccessListener { document ->
+                val oldImageUrl = document.getString("profileImageUrl")
+
+                // Загрузка нового изображения
+                storageRef.putBytes(data)
+                    .addOnSuccessListener {
+                        storageRef.downloadUrl.addOnSuccessListener { uri ->
+                            onSuccess(uri)
+                            updateProfileImageUrl(uri.toString())
+                            deleteOldProfileImage(oldImageUrl) // Удаляем старое изображение
+                        }
+                    }
+                    .addOnFailureListener { e ->
+                        onFailure(e)
+                    }
             }
             .addOnFailureListener { e ->
+                Log.w(TAG, "Error fetching old image URL", e)
                 onFailure(e)
             }
     }
@@ -85,14 +111,26 @@ class ProfileViewModel : ViewModel() {
         val userId = auth.currentUser?.uid ?: return
         val storageRef: StorageReference = storage.reference.child("profile_images/$userId/${UUID.randomUUID()}.jpg")
 
-        storageRef.putFile(uri)
-            .addOnSuccessListener {
-                storageRef.downloadUrl.addOnSuccessListener { uri ->
-                    onSuccess(uri)
-                    updateProfileImageUrl(uri.toString())
-                }
+        // Сначала получаем URL старого изображения профиля
+        firestore.collection("users").document(userId).get()
+            .addOnSuccessListener { document ->
+                val oldImageUrl = document.getString("profileImageUrl")
+
+                // Загрузка нового изображения
+                storageRef.putFile(uri)
+                    .addOnSuccessListener {
+                        storageRef.downloadUrl.addOnSuccessListener { uri ->
+                            onSuccess(uri)
+                            updateProfileImageUrl(uri.toString())
+                            deleteOldProfileImage(oldImageUrl) // Удаляем старое изображение
+                        }
+                    }
+                    .addOnFailureListener { e ->
+                        onFailure(e)
+                    }
             }
             .addOnFailureListener { e ->
+                Log.w(TAG, "Error fetching old image URL", e)
                 onFailure(e)
             }
     }
