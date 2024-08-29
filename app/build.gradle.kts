@@ -170,4 +170,7 @@ dependencies {
 
     //изображения
     implementation(libs.picasso)
+
+    //карты
+    implementation(libs.play.services.maps)
 }

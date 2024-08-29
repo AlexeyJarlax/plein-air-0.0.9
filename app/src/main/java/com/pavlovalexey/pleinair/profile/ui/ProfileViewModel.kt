@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.appcheck.internal.util.Logger.TAG
 import com.google.firebase.auth.FirebaseAuth
@@ -55,6 +56,24 @@ class ProfileViewModel : ViewModel() {
             }
             .addOnFailureListener { e ->
                 Log.w(TAG, "Error updating user name", e)
+            }
+    }
+
+    fun updateUserLocation(location: LatLng) {
+        val userId = auth.currentUser?.uid ?: return
+
+        val locationMap = hashMapOf(
+            "latitude" to location.latitude,
+            "longitude" to location.longitude
+        )
+
+        firestore.collection("users").document(userId)
+            .update("location", locationMap)
+            .addOnSuccessListener {
+                Log.d(TAG, "User location updated")
+            }
+            .addOnFailureListener { e ->
+                Log.w(TAG, "Error updating user location", e)
             }
     }
 

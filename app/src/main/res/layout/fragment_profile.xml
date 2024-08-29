@@ -25,27 +25,36 @@
             android:contentDescription="@string/user_avatar"
             android:scaleType="centerCrop" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp12" />
-
         <TextView
             android:id="@+id/userName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="@string/default_user_name"
+            android:layout_marginTop="16dp"
             android:textAppearance="?attr/textAppearanceHeadline5" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp12" />
+
+        <Button
+            android:id="@+id/btn_choose_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Выбрать местоположение"
+            android:layout_marginTop="16dp"
+            android:layout_gravity="center_horizontal"
+            />
 
         <Button
             android:id="@+id/logoutButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_marginTop="16dp"
             android:text="@string/button_logout" />
+
+        <FrameLayout
+            android:id="@+id/fragment_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
     </LinearLayout>
 </layout>
