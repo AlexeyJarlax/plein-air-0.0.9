@@ -50,7 +50,10 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
         view.findViewById<Button>(R.id.btn_confirm_location).setOnClickListener {
             selectedLocation?.let {
+                // Обновляем координаты пользователя в Firebase
                 listener?.onLocationSelected(it)
+                // Закрываем фрагмент карты и возвращаемся назад
+                parentFragmentManager.popBackStack()
             } ?: run {
                 Toast.makeText(requireContext(), "Выберите местоположение", Toast.LENGTH_SHORT).show()
             }
@@ -68,8 +71,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             selectedLocation = latLng
         }
 
-        // При необходимости, установите начальную позицию карты
-        val initialPosition = LatLng(0.0, 0.0)
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(initialPosition, 10f))
+        // Установите начальную позицию карты на Петропавловскую крепость
+        val initialPosition = LatLng(59.9500019, 30.3166718)
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(initialPosition, 15f))
     }
 }

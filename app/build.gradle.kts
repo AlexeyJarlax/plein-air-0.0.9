@@ -51,6 +51,12 @@ android {
         viewBinding = true
         dataBinding = true
     }
+
+    packaging {
+        resources {
+            excludes += intArrayOf("META-INF/DEPENDENCIES")
+        }
+    }
 }
 
 dependencies {
@@ -173,4 +179,7 @@ dependencies {
 
     //карты
     implementation(libs.play.services.maps)
+    implementation(libs.flogger)
+    implementation(libs.flogger.system.backend) // System backend
+    implementation(libs.flogger.log4j2.backend) // Log4j2 backend (опционально)
 }

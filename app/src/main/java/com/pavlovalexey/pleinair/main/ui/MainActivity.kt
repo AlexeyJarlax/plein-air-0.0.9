@@ -9,9 +9,6 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.firebase.Firebase
-import com.google.firebase.appcheck.appCheck
-import com.google.firebase.appcheck.playintegrity.PlayIntegrityAppCheckProviderFactory
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
@@ -30,6 +27,9 @@ class MainActivity : AppCompatActivity(), MapFragment.OnLocationSelectedListener
     private lateinit var auth: FirebaseAuth
     private lateinit var storage: FirebaseStorage
 
+    // Координаты Петропавловской крепости
+    private val defaultLocation = LatLng(59.9500019, 30.3166718)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -38,10 +38,6 @@ class MainActivity : AppCompatActivity(), MapFragment.OnLocationSelectedListener
         db = com.google.firebase.Firebase.firestore
         auth = FirebaseAuth.getInstance()
         storage = com.google.firebase.Firebase.storage
-
-        Firebase.appCheck.installAppCheckProviderFactory(
-            PlayIntegrityAppCheckProviderFactory.getInstance(),
-        )
 
         if (auth.currentUser == null) {
             // Если пользователь не авторизован, перенаправляем его на AuthActivity
@@ -64,10 +60,9 @@ class MainActivity : AppCompatActivity(), MapFragment.OnLocationSelectedListener
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
-                R.id.newPlaylistFragment, R.id.playerFragment, R.id.openPlaylistFragment, R.id.editPlaylistFragment, R.id.mapFragment-> {
+                R.id.newPlaylistFragment, R.id.playerFragment, R.id.openPlaylistFragment, R.id.editPlaylistFragment, R.id.mapFragment -> {
                     bottomNavigationView.visibility = View.GONE
                 }
-
                 else -> {
                     bottomNavigationView.visibility = View.VISIBLE
                 }
@@ -80,10 +75,14 @@ class MainActivity : AppCompatActivity(), MapFragment.OnLocationSelectedListener
         val userId = user.uid
         val userDocRef = db.collection("users").document(userId)
 
-        // Создаем начальные данные профиля пользователя
+        // Создаем начальные данные профиля пользователя, включая координаты по умолчанию
         val userProfile = hashMapOf(
             "name" to (user.displayName ?: "User Name"),
-            "profileImageUrl" to (user.photoUrl?.toString() ?: "default_url")
+            "profileImageUrl" to (user.photoUrl?.toString() ?: "default_url"),
+            "location" to hashMapOf(
+                "latitude" to defaultLocation.latitude,
+                "longitude" to defaultLocation.longitude
+            )
         )
 
         userDocRef.get()
@@ -97,6 +96,17 @@ class MainActivity : AppCompatActivity(), MapFragment.OnLocationSelectedListener
                         .addOnFailureListener { e ->
                             Log.w(TAG, "Error creating user profile", e)
                         }
+                } else {
+                    // Если документ существует, проверяем наличие координат
+                    if (!document.contains("location")) {
+                        userDocRef.update("location", userProfile["location"])
+                            .addOnSuccessListener {
+                                Log.d(TAG, "Default location set for user ID: $userId")
+                            }
+                            .addOnFailureListener { e ->
+                                Log.w(TAG, "Error setting default location", e)
+                            }
+                    }
                 }
             }
             .addOnFailureListener { e ->

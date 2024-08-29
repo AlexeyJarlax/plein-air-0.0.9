@@ -21,6 +21,9 @@ firebaseBomVersion = "33.1.2"
 firebaseCrashlyticsGradle = "3.0.2"
 firebaseCrashlyticsGradleVersion = "2.10.1"
 firebaseFirestore = "25.1.0"
+flogger = "0.7.4"
+floggerLog4j2Backend = "0.7.4"
+floggerSystemBackend = "0.7.4"
 fragmentKtx = "1.8.2"
 fragmentKtxVersion = "1.8.1"
 glide = "4.16.0"
@@ -145,6 +148,9 @@ firebase-crashlytics-gradle = { module = "com.google.firebase:firebase-crashlyti
 firebase-crashlytics-gradle-v2101 = { module = "com.google.firebase:firebase-crashlytics-gradle", version.ref = "firebaseCrashlyticsGradleVersion" }
 firebase-firestore = { module = "com.google.firebase:firebase-firestore", version.ref = "firebaseFirestore" }
 firebase-storage = { module = "com.google.firebase:firebase-storage" }
+flogger = { module = "com.google.flogger:flogger", version.ref = "flogger" }
+flogger-log4j2-backend = { module = "com.google.flogger:flogger-log4j2-backend", version.ref = "floggerLog4j2Backend" }
+flogger-system-backend = { module = "com.google.flogger:flogger-system-backend", version.ref = "floggerSystemBackend" }
 glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
 google-firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 google-firebase-auth = { module = "com.google.firebase:firebase-auth", version.ref = "firebaseAuth" }
