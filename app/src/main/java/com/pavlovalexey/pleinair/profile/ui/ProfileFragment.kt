@@ -1,10 +1,13 @@
 package com.pavlovalexey.pleinair.profile.ui
 
+import android.app.Activity.RESULT_OK
 import android.app.AlertDialog
 import android.content.Intent
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,19 +19,46 @@ import androidx.fragment.app.commit
 import com.google.android.gms.maps.model.LatLng
 import com.pavlovalexey.pleinair.R
 import com.pavlovalexey.pleinair.databinding.FragmentProfileBinding
-import com.pavlovalexey.pleinair.map.MapFragment
+import com.pavlovalexey.pleinair.map.ui.MapFragment
 import com.squareup.picasso.Picasso
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.navigation.fragment.findNavController
+import com.google.firebase.appcheck.internal.util.Logger.TAG
 
 class ProfileFragment : Fragment(), MapFragment.OnLocationSelectedListener {
 
     private lateinit var binding: FragmentProfileBinding
     private val viewModel: ProfileViewModel by viewModels()
+    private lateinit var cameraActivityResultLauncher: ActivityResultLauncher<Intent>
+    private lateinit var galleryActivityResultLauncher: ActivityResultLauncher<Intent>
+    private val TAG = ProfileFragment::class.java.simpleName
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentProfileBinding.inflate(inflater, container, false)
+
+        cameraActivityResultLauncher = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) { result ->
+            if (result.resultCode == RESULT_OK) {
+                val imageBitmap = result.data?.extras?.get("data") as Bitmap
+                binding.userAvatar.setImageBitmap(imageBitmap)
+                viewModel.uploadImageToFirebase(imageBitmap, ::onUploadSuccess, ::onUploadFailure)
+            }
+        }
+
+        galleryActivityResultLauncher = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) { result ->
+            if (result.resultCode == RESULT_OK) {
+                val selectedImageUri: Uri? = result.data?.data
+                binding.userAvatar.setImageURI(selectedImageUri)
+                selectedImageUri?.let { viewModel.uploadImageToFirebase(it, ::onUploadSuccess, ::onUploadFailure) }
+            }
+        }
 
         viewModel.user.observe(viewLifecycleOwner) { user ->
             binding.userName.text = user?.displayName ?: getString(R.string.default_user_name)
@@ -60,10 +90,10 @@ class ProfileFragment : Fragment(), MapFragment.OnLocationSelectedListener {
     }
 
     private fun openMapFragment() {
-        parentFragmentManager.commit {
-            replace(R.id.fragment_container, MapFragment())
-            addToBackStack(null)
-        }
+        val mapFragment = MapFragment()
+        // Передаем текущий фрагмент как OnLocationSelectedListener
+        mapFragment.setOnLocationSelectedListener(this)
+        findNavController().navigate(R.id.action_profileFragment_to_mapFragment)
     }
 
     override fun onLocationSelected(location: LatLng) {
@@ -126,8 +156,12 @@ class ProfileFragment : Fragment(), MapFragment.OnLocationSelectedListener {
     }
 
     private fun onUploadSuccess(uri: Uri) {
-        Toast.makeText(requireContext(), "Аватарка успешно загружена!", Toast.LENGTH_SHORT).show()
-        viewModel.updateProfileImageUrl(uri.toString())
+        if (isAdded) {
+            Toast.makeText(requireContext(), "Аватарка успешно загружена!", Toast.LENGTH_SHORT).show()
+            viewModel.updateProfileImageUrl(uri.toString())
+        } else {
+            Log.w(TAG, "Фрагмент не был присоединён, не удалось показать Toast")
+        }
     }
 
     private fun onUploadFailure(exception: Exception) {

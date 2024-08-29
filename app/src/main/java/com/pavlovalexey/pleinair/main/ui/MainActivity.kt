@@ -1,7 +1,5 @@
 package com.pavlovalexey.pleinair.main.ui
 
-/** точка входа в приложение после авторизации.*/
-
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -9,6 +7,7 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
+import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.Firebase
 import com.google.firebase.appcheck.appCheck
@@ -16,16 +15,15 @@ import com.google.firebase.appcheck.playintegrity.PlayIntegrityAppCheckProviderF
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
-import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.initialize
 import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.ktx.storage
 import com.google.firebase.storage.storage
 import com.pavlovalexey.pleinair.R
 import com.pavlovalexey.pleinair.auth.AuthActivity
 import com.pavlovalexey.pleinair.databinding.ActivityMainBinding
+import com.pavlovalexey.pleinair.map.ui.MapFragment
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), MapFragment.OnLocationSelectedListener {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var db: FirebaseFirestore
@@ -36,7 +34,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         // Инициализация Firebase
-        com.google.firebase.Firebase.initialize(context = this)
+        com.google.firebase.Firebase.initialize(this)
         db = com.google.firebase.Firebase.firestore
         auth = FirebaseAuth.getInstance()
         storage = com.google.firebase.Firebase.storage
@@ -66,7 +64,7 @@ class MainActivity : AppCompatActivity() {
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
-                R.id.newPlaylistFragment, R.id.playerFragment, R.id.openPlaylistFragment, R.id.editPlaylistFragment -> {
+                R.id.newPlaylistFragment, R.id.playerFragment, R.id.openPlaylistFragment, R.id.editPlaylistFragment, R.id.mapFragment-> {
                     bottomNavigationView.visibility = View.GONE
                 }
 
@@ -104,6 +102,12 @@ class MainActivity : AppCompatActivity() {
             .addOnFailureListener { e ->
                 Log.w(TAG, "Error getting user profile", e)
             }
+    }
+
+    override fun onLocationSelected(location: LatLng) {
+        // Обработка выбранного местоположения
+        Log.d(TAG, "Location selected: $location")
+        // Вы можете обновить местоположение пользователя в Firestore или сделать что-то другое
     }
 
     companion object {

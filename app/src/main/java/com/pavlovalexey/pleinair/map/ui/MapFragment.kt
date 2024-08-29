@@ -1,4 +1,4 @@
-package com.pavlovalexey.pleinair.map
+package com.pavlovalexey.pleinair.map.ui
 
 import android.content.Context
 import android.os.Bundle
@@ -24,6 +24,10 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
     interface OnLocationSelectedListener {
         fun onLocationSelected(location: LatLng)
+    }
+
+    fun setOnLocationSelectedListener(listener: OnLocationSelectedListener) {
+        this.listener = listener
     }
 
     override fun onAttach(context: Context) {
