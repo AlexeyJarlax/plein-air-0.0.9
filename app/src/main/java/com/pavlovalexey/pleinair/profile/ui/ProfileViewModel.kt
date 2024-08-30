@@ -1,32 +1,43 @@
-package com.pavlovalexey.pleinair.profile.ui
+package com.pavlovalexey.pleinair.profile.viewmodel
 
+import android.app.Application
 import android.graphics.Bitmap
+import android.location.Geocoder
 import android.net.Uri
 import android.util.Log
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.appcheck.internal.util.Logger.TAG
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
+import com.pavlovalexey.pleinair.profile.model.User
 import java.io.ByteArrayOutputStream
+import java.io.IOException
+import java.util.Locale
 import java.util.UUID
 
-class ProfileViewModel : ViewModel() {
+class ProfileViewModel(application: Application) : AndroidViewModel(application) {
 
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
     private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
     private val storage: FirebaseStorage = FirebaseStorage.getInstance()
 
-    private val _user = MutableLiveData<FirebaseUser?>().apply {
-        value = auth.currentUser
+    private val _user = MutableLiveData<User>().apply {
+        val currentUser = auth.currentUser
+        value = currentUser?.let {
+            User(
+                displayName = it.displayName,
+                photoUrl = it.photoUrl?.toString(),
+                locationName = null
+            )
+        }
     }
-    val user: LiveData<FirebaseUser?> = _user
+    val user: LiveData<User> get() = _user
 
     fun logout() {
         auth.signOut()
@@ -40,6 +51,8 @@ class ProfileViewModel : ViewModel() {
             .update("profileImageUrl", imageUrl)
             .addOnSuccessListener {
                 Log.d(TAG, "Profile image URL updated")
+                // Обновляем значение LiveData
+                _user.value = _user.value?.copy(photoUrl = imageUrl)
             }
             .addOnFailureListener { e ->
                 Log.w(TAG, "Error updating profile image URL", e)
@@ -53,6 +66,8 @@ class ProfileViewModel : ViewModel() {
             .update("name", newName)
             .addOnSuccessListener {
                 Log.d(TAG, "User name updated")
+                // Обновляем значение LiveData
+                _user.value = _user.value?.copy(displayName = newName)
             }
             .addOnFailureListener { e ->
                 Log.w(TAG, "Error updating user name", e)
@@ -60,21 +75,20 @@ class ProfileViewModel : ViewModel() {
     }
 
     fun updateUserLocation(location: LatLng) {
-        val userId = auth.currentUser?.uid ?: return
+        val geocoder = Geocoder(getApplication(), Locale.getDefault())
+        val locationName = try {
+            val addresses = geocoder.getFromLocation(location.latitude, location.longitude, 1)
+            addresses?.firstOrNull()?.locality ?: "Неизвестное место"
+        } catch (e: IOException) {
+            Log.e("LocationError", "Ошибка при выполнении геокодирования", e)
+            "Координаты: ${location.latitude}, ${location.longitude}"
+        } catch (e: IllegalArgumentException) {
+            Log.e("LocationError", "Неверные координаты", e)
+            "Координаты: ${location.latitude}, ${location.longitude}"
+        }
 
-        val locationMap = hashMapOf(
-            "latitude" to location.latitude,
-            "longitude" to location.longitude
-        )
-
-        firestore.collection("users").document(userId)
-            .update("location", locationMap)
-            .addOnSuccessListener {
-                Log.d(TAG, "User location updated")
-            }
-            .addOnFailureListener { e ->
-                Log.w(TAG, "Error updating user location", e)
-            }
+        // Обновляем значение LiveData
+        _user.value = _user.value?.copy(locationName = locationName)
     }
 
     private fun clearProfileImageFolder(userId: String, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
@@ -92,7 +106,6 @@ class ProfileViewModel : ViewModel() {
             .addOnFailureListener { onFailure(it) }
     }
 
-    // Метод для загрузки изображения в Firebase Storage и обновления URL профиля
     fun uploadImageToFirebase(imageBitmap: Bitmap, onSuccess: (Uri) -> Unit, onFailure: (Exception) -> Unit) {
         val userId = auth.currentUser?.uid ?: return
         val storageRef: StorageReference = storage.reference.child("profile_images/$userId/${UUID.randomUUID()}.jpg")
@@ -121,7 +134,6 @@ class ProfileViewModel : ViewModel() {
         )
     }
 
-    // Метод для загрузки изображения из URI в Firebase Storage и обновления URL профиля
     fun uploadImageToFirebase(uri: Uri, onSuccess: (Uri) -> Unit, onFailure: (Exception) -> Unit) {
         val userId = auth.currentUser?.uid ?: return
         val storageRef: StorageReference = storage.reference.child("profile_images/$userId/${UUID.randomUUID()}.jpg")

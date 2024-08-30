@@ -15,7 +15,6 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.fragment.app.commit
 import com.google.android.gms.maps.model.LatLng
 import com.pavlovalexey.pleinair.R
 import com.pavlovalexey.pleinair.databinding.FragmentProfileBinding
@@ -24,8 +23,8 @@ import com.squareup.picasso.Picasso
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.navigation.fragment.findNavController
-import com.google.firebase.appcheck.internal.util.Logger.TAG
 import android.location.Geocoder
+import com.pavlovalexey.pleinair.profile.viewmodel.ProfileViewModel
 import java.io.IOException
 import java.util.Locale
 
@@ -36,7 +35,6 @@ class ProfileFragment : Fragment(), MapFragment.OnLocationSelectedListener {
     private lateinit var cameraActivityResultLauncher: ActivityResultLauncher<Intent>
     private lateinit var galleryActivityResultLauncher: ActivityResultLauncher<Intent>
     private val TAG = ProfileFragment::class.java.simpleName
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -64,13 +62,22 @@ class ProfileFragment : Fragment(), MapFragment.OnLocationSelectedListener {
             }
         }
 
+        // Наблюдаем за изменениями данных пользователя
         viewModel.user.observe(viewLifecycleOwner) { user ->
+            // Обновляем имя пользователя
             binding.userName.text = user?.displayName ?: getString(R.string.default_user_name)
+
+            // Обновляем аватар пользователя
             if (user?.photoUrl != null) {
                 Picasso.get().load(user.photoUrl).into(binding.userAvatar)
             } else {
                 binding.userAvatar.setImageResource(R.drawable.default_avatar)
             }
+
+            // Обновляем текст с текущим местоположением
+            binding.txtChooseLocation.text = user?.locationName ?: getString(R.string.location)
+
+            // Отображаем кнопку выхода, если пользователь авторизован
             binding.logoutButton.visibility = if (user != null) View.VISIBLE else View.GONE
         }
 
@@ -109,14 +116,10 @@ class ProfileFragment : Fragment(), MapFragment.OnLocationSelectedListener {
             val addresses = geocoder.getFromLocation(location.latitude, location.longitude, 1)
             addresses?.firstOrNull()?.locality ?: "Неизвестное место"
         } catch (e: IOException) {
-            // Логирование ошибки, если необходимо
             Log.e("LocationError", "Ошибка при выполнении геокодирования", e)
-            // Если обратное геокодирование не удалось, используем координаты
             "Координаты: ${location.latitude}, ${location.longitude}"
         } catch (e: IllegalArgumentException) {
-            // Логирование ошибки, если необходимо
             Log.e("LocationError", "Неверные координаты", e)
-            // Если координаты неверны, используем их напрямую
             "Координаты: ${location.latitude}, ${location.longitude}"
         }
 

@@ -48,7 +48,7 @@
         android:id="@+id/txt_choose_location"
         android:layout_width="100sp"
         android:layout_height="wrap_content"
-        android:text="Расположение"
+        android:text="@string/location"
         app:layout_constraintEnd_toEndOf="@+id/btn_choose_location"
         app:layout_constraintStart_toStartOf="@+id/btn_choose_location"
         app:layout_constraintTop_toBottomOf="@+id/btn_choose_location" />
