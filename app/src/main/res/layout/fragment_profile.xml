@@ -5,25 +5,24 @@
 
     <data></data>
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:padding="16dp"
         tools:context=".profile.ui.ProfileFragment">
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp12" />
-
         <ImageView
             android:id="@+id/userAvatar"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="160dp"
+            android:layout_height="160dp"
             android:layout_gravity="center"
             android:background="@android:drawable/ic_menu_camera"
             android:contentDescription="@string/user_avatar"
-            android:scaleType="centerCrop" />
+            android:scaleType="centerCrop"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/userName"
@@ -31,30 +30,62 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="@string/default_user_name"
-            android:layout_marginTop="16dp"
-            android:textAppearance="?attr/textAppearanceHeadline5" />
-
+            android:textAppearance="?attr/textAppearanceHeadline5"
+            app:layout_constraintEnd_toEndOf="@+id/userAvatar"
+            app:layout_constraintStart_toStartOf="@+id/userAvatar"
+            app:layout_constraintTop_toBottomOf="@+id/userAvatar" />
 
         <Button
             android:id="@+id/btn_choose_location"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Выбрать местоположение"
-            android:layout_marginTop="16dp"
-            android:layout_gravity="center_horizontal"
-            />
+            android:layout_marginTop="20dp"
+            android:gravity="center_horizontal"
+            android:text="🗺️"
+            android:textSize="50sp"
+            app:layout_constraintEnd_toEndOf="@+id/userName"
+            app:layout_constraintStart_toStartOf="@+id/userName"
+            app:layout_constraintTop_toBottomOf="@+id/userName" />
+
+        <TextView
+            android:id="@+id/txt_choose_location"
+            android:layout_width="100sp"
+            android:layout_height="wrap_content"
+            android:text="Расположение"
+            app:layout_constraintEnd_toEndOf="@+id/btn_choose_location"
+            app:layout_constraintStart_toStartOf="@+id/btn_choose_location"
+            app:layout_constraintTop_toBottomOf="@+id/btn_choose_location" />
+
+        <Button
+            android:id="@+id/stileButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="🖌️"
+            android:textSize="50sp"
+            app:layout_constraintBottom_toBottomOf="@+id/btn_choose_location"
+            app:layout_constraintEnd_toStartOf="@+id/btn_choose_location"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/btn_choose_location" />
 
         <Button
             android:id="@+id/logoutButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="16dp"
-            android:text="@string/button_logout" />
+            android:text="🚪"
+            android:textSize="50sp"
+            app:layout_constraintBottom_toBottomOf="@+id/btn_choose_location"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/btn_choose_location"
+            app:layout_constraintTop_toTopOf="@+id/btn_choose_location" />
 
         <FrameLayout
             android:id="@+id/fragment_container"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </LinearLayout>
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
