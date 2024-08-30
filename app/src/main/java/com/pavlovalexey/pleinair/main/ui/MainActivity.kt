@@ -60,7 +60,7 @@ class MainActivity : AppCompatActivity(), MapFragment.OnLocationSelectedListener
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
-                R.id.newPlaylistFragment, R.id.playerFragment, R.id.openPlaylistFragment, R.id.editPlaylistFragment, R.id.mapFragment -> {
+                R.id.mapFragment -> {
                     bottomNavigationView.visibility = View.GONE
                 }
                 else -> {
