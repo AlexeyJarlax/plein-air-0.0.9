@@ -25,6 +25,9 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.navigation.fragment.findNavController
 import com.google.firebase.appcheck.internal.util.Logger.TAG
+import android.location.Geocoder
+import java.io.IOException
+import java.util.Locale
 
 class ProfileFragment : Fragment(), MapFragment.OnLocationSelectedListener {
 
@@ -33,6 +36,7 @@ class ProfileFragment : Fragment(), MapFragment.OnLocationSelectedListener {
     private lateinit var cameraActivityResultLauncher: ActivityResultLauncher<Intent>
     private lateinit var galleryActivityResultLauncher: ActivityResultLauncher<Intent>
     private val TAG = ProfileFragment::class.java.simpleName
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -98,6 +102,27 @@ class ProfileFragment : Fragment(), MapFragment.OnLocationSelectedListener {
 
     override fun onLocationSelected(location: LatLng) {
         viewModel.updateUserLocation(location)
+
+        // Выполнение обратного геокодирования с обработкой ошибок
+        val geocoder = Geocoder(requireContext(), Locale.getDefault())
+        val cityName: String = try {
+            val addresses = geocoder.getFromLocation(location.latitude, location.longitude, 1)
+            addresses?.firstOrNull()?.locality ?: "Неизвестное место"
+        } catch (e: IOException) {
+            // Логирование ошибки, если необходимо
+            Log.e("LocationError", "Ошибка при выполнении геокодирования", e)
+            // Если обратное геокодирование не удалось, используем координаты
+            "Координаты: ${location.latitude}, ${location.longitude}"
+        } catch (e: IllegalArgumentException) {
+            // Логирование ошибки, если необходимо
+            Log.e("LocationError", "Неверные координаты", e)
+            // Если координаты неверны, используем их напрямую
+            "Координаты: ${location.latitude}, ${location.longitude}"
+        }
+
+        // Устанавливаем название населенного пункта в TextView
+        binding.txtChooseLocation.text = cityName
+
         Toast.makeText(requireContext(), "Местоположение сохранено!", Toast.LENGTH_SHORT).show()
 
         // Возвращаемся на предыдущий экран после выбора местоположения

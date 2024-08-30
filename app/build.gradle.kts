@@ -42,6 +42,7 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17 // более новая сборка виртуальной машины: 17
         targetCompatibility = JavaVersion.VERSION_17 // более новая сборка виртуальной машины: 17
+        encoding = "UTF-8"
     }
     kotlinOptions {
         jvmTarget = "17" // более новая сборка виртуальной машины: 17
@@ -183,4 +184,6 @@ dependencies {
     implementation(libs.flogger)
     implementation(libs.flogger.system.backend) // System backend
     implementation(libs.flogger.log4j2.backend) // Log4j2 backend (опционально)
+    implementation(libs.play.services.maps.v1800)
+    implementation(libs.play.services.location.v2101)
 }

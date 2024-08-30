@@ -72,7 +72,9 @@ peko = "3.0.5"
 picasso = "2.71828"
 playServicesAuth = "21.2.0"
 playServicesLocation = "21.3.0"
+playServicesLocationVersion = "21.0.1"
 playServicesMaps = "19.0.0"
+playServicesMapsVersion = "18.0.0"
 retrofit = "2.9.0"
 roomCompiler = "2.5.2"
 roomKtx = "2.5.2"
@@ -191,7 +193,9 @@ peko = { module = "com.markodevcic:peko", version.ref = "peko" }
 picasso = { module = "com.squareup.picasso:picasso", version.ref = "picasso" }
 play-services-auth = { module = "com.google.android.gms:play-services-auth", version.ref = "playServicesAuth" }
 play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "playServicesLocation" }
+play-services-location-v2101 = { module = "com.google.android.gms:play-services-location", version.ref = "playServicesLocationVersion" }
 play-services-maps = { module = "com.google.android.gms:play-services-maps", version.ref = "playServicesMaps" }
+play-services-maps-v1800 = { module = "com.google.android.gms:play-services-maps", version.ref = "playServicesMapsVersion" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 firebase-storage-ktx = { group = "com.google.firebase", name = "firebase-storage-ktx", version.ref = "firebaseStorageKtx" }
 
