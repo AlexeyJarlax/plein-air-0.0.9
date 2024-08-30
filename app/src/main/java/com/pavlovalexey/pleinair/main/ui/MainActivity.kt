@@ -9,6 +9,9 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.Firebase
+import com.google.firebase.appcheck.appCheck
+import com.google.firebase.appcheck.playintegrity.PlayIntegrityAppCheckProviderFactory
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
@@ -38,6 +41,9 @@ class MainActivity : AppCompatActivity(), MapFragment.OnLocationSelectedListener
         db = com.google.firebase.Firebase.firestore
         auth = FirebaseAuth.getInstance()
         storage = com.google.firebase.Firebase.storage
+        Firebase.appCheck.installAppCheckProviderFactory(
+            PlayIntegrityAppCheckProviderFactory.getInstance(),
+        )
 
         if (auth.currentUser == null) {
             // Если пользователь не авторизован, перенаправляем его на AuthActivity
