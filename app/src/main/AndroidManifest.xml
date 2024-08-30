@@ -27,7 +27,6 @@
         android:theme="@style/Theme.MyApp"
         tools:targetApi="31">
 
-        <!-- Установка AuthActivity в качестве точки входа -->
         <activity
             android:name=".auth.AuthActivity"
             android:exported="true">
@@ -37,13 +36,16 @@
             </intent-filter>
         </activity>
 
-        <!-- MainActivity теперь не является точкой входа -->
         <activity
             android:name=".main.ui.MainActivity"
             android:exported="true"
             android:windowSoftInputMode="adjustPan"
             android:screenOrientation="fullSensor">
         </activity>
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyAP9jxLDwUdMFjxNtPvao9x9Qgdx0v1XPM" />
     </application>
 
 </manifest>

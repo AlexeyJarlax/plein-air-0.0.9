@@ -42,6 +42,7 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17 // более новая сборка виртуальной машины: 17
         targetCompatibility = JavaVersion.VERSION_17 // более новая сборка виртуальной машины: 17
+        encoding = "UTF-8"
     }
     kotlinOptions {
         jvmTarget = "17" // более новая сборка виртуальной машины: 17
@@ -50,6 +51,12 @@ android {
     buildFeatures {
         viewBinding = true
         dataBinding = true
+    }
+
+    packagingOptions {
+        resources {
+            excludes += "META-INF/DEPENDENCIES"
+        }
     }
 }
 
@@ -170,4 +177,13 @@ dependencies {
 
     //изображения
     implementation(libs.picasso)
+
+    //карты
+    implementation(libs.play.services.location)
+    implementation(libs.play.services.maps)
+    implementation(libs.flogger)
+    implementation(libs.flogger.system.backend) // System backend
+    implementation(libs.flogger.log4j2.backend) // Log4j2 backend (опционально)
+    implementation(libs.play.services.maps.v1800)
+    implementation(libs.play.services.location.v2101)
 }

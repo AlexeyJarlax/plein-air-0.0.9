@@ -81,4 +81,5 @@
     <string name="user_avatar">Аватар пользователя</string>
     <string name="default_user_name">Аноним</string>
     <string name="button_logout">Выйти из системы</string>
+    <string name="location">Расположение</string>
 </resources>
