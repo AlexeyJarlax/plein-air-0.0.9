@@ -178,6 +178,7 @@ dependencies {
     implementation(libs.picasso)
 
     //карты
+    implementation(libs.play.services.location)
     implementation(libs.play.services.maps)
     implementation(libs.flogger)
     implementation(libs.flogger.system.backend) // System backend

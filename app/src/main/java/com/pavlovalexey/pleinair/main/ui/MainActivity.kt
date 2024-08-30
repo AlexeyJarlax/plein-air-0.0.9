@@ -4,10 +4,15 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.Firebase
 import com.google.firebase.appcheck.appCheck
@@ -29,6 +34,10 @@ class MainActivity : AppCompatActivity(), MapFragment.OnLocationSelectedListener
     private lateinit var db: FirebaseFirestore
     private lateinit var auth: FirebaseAuth
     private lateinit var storage: FirebaseStorage
+    private lateinit var mMap: GoogleMap
+
+    // Переменная для хранения выбранного местоположения
+    private var selectedLocation: LatLng? = null
 
     // Координаты Петропавловской крепости
     private val defaultLocation = LatLng(59.9500019, 30.3166718)
@@ -112,6 +121,14 @@ class MainActivity : AppCompatActivity(), MapFragment.OnLocationSelectedListener
                             .addOnFailureListener { e ->
                                 Log.w(TAG, "Error setting default location", e)
                             }
+                    } else {
+                        // Загрузка текущего местоположения из Firestore
+                        val location = document.get("location") as? Map<*, *>
+                        val latitude = location?.get("latitude") as? Double
+                        val longitude = location?.get("longitude") as? Double
+                        if (latitude != null && longitude != null) {
+                            selectedLocation = LatLng(latitude, longitude)
+                        }
                     }
                 }
             }
@@ -123,7 +140,41 @@ class MainActivity : AppCompatActivity(), MapFragment.OnLocationSelectedListener
     override fun onLocationSelected(location: LatLng) {
         // Обработка выбранного местоположения
         Log.d(TAG, "Location selected: $location")
-        // Вы можете обновить местоположение пользователя в Firestore или сделать что-то другое
+        selectedLocation = location
+
+        // Обновление местоположения пользователя в Firestore
+        val user = auth.currentUser ?: return
+        val userId = user.uid
+        val userDocRef = db.collection("users").document(userId)
+
+        val updatedLocation = hashMapOf(
+            "latitude" to location.latitude,
+            "longitude" to location.longitude
+        )
+
+        userDocRef.update("location", updatedLocation)
+            .addOnSuccessListener {
+                Log.d(TAG, "User location updated to: $location")
+                Toast.makeText(this, "Координаты обновлены!", Toast.LENGTH_SHORT).show()
+            }
+            .addOnFailureListener { e ->
+                Log.w(TAG, "Error updating user location", e)
+                Toast.makeText(this, "Ошибка координат!", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+    fun onMapReady(googleMap: GoogleMap) {
+        mMap = googleMap
+
+        mMap.setOnMapClickListener { latLng ->
+            mMap.clear()
+            mMap.addMarker(MarkerOptions().position(latLng).title("Выбрано местоположение"))
+            selectedLocation = latLng
+        }
+
+        // Установите начальную позицию карты на выбранное местоположение или значение по умолчанию
+        val initialPosition = selectedLocation ?: defaultLocation
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(initialPosition, 15f))
     }
 
     companion object {
