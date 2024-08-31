@@ -57,8 +57,9 @@ class ProfileFragment : Fragment(), UserMapFragment.OnLocationSelectedListener {
         ) { result ->
             if (result.resultCode == RESULT_OK) {
                 val imageBitmap = result.data?.extras?.get("data") as Bitmap
-                binding.userAvatar.setImageBitmap(imageBitmap)
-                viewModel.uploadImageToFirebase(imageBitmap, ::onUploadSuccess, ::onUploadFailure)
+                val processedBitmap = ImageUtils.compressAndGetCircularBitmap(imageBitmap)
+                binding.userAvatar.setImageBitmap(processedBitmap)
+                viewModel.uploadImageToFirebase(processedBitmap, ::onUploadSuccess, ::onUploadFailure)
             }
         }
 
@@ -71,9 +72,9 @@ class ProfileFragment : Fragment(), UserMapFragment.OnLocationSelectedListener {
                     try {
                         val inputStream = requireContext().contentResolver.openInputStream(uri)
                         val imageBitmap = BitmapFactory.decodeStream(inputStream)
-                        val compressedBitmap = imageBitmap?.let { ImageUtils.compressBitmap(it) }
-                        binding.userAvatar.setImageBitmap(compressedBitmap)
-                        compressedBitmap?.let { viewModel.uploadImageToFirebase(it, ::onUploadSuccess, ::onUploadFailure) }
+                        val processedBitmap = imageBitmap?.let { ImageUtils.compressAndGetCircularBitmap(it) }
+                        binding.userAvatar.setImageBitmap(processedBitmap)
+                        processedBitmap?.let { viewModel.uploadImageToFirebase(it, ::onUploadSuccess, ::onUploadFailure) }
                     } catch (e: IOException) {
                         Log.e(TAG, "Ошибка при открытии InputStream для URI", e)
                         Toast.makeText(requireContext(), "Не удалось загрузить изображение", Toast.LENGTH_SHORT).show()

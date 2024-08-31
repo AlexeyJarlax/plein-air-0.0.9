@@ -3,7 +3,14 @@ package com.pavlovalexey.pleinair.utils
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.Matrix
+import android.graphics.Paint
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffXfermode
+import android.graphics.Rect
+import android.graphics.RectF
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import java.io.ByteArrayOutputStream
@@ -13,13 +20,22 @@ object ImageUtils {
 
     private const val MAX_WIDTH = 200
     private const val MAX_HEIGHT = 200
-
+    private const val CIRCLE_DIAMETER = 200
     /**
      * Сжимает изображение до максимальных размеров (MAX_WIDTH и MAX_HEIGHT), сохраняя соотношение сторон.
      *
      * @param bitmap Исходное изображение.
      * @return Сжатое изображение.
      */
+
+    // Примените круглый аватар перед загрузкой на сервер
+    fun compressAndGetCircularBitmap(bitmap: Bitmap): Bitmap {
+        // Сжимаем изображение
+        val compressedBitmap = compressBitmap(bitmap)
+        // Преобразуем сжатое изображение в круглое
+        return getCircularBitmap(compressedBitmap)
+    }
+
     fun compressBitmap(bitmap: Bitmap): Bitmap {
         val width = bitmap.width
         val height = bitmap.height
@@ -37,7 +53,27 @@ object ImageUtils {
             newWidth = (MAX_HEIGHT * aspectRatio).toInt()
         }
 
+        // Создаем сжатое изображение
         return Bitmap.createScaledBitmap(bitmap, newWidth, newHeight, true)
+    }
+
+    fun getCircularBitmap(bitmap: Bitmap): Bitmap {
+        val size = CIRCLE_DIAMETER
+        val output = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(output)
+        val paint = Paint()
+        val rect = Rect(0, 0, size, size)
+        val rectF = RectF(rect)
+        val roundPx = size / 2f
+
+        paint.isAntiAlias = true
+        canvas.drawARGB(0, 0, 0, 0)
+        paint.color = Color.parseColor("#FFFFFFFF") // Цвет фона
+        canvas.drawCircle(roundPx, roundPx, roundPx, paint)
+        paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN)
+        canvas.drawBitmap(bitmap, null, rect, paint)
+
+        return output
     }
 
     /**
