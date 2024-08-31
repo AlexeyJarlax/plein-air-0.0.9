@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -16,6 +17,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.firestore.FirebaseFirestore
 import com.pavlovalexey.pleinair.R
+import com.pavlovalexey.pleinair.databinding.FragmentMapBinding
 import com.pavlovalexey.pleinair.profile.model.User
 import com.squareup.picasso.Picasso
 
@@ -23,17 +25,28 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
     private lateinit var googleMap: GoogleMap
     private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
+    private var _binding: FragmentMapBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_map, container, false)
+        _binding = FragmentMapBinding.inflate(inflater, container, false)
 
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
-        return view
+        binding.exitButton.setOnClickListener {
+            findNavController().popBackStack() // Возвращаемся на предыдущий экран
+        }
+
+        return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     override fun onMapReady(map: GoogleMap) {
@@ -68,7 +81,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 googleMap.addMarker(markerOptions)
             }
 
-            override fun onBitmapFailed(e: java.lang.Exception?, errorDrawable: Drawable?) {
+            override fun onBitmapFailed(e: Exception?, errorDrawable: Drawable?) {
                 // Обработка ошибки
             }
 
