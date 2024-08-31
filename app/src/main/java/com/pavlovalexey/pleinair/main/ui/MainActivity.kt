@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -78,10 +79,11 @@ class MainActivity : AppCompatActivity(), UserMapFragment.OnLocationSelectedList
 
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+
         val navController = navHostFragment.navController
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
         bottomNavigationView.setupWithNavController(navController)
-
+        bottomNavigationView.setBackgroundColor(ContextCompat.getColor(this, R.color.menu_background))
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
                 R.id.mapFragment, R.id.userMapFragment -> {

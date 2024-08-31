@@ -71,11 +71,8 @@
     <string name="yes">Да</string>
     <string name="no">Нет</string>
     <string name="havent_created_any_track">Вы не добавили ни одного трека</string>
-    <string name="about_this_app">Pleinair\n\n\nStack: Kotlin, MVVM, Koin, SingleActivity(+Fragments),
-    ViewPager2, Jetpack Navigation Component, Корутины, БД Room.</string>
-    <string name="about_this_app2">ВНИМАНИЕ:\n\nЭто приложение является учебным творческим проектом.
-        Приложение опубликовано для демонстрации возможностей стека, разработчика и учебного курса ЯндексПрактикума,
-        на котором оно делалось. Приложение не является готовым продуктом и не подлежит коммерческому использованию.</string>
+    <string name="about_this_app">...</string>
+    <string name="about_this_app2">...</string>
     <string name="default_web_client_id">а тут будет залупа для тех, кто хочет сломать мне проект, выкусите</string>
     <string name="user">Пользователь</string>
     <string name="user_avatar">Аватар пользователя</string>

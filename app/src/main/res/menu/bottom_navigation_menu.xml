@@ -1,20 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/profileFragment"
         android:icon="@android:drawable/ic_menu_my_calendar"
-        android:title="@string/user" />
+        android:title="@string/user"
+        app:iconTint="@color/yp_black_and_yp_white" />
     <item
         android:id="@+id/mapFragment"
         android:icon="@android:drawable/ic_menu_mapmode"
-        android:title="@string/button_search" />
+        android:title="@string/button_search"
+        app:iconTint="@color/yp_black_and_yp_white" />
     <item
         android:id="@+id/libraryFragment"
         android:icon="@android:drawable/ic_menu_today"
-        android:title="@string/button_media_lib" />
+        android:title="@string/button_media_lib"
+        app:iconTint="@color/yp_black_and_yp_white" />
     <item
         android:id="@+id/settingsFragment"
         android:icon="@android:drawable/ic_menu_preferences"
-        android:title="@string/button_settings" />
+        android:title="@string/button_settings"
+        app:iconTint="@color/yp_black_and_yp_white" />
 </menu>

@@ -1,34 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="center"
-    android:padding="16dp">
-<TextView
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:textSize="@dimen/text_size_sp19"
-    android:text="Авторизоваться:"/>
+    tools:context=".settings.ui.SettingsFragment">
 
-    <View
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/dp6" />
+    <include layout="@layout/background_image" />
 
     <com.google.android.gms.common.SignInButton
         android:id="@+id/btnSignInWithGoogle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Google аккаунт" />
+        android:text="Google аккаунт"
+        android:layout_marginBottom="60dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintHorizontal_bias="0.50"
+        app:layout_constraintVertical_bias="0.45" />
 
-    <View
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/dp6" />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/emailSignInButton"
-        style="@style/Widget.App.EmailSignInButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Sign in with Email" />
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

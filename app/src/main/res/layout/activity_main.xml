@@ -16,11 +16,11 @@
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView"
-        android:theme="@style/TitleTextSmall"
         android:layout_width="0dp"
         android:layout_height="56dp"
         android:background="@color/yp_white_and_yp_black"
         android:paddingBottom="8dp"
+        android:theme="@style/TitleTextSmall"
         app:itemActiveIndicatorStyle="@style/TitleTextSmall"
         app:itemIconTint="@color/color_selector"
         app:itemPaddingBottom="0dp"
@@ -36,6 +36,7 @@
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
             android:background="@color/yp_text_gray"
+            android:alpha="0.8"
             app:layout_constraintBottom_toTopOf="@id/bottomNavigationView"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
