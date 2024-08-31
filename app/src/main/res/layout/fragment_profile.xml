@@ -28,13 +28,13 @@
         android:layout_width="160dp"
         android:layout_height="160dp"
         android:layout_gravity="center"
+        android:background="@drawable/circle_background"
         android:layout_marginTop="@dimen/dp20"
         android:scaleType="centerCrop"
         android:src="@drawable/default_avatar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:background="@drawable/circle_background"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/logoutButton"
