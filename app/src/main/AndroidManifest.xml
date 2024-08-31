@@ -14,6 +14,8 @@
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="29"
         tools:ignore="ScopedStorage" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
         android:name=".Pleinair"
@@ -45,7 +47,7 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyAP9jxLDwUdMFjxNtPvao9x9Qgdx0v1XPM" />
+            android:value="@string/map_kluchik" />
     </application>
 
 </manifest>

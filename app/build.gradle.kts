@@ -8,6 +8,7 @@ plugins {
     id("com.google.gms.google-services")
 }
 
+
 android {
     namespace = "com.pavlovalexey.pleinair"
     compileSdk = 34
@@ -184,6 +185,10 @@ dependencies {
     implementation(libs.flogger)
     implementation(libs.flogger.system.backend) // System backend
     implementation(libs.flogger.log4j2.backend) // Log4j2 backend (опционально)
-    implementation(libs.play.services.maps.v1800)
-    implementation(libs.play.services.location.v2101)
+//    implementation(libs.play.services.maps.v1800)
+//    implementation(libs.play.services.location.v2101)
+//    implementation (libs.play.services.maps.v1802)
+//    implementation (libs.firebase.firestore.v2442)
+//    implementation (libs.google.firebase.storage)
+//    implementation (libs.picasso.v28)
 }

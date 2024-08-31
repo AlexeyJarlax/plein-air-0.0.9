@@ -6,7 +6,7 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -26,15 +26,19 @@ import com.google.firebase.storage.storage
 import com.pavlovalexey.pleinair.R
 import com.pavlovalexey.pleinair.auth.AuthActivity
 import com.pavlovalexey.pleinair.databinding.ActivityMainBinding
-import com.pavlovalexey.pleinair.map.ui.MapFragment
+import com.pavlovalexey.pleinair.map.ui.UserMapFragment
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 
-class MainActivity : AppCompatActivity(), MapFragment.OnLocationSelectedListener {
+class MainActivity : AppCompatActivity(), UserMapFragment.OnLocationSelectedListener {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var db: FirebaseFirestore
     private lateinit var auth: FirebaseAuth
     private lateinit var storage: FirebaseStorage
     private lateinit var mMap: GoogleMap
+    private lateinit var googleSignInClient: GoogleSignInClient
 
     // Переменная для хранения выбранного местоположения
     private var selectedLocation: LatLng? = null
@@ -54,6 +58,12 @@ class MainActivity : AppCompatActivity(), MapFragment.OnLocationSelectedListener
             PlayIntegrityAppCheckProviderFactory.getInstance(),
         )
 
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestEmail()
+            .build()
+        googleSignInClient = GoogleSignIn.getClient(this, gso)
+
         if (auth.currentUser == null) {
             // Если пользователь не авторизован, перенаправляем его на AuthActivity
             startActivity(Intent(this, AuthActivity::class.java))
@@ -66,16 +76,18 @@ class MainActivity : AppCompatActivity(), MapFragment.OnLocationSelectedListener
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        hideSystemUI()
 
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+
         val navController = navHostFragment.navController
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
         bottomNavigationView.setupWithNavController(navController)
-
+        bottomNavigationView.setBackgroundColor(ContextCompat.getColor(this, R.color.menu_background))
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
-                R.id.mapFragment -> {
+                R.id.mapFragment, R.id.userMapFragment -> {
                     bottomNavigationView.visibility = View.GONE
                 }
                 else -> {
@@ -175,6 +187,34 @@ class MainActivity : AppCompatActivity(), MapFragment.OnLocationSelectedListener
         // Установите начальную позицию карты на выбранное местоположение или значение по умолчанию
         val initialPosition = selectedLocation ?: defaultLocation
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(initialPosition, 15f))
+    }
+
+    fun logoutAndRevokeAccess() {
+        auth.signOut()
+        googleSignInClient.revokeAccess().addOnCompleteListener {
+            // После выхода из аккаунта можно перенаправить пользователя на экран авторизации
+            startActivity(Intent(this, AuthActivity::class.java))
+            finish()
+        }
+    }
+
+    fun onLogout() {
+        logoutAndRevokeAccess()
+    }
+
+    private fun hideSystemUI() {
+        window.decorView.systemUiVisibility = (
+                View.SYSTEM_UI_FLAG_FULLSCREEN
+                        or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                        or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                )
+    }
+
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        if (hasFocus) {
+            hideSystemUI()
+        }
     }
 
     companion object {

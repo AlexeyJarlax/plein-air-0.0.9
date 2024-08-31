@@ -4,6 +4,7 @@ import android.app.Activity.RESULT_OK
 import android.app.AlertDialog
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -18,23 +19,30 @@ import androidx.fragment.app.viewModels
 import com.google.android.gms.maps.model.LatLng
 import com.pavlovalexey.pleinair.R
 import com.pavlovalexey.pleinair.databinding.FragmentProfileBinding
-import com.pavlovalexey.pleinair.map.ui.MapFragment
+import com.pavlovalexey.pleinair.map.ui.UserMapFragment
 import com.squareup.picasso.Picasso
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.navigation.fragment.findNavController
 import android.location.Geocoder
 import com.pavlovalexey.pleinair.profile.viewmodel.ProfileViewModel
+import com.pavlovalexey.pleinair.utils.CircleTransform
+import com.pavlovalexey.pleinair.utils.ImageUtils
 import java.io.IOException
 import java.util.Locale
 
-class ProfileFragment : Fragment(), MapFragment.OnLocationSelectedListener {
+class ProfileFragment : Fragment(), UserMapFragment.OnLocationSelectedListener {
 
     private lateinit var binding: FragmentProfileBinding
     private val viewModel: ProfileViewModel by viewModels()
     private lateinit var cameraActivityResultLauncher: ActivityResultLauncher<Intent>
     private lateinit var galleryActivityResultLauncher: ActivityResultLauncher<Intent>
     private val TAG = ProfileFragment::class.java.simpleName
+    private var logoutListener: LogoutListener? = null
+
+    interface LogoutListener {
+        fun onLogout()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -47,8 +55,9 @@ class ProfileFragment : Fragment(), MapFragment.OnLocationSelectedListener {
         ) { result ->
             if (result.resultCode == RESULT_OK) {
                 val imageBitmap = result.data?.extras?.get("data") as Bitmap
-                binding.userAvatar.setImageBitmap(imageBitmap)
-                viewModel.uploadImageToFirebase(imageBitmap, ::onUploadSuccess, ::onUploadFailure)
+                val processedBitmap = ImageUtils.compressAndGetCircularBitmap(imageBitmap)
+                binding.userAvatar.setImageBitmap(processedBitmap)
+                viewModel.uploadImageToFirebase(processedBitmap, ::onUploadSuccess, ::onUploadFailure)
             }
         }
 
@@ -57,28 +66,32 @@ class ProfileFragment : Fragment(), MapFragment.OnLocationSelectedListener {
         ) { result ->
             if (result.resultCode == RESULT_OK) {
                 val selectedImageUri: Uri? = result.data?.data
-                binding.userAvatar.setImageURI(selectedImageUri)
-                selectedImageUri?.let { viewModel.uploadImageToFirebase(it, ::onUploadSuccess, ::onUploadFailure) }
+                selectedImageUri?.let { uri ->
+                    try {
+                        val inputStream = requireContext().contentResolver.openInputStream(uri)
+                        val imageBitmap = BitmapFactory.decodeStream(inputStream)
+                        val processedBitmap = imageBitmap?.let { ImageUtils.compressAndGetCircularBitmap(it) }
+                        binding.userAvatar.setImageBitmap(processedBitmap)
+                        processedBitmap?.let { viewModel.uploadImageToFirebase(it, ::onUploadSuccess, ::onUploadFailure) }
+                    } catch (e: IOException) {
+                        Log.e(TAG, "Ошибка при открытии InputStream для URI", e)
+                        Toast.makeText(requireContext(), "Не удалось загрузить изображение", Toast.LENGTH_SHORT).show()
+                    }
+                }
             }
         }
 
-        // Наблюдаем за изменениями данных пользователя
         viewModel.user.observe(viewLifecycleOwner) { user ->
-            // Обновляем имя пользователя
-            binding.userName.text = user?.displayName ?: getString(R.string.default_user_name)
-
-            // Обновляем аватар пользователя
-            if (user?.photoUrl != null) {
-                Picasso.get().load(user.photoUrl).into(binding.userAvatar)
+            binding.userName.text = user?.name ?: getString(R.string.default_user_name)
+            if (user?.profileImageUrl != null) {
+                Picasso.get()
+                    .load(user.profileImageUrl)
+                    .transform(CircleTransform()) // Устанавливаем закругленные углы
+                    .into(binding.userAvatar)
             } else {
                 binding.userAvatar.setImageResource(R.drawable.default_avatar)
             }
-
-            // Обновляем текст с текущим местоположением
             binding.txtChooseLocation.text = user?.locationName ?: getString(R.string.location)
-
-            // Отображаем кнопку выхода, если пользователь авторизован
-            binding.logoutButton.visibility = if (user != null) View.VISIBLE else View.GONE
         }
 
         binding.logoutButton.setOnClickListener {
@@ -97,20 +110,29 @@ class ProfileFragment : Fragment(), MapFragment.OnLocationSelectedListener {
             openMapFragment()
         }
 
+        binding.exitButton.setOnClickListener {
+            AlertDialog.Builder(requireContext())
+                .setTitle("Exit")
+                .setMessage("Закрыть приложение?")
+                .setPositiveButton("✔️") { _, _ ->
+                    activity?.finishAffinity()
+                }
+                .setNegativeButton("❌", null)
+                .show()
+
+        }
+
         return binding.root
     }
 
     private fun openMapFragment() {
-        val mapFragment = MapFragment()
-        // Передаем текущий фрагмент как OnLocationSelectedListener
-        mapFragment.setOnLocationSelectedListener(this)
-        findNavController().navigate(R.id.action_profileFragment_to_mapFragment)
+        val userMapFragment = UserMapFragment()
+        userMapFragment.setOnLocationSelectedListener(this)
+        findNavController().navigate(R.id.action_profileFragment_to_UserMapFragment)
     }
 
     override fun onLocationSelected(location: LatLng) {
         viewModel.updateUserLocation(location)
-
-        // Выполнение обратного геокодирования с обработкой ошибок
         val geocoder = Geocoder(requireContext(), Locale.getDefault())
         val cityName: String = try {
             val addresses = geocoder.getFromLocation(location.latitude, location.longitude, 1)
@@ -123,19 +145,15 @@ class ProfileFragment : Fragment(), MapFragment.OnLocationSelectedListener {
             "Координаты: ${location.latitude}, ${location.longitude}"
         }
 
-        // Устанавливаем название населенного пункта в TextView
         binding.txtChooseLocation.text = cityName
-
         Toast.makeText(requireContext(), "Местоположение сохранено!", Toast.LENGTH_SHORT).show()
-
-        // Возвращаемся на предыдущий экран после выбора местоположения
         parentFragmentManager.popBackStack()
     }
 
     private fun showLogoutConfirmationDialog() {
         AlertDialog.Builder(requireContext())
-            .setTitle("Выход")
-            .setMessage("Вы уверены, что хотите выйти?")
+            .setTitle("Log out")
+            .setMessage("Разлогинить пользователя?")
             .setPositiveButton("✔️") { _, _ ->
                 viewModel.logout()
                 requireActivity().recreate()
@@ -194,5 +212,9 @@ class ProfileFragment : Fragment(), MapFragment.OnLocationSelectedListener {
 
     private fun onUploadFailure(exception: Exception) {
         Toast.makeText(requireContext(), "Ошибка загрузки аватарки: ${exception.message}", Toast.LENGTH_LONG).show()
+    }
+
+    fun setLogoutListener(listener: LogoutListener) {
+        logoutListener = listener
     }
 }

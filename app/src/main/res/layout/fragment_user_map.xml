@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -12,13 +11,10 @@
         android:layout_height="match_parent" />
 
     <Button
-        android:id="@+id/exitButton"
-        style="@style/SecondaryButtonsAndText"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_margin="@dimen/dp20"
-        android:padding="@dimen/dp10"
-        android:background="@color/yp_black_and_yp_black"
+        android:id="@+id/btn_confirm_location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Подтвердить"
         android:layout_gravity="bottom|center_horizontal"
-        app:icon="@drawable/circle_down_50dp" />
+        android:layout_marginBottom="16dp"/>
 </FrameLayout>

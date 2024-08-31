@@ -34,8 +34,8 @@
         <item name="android:textSize">@dimen/text_size_sp22</item>
         <item name="android:textColor">@color/yp_black_and_yp_black</item>
         <item name="android:padding">@dimen/dp8</item>
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_weight">@dimen/button_weight</item>
         <item name="cornerRadius">@dimen/dp16</item>
         <item name="iconGravity">textStart</item>
@@ -59,14 +59,14 @@
         <item name="cornerRadius">0dp</item>
         <item name="iconGravity">end</item>
         <item name="iconPadding">@dimen/dp16</item>
-        <item name="iconSize">@dimen/dp24</item>
-        <item name="iconTint">@color/yp_text_gray_and_yp_white</item>
+        <item name="iconSize">@dimen/dp30</item>
+        <item name="iconTint">@color/yp_black_and_yp_white</item>
         <item name="android:textAllCaps">false</item> <!-- капс -->
         <item name="android:padding">@dimen/dp16</item>
         <item name="android:elevation">0dp</item> <!-- тени -->
         <item name="android:stateListAnimator">@null</item> <!-- анимации нажатия -->
         <item name="android:fontFamily">@font/ys_text_regular</item>
-        <item name="android:backgroundTint">@color/yp_white_and_yp_black</item>
+        <item name="android:backgroundTint">@android:color/transparent</item>
         <item name="android:letterSpacing">0.0</item>
     </style>
 
@@ -311,7 +311,8 @@
 
     <style name="CustomSwitch" parent="SecondaryButtonsAndText">
         <item name="thumbTint">@color/yp_text_gray_and_yp_blue</item>
-        <item name="trackTint">@color/yp_light_gray_and_yp_text_gray</item>
+        <item name="trackTint">@color/yp_black_and_yp_white</item>
+        <item name="iconSize">@dimen/dp30</item>
     </style>
 
     <!-- новые стили -->
@@ -323,5 +324,7 @@
         <item name="android:minHeight">48dp</item>
     </style>
 
-
+    <style name="MenuBackground" parent="ThemeOverlay.AppCompat">
+        <item name="android:background">@color/menu_background</item>
+    </style>
 </resources>

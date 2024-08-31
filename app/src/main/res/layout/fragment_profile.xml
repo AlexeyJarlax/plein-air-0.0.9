@@ -6,20 +6,48 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp"
     tools:context=".profile.ui.ProfileFragment">
+
+    <ImageView
+        android:id="@+id/backgroundImage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="0dp"
+        android:alpha="0.7"
+        android:scaleType="centerCrop"
+        android:src="@drawable/back_lay"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
 
     <ImageView
         android:id="@+id/userAvatar"
         android:layout_width="160dp"
         android:layout_height="160dp"
         android:layout_gravity="center"
-        android:background="@android:drawable/ic_menu_camera"
-        android:contentDescription="@string/user_avatar"
+
+        android:layout_marginTop="@dimen/dp20"
         android:scaleType="centerCrop"
+        android:src="@drawable/default_avatar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/logoutButton"
+        style="@style/SecondaryButtonsAndText"
+        app:icon="@drawable/logout_30dp"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_gravity="center"
+        android:layout_margin="@dimen/dp20"
+        android:background="@android:color/transparent"
+        app:layout_constraintBottom_toBottomOf="@+id/userAvatar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/userAvatar" />
 
     <TextView
         android:id="@+id/userName"
@@ -27,6 +55,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:text="@string/default_user_name"
+        android:layout_marginTop="@dimen/dp16"
         android:textAppearance="?attr/textAppearanceHeadline5"
         app:layout_constraintEnd_toEndOf="@+id/userAvatar"
         app:layout_constraintStart_toStartOf="@+id/userAvatar"
@@ -39,6 +68,7 @@
         android:layout_marginTop="20dp"
         android:gravity="center_horizontal"
         android:text="🗺️"
+        android:background="#40FFFFFF"
         android:textSize="50sp"
         app:layout_constraintEnd_toEndOf="@+id/userName"
         app:layout_constraintStart_toStartOf="@+id/userName"
@@ -59,6 +89,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:text="🖌️"
+        android:background="#40FFFFFF"
         android:textSize="50sp"
         app:layout_constraintBottom_toBottomOf="@+id/btn_choose_location"
         app:layout_constraintEnd_toStartOf="@+id/btn_choose_location"
@@ -66,16 +97,31 @@
         app:layout_constraintTop_toTopOf="@+id/btn_choose_location" />
 
     <Button
-        android:id="@+id/logoutButton"
+        android:id="@+id/aboutUserButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="🚪"
+        android:text="✒️"
         android:textSize="50sp"
+        android:background="#40FFFFFF"
         app:layout_constraintBottom_toBottomOf="@+id/btn_choose_location"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/btn_choose_location"
         app:layout_constraintTop_toTopOf="@+id/btn_choose_location" />
+
+    <Button
+        android:id="@+id/exitButton"
+        style="@style/SecondaryButtonsAndText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:text="exit"
+        android:textSize="@dimen/text_size_sp22"
+        android:layout_marginEnd="@dimen/dp20"
+        android:layout_marginBottom="@dimen/dp60"
+        app:icon="@drawable/door_open_30dp"
+        app:layout_constraintBottom_toTopOf="@+id/fragment_container"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <FrameLayout
         android:id="@+id/fragment_container"

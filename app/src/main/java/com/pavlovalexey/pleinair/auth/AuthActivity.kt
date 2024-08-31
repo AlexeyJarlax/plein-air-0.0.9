@@ -20,6 +20,7 @@ class AuthActivity : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
     private lateinit var googleSignInClient: GoogleSignInClient
+    private lateinit var authStateListener: FirebaseAuth.AuthStateListener
 
     companion object {
         private const val RC_SIGN_IN = 9001
@@ -31,7 +32,6 @@ class AuthActivity : AppCompatActivity() {
 
         auth = FirebaseAuth.getInstance()
 
-        // Настройка опций для Google Sign-In
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.default_web_client_id))
             .requestEmail()
@@ -44,6 +44,37 @@ class AuthActivity : AppCompatActivity() {
         }
 
         checkAuthState()
+
+        authStateListener = FirebaseAuth.AuthStateListener { firebaseAuth ->
+            val user = firebaseAuth.currentUser
+            if (user != null) {
+                // Пользователь аутентифицирован, обновляем токен
+                user.getIdToken(true).addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        val idToken = task.result?.token
+                        // Здесь можно сохранить или использовать обновленный токен
+                        Log.d("AuthActivity", "Token обновлен: $idToken")
+                    } else {
+                        Log.w("AuthActivity", "Не удалось обновить токен", task.exception)
+                    }
+                }
+            } else {
+                // Пользователь не аутентифицирован
+                Log.d("AuthActivity", "Пользователь не аутентифицирован")
+            }
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        // Добавляем слушателя состояния аутентификации
+        auth.addAuthStateListener(authStateListener)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        // Убираем слушателя состояния аутентификации
+        auth.removeAuthStateListener(authStateListener)
     }
 
     private fun checkAuthState() {
@@ -55,8 +86,15 @@ class AuthActivity : AppCompatActivity() {
     }
 
     private fun signInWithGoogle() {
-        val signInIntent = googleSignInClient.signInIntent
-        startActivityForResult(signInIntent, RC_SIGN_IN)
+        // Сначала выполняем выход пользователя из текущей учетной записи Google
+        googleSignInClient.signOut().addOnCompleteListener {
+            // Очищаем данные пользователя в Firebase Auth
+            auth.signOut()
+
+            // После выхода запускаем процесс входа
+            val signInIntent = googleSignInClient.signInIntent
+            startActivityForResult(signInIntent, RC_SIGN_IN)
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

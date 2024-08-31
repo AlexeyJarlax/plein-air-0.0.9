@@ -18,6 +18,7 @@
     <dimen name="dp12">12dp</dimen>
     <dimen name="dp16">16dp</dimen>
     <dimen name="dp24">24dp</dimen>
+    <dimen name="dp30">30dp</dimen>
     <dimen name="dp36">36dp</dimen>
     <dimen name="dp44">44dp</dimen>
     <dimen name="dp51">51dp</dimen>
@@ -31,6 +32,7 @@
     <dimen name="dp108">108dp</dimen>
     <dimen name="dp300">300dp</dimen>
     <dimen name="dp20">20dp</dimen>
+    <dimen name="dp10">10dp</dimen>
 
     <integer name="width_500">500</integer>
     <integer name="width_400">400</integer>
