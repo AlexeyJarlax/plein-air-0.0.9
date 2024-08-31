@@ -55,8 +55,15 @@ class AuthActivity : AppCompatActivity() {
     }
 
     private fun signInWithGoogle() {
-        val signInIntent = googleSignInClient.signInIntent
-        startActivityForResult(signInIntent, RC_SIGN_IN)
+        // Сначала выполняем выход пользователя из текущей учетной записи Google
+        googleSignInClient.signOut().addOnCompleteListener {
+            // Очищаем данные пользователя в Firebase Auth
+            auth.signOut()
+
+            // После выхода запускаем процесс входа
+            val signInIntent = googleSignInClient.signInIntent
+            startActivityForResult(signInIntent, RC_SIGN_IN)
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

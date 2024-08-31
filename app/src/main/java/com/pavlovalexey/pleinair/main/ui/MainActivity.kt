@@ -26,6 +26,9 @@ import com.pavlovalexey.pleinair.R
 import com.pavlovalexey.pleinair.auth.AuthActivity
 import com.pavlovalexey.pleinair.databinding.ActivityMainBinding
 import com.pavlovalexey.pleinair.map.ui.UserMapFragment
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 
 class MainActivity : AppCompatActivity(), UserMapFragment.OnLocationSelectedListener {
 
@@ -34,6 +37,7 @@ class MainActivity : AppCompatActivity(), UserMapFragment.OnLocationSelectedList
     private lateinit var auth: FirebaseAuth
     private lateinit var storage: FirebaseStorage
     private lateinit var mMap: GoogleMap
+    private lateinit var googleSignInClient: GoogleSignInClient
 
     // Переменная для хранения выбранного местоположения
     private var selectedLocation: LatLng? = null
@@ -52,6 +56,12 @@ class MainActivity : AppCompatActivity(), UserMapFragment.OnLocationSelectedList
         Firebase.appCheck.installAppCheckProviderFactory(
             PlayIntegrityAppCheckProviderFactory.getInstance(),
         )
+
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestEmail()
+            .build()
+        googleSignInClient = GoogleSignIn.getClient(this, gso)
 
         if (auth.currentUser == null) {
             // Если пользователь не авторизован, перенаправляем его на AuthActivity
@@ -174,6 +184,19 @@ class MainActivity : AppCompatActivity(), UserMapFragment.OnLocationSelectedList
         // Установите начальную позицию карты на выбранное местоположение или значение по умолчанию
         val initialPosition = selectedLocation ?: defaultLocation
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(initialPosition, 15f))
+    }
+
+    fun logoutAndRevokeAccess() {
+        auth.signOut()
+        googleSignInClient.revokeAccess().addOnCompleteListener {
+            // После выхода из аккаунта можно перенаправить пользователя на экран авторизации
+            startActivity(Intent(this, AuthActivity::class.java))
+            finish()
+        }
+    }
+
+    fun onLogout() {
+        logoutAndRevokeAccess()
     }
 
     companion object {

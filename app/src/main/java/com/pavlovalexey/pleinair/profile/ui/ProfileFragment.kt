@@ -36,6 +36,14 @@ class ProfileFragment : Fragment(), UserMapFragment.OnLocationSelectedListener {
     private lateinit var galleryActivityResultLauncher: ActivityResultLauncher<Intent>
     private val TAG = ProfileFragment::class.java.simpleName
 
+    // Переменная для обработки выхода
+    private var logoutListener: LogoutListener? = null
+
+    // Интерфейс для обработки события выхода
+    interface LogoutListener {
+        fun onLogout()
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -76,9 +84,6 @@ class ProfileFragment : Fragment(), UserMapFragment.OnLocationSelectedListener {
 
             // Обновляем текст с текущим местоположением
             binding.txtChooseLocation.text = user?.locationName ?: getString(R.string.location)
-
-            // Отображаем кнопку выхода, если пользователь авторизован
-            binding.logoutButton.visibility = if (user != null) View.VISIBLE else View.GONE
         }
 
         binding.logoutButton.setOnClickListener {
@@ -194,5 +199,9 @@ class ProfileFragment : Fragment(), UserMapFragment.OnLocationSelectedListener {
 
     private fun onUploadFailure(exception: Exception) {
         Toast.makeText(requireContext(), "Ошибка загрузки аватарки: ${exception.message}", Toast.LENGTH_LONG).show()
+    }
+
+    fun setLogoutListener(listener: LogoutListener) {
+        logoutListener = listener
     }
 }
