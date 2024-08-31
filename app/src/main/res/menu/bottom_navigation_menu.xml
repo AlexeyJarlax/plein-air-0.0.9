@@ -6,7 +6,7 @@
         android:icon="@android:drawable/ic_menu_my_calendar"
         android:title="@string/user" />
     <item
-        android:id="@+id/searchFragment"
+        android:id="@+id/mapFragment"
         android:icon="@android:drawable/ic_menu_mapmode"
         android:title="@string/button_search" />
     <item

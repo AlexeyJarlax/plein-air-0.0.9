@@ -45,7 +45,7 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyAP9jxLDwUdMFjxNtPvao9x9Qgdx0v1XPM" />
+            android:value="@string/map_kluchik" />
     </application>
 
 </manifest>

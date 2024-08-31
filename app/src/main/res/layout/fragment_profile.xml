@@ -27,6 +27,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:text="@string/default_user_name"
+        android:layout_marginTop="@dimen/dp16"
         android:textAppearance="?attr/textAppearanceHeadline5"
         app:layout_constraintEnd_toEndOf="@+id/userAvatar"
         app:layout_constraintStart_toStartOf="@+id/userAvatar"
