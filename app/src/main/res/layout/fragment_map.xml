@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -11,11 +13,11 @@
 
     <Button
         android:id="@+id/exitButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center|bottom"
-        android:padding="@dimen/dp8"
-        android:layout_margin="@dimen/dp8"
-        android:text="❌"
-        android:textSize="26sp" />
+        style="@style/SecondaryButtonsAndText"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_margin="@dimen/dp20"
+        android:background="@android:color/transparent"
+        android:layout_gravity="bottom|center_horizontal"
+        app:icon="@drawable/circle_down_30dp" />
 </FrameLayout>

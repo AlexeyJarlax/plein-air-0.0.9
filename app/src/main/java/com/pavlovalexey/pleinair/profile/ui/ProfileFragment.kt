@@ -26,6 +26,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.navigation.fragment.findNavController
 import android.location.Geocoder
 import com.pavlovalexey.pleinair.profile.viewmodel.ProfileViewModel
+import com.pavlovalexey.pleinair.utils.CircleTransform
 import com.pavlovalexey.pleinair.utils.ImageUtils
 import java.io.IOException
 import java.util.Locale
@@ -37,11 +38,8 @@ class ProfileFragment : Fragment(), UserMapFragment.OnLocationSelectedListener {
     private lateinit var cameraActivityResultLauncher: ActivityResultLauncher<Intent>
     private lateinit var galleryActivityResultLauncher: ActivityResultLauncher<Intent>
     private val TAG = ProfileFragment::class.java.simpleName
-
-    // Переменная для обработки выхода
     private var logoutListener: LogoutListener? = null
 
-    // Интерфейс для обработки события выхода
     interface LogoutListener {
         fun onLogout()
     }
@@ -83,19 +81,16 @@ class ProfileFragment : Fragment(), UserMapFragment.OnLocationSelectedListener {
             }
         }
 
-        // Наблюдаем за изменениями данных пользователя
         viewModel.user.observe(viewLifecycleOwner) { user ->
-            // Обновляем имя пользователя
             binding.userName.text = user?.name ?: getString(R.string.default_user_name)
-
-            // Обновляем аватар пользователя
             if (user?.profileImageUrl != null) {
-                Picasso.get().load(user.profileImageUrl).into(binding.userAvatar)
+                Picasso.get()
+                    .load(user.profileImageUrl)
+                    .transform(CircleTransform()) // Устанавливаем закругленные углы
+                    .into(binding.userAvatar)
             } else {
                 binding.userAvatar.setImageResource(R.drawable.default_avatar)
             }
-
-            // Обновляем текст с текущим местоположением
             binding.txtChooseLocation.text = user?.locationName ?: getString(R.string.location)
         }
 
@@ -132,15 +127,12 @@ class ProfileFragment : Fragment(), UserMapFragment.OnLocationSelectedListener {
 
     private fun openMapFragment() {
         val userMapFragment = UserMapFragment()
-        // Передаем текущий фрагмент как OnLocationSelectedListener
         userMapFragment.setOnLocationSelectedListener(this)
         findNavController().navigate(R.id.action_profileFragment_to_UserMapFragment)
     }
 
     override fun onLocationSelected(location: LatLng) {
         viewModel.updateUserLocation(location)
-
-        // Выполнение обратного геокодирования с обработкой ошибок
         val geocoder = Geocoder(requireContext(), Locale.getDefault())
         val cityName: String = try {
             val addresses = geocoder.getFromLocation(location.latitude, location.longitude, 1)
@@ -153,12 +145,8 @@ class ProfileFragment : Fragment(), UserMapFragment.OnLocationSelectedListener {
             "Координаты: ${location.latitude}, ${location.longitude}"
         }
 
-        // Устанавливаем название населенного пункта в TextView
         binding.txtChooseLocation.text = cityName
-
         Toast.makeText(requireContext(), "Местоположение сохранено!", Toast.LENGTH_SHORT).show()
-
-        // Возвращаемся на предыдущий экран после выбора местоположения
         parentFragmentManager.popBackStack()
     }
 
