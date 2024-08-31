@@ -4,6 +4,7 @@ import android.app.Activity.RESULT_OK
 import android.app.AlertDialog
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -25,6 +26,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.navigation.fragment.findNavController
 import android.location.Geocoder
 import com.pavlovalexey.pleinair.profile.viewmodel.ProfileViewModel
+import com.pavlovalexey.pleinair.utils.ImageUtils
 import java.io.IOException
 import java.util.Locale
 
@@ -65,8 +67,18 @@ class ProfileFragment : Fragment(), UserMapFragment.OnLocationSelectedListener {
         ) { result ->
             if (result.resultCode == RESULT_OK) {
                 val selectedImageUri: Uri? = result.data?.data
-                binding.userAvatar.setImageURI(selectedImageUri)
-                selectedImageUri?.let { viewModel.uploadImageToFirebase(it, ::onUploadSuccess, ::onUploadFailure) }
+                selectedImageUri?.let { uri ->
+                    try {
+                        val inputStream = requireContext().contentResolver.openInputStream(uri)
+                        val imageBitmap = BitmapFactory.decodeStream(inputStream)
+                        val compressedBitmap = imageBitmap?.let { ImageUtils.compressBitmap(it) }
+                        binding.userAvatar.setImageBitmap(compressedBitmap)
+                        compressedBitmap?.let { viewModel.uploadImageToFirebase(it, ::onUploadSuccess, ::onUploadFailure) }
+                    } catch (e: IOException) {
+                        Log.e(TAG, "Ошибка при открытии InputStream для URI", e)
+                        Toast.makeText(requireContext(), "Не удалось загрузить изображение", Toast.LENGTH_SHORT).show()
+                    }
+                }
             }
         }
 
