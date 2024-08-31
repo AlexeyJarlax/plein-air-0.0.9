@@ -19,6 +19,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.pavlovalexey.pleinair.R
 import com.pavlovalexey.pleinair.databinding.FragmentMapBinding
 import com.pavlovalexey.pleinair.profile.model.User
+import com.pavlovalexey.pleinair.utils.CircleTransform
 import com.squareup.picasso.Picasso
 
 class MapFragment : Fragment(), OnMapReadyCallback {
@@ -71,7 +72,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private fun addUserMarker(user: User) {
         val location = LatLng(user.location["latitude"] as Double, user.location["longitude"] as Double)
 
-        Picasso.get().load(user.profileImageUrl).into(object : com.squareup.picasso.Target {
+        Picasso.get().load(user.profileImageUrl).transform(CircleTransform()).into(object : com.squareup.picasso.Target {
             override fun onBitmapLoaded(bitmap: Bitmap?, from: Picasso.LoadedFrom?) {
                 val markerOptions = MarkerOptions()
                     .position(location)
