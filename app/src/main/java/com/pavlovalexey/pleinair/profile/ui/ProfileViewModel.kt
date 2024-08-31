@@ -30,11 +30,15 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     private val _user = MutableLiveData<User>().apply {
         val currentUser = auth.currentUser
         value = currentUser?.let {
-            User(
-                displayName = it.displayName,
-                photoUrl = it.photoUrl?.toString(),
-                locationName = null
-            )
+            it.displayName?.let { it1 ->
+                it.photoUrl?.toString()?.let { it2 ->
+                    User(
+                        name = it1,
+                        profileImageUrl = it2,
+                        locationName = null.toString()
+                    )
+                }
+            }
         }
     }
     val user: LiveData<User> get() = _user
@@ -52,7 +56,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
             .addOnSuccessListener {
                 Log.d(TAG, "Profile image URL updated")
                 // Обновляем значение LiveData
-                _user.value = _user.value?.copy(photoUrl = imageUrl)
+                _user.value = _user.value?.copy(profileImageUrl = imageUrl)
             }
             .addOnFailureListener { e ->
                 Log.w(TAG, "Error updating profile image URL", e)
@@ -67,7 +71,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
             .addOnSuccessListener {
                 Log.d(TAG, "User name updated")
                 // Обновляем значение LiveData
-                _user.value = _user.value?.copy(displayName = newName)
+                _user.value = _user.value?.copy(name = newName)
             }
             .addOnFailureListener { e ->
                 Log.w(TAG, "Error updating user name", e)

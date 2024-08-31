@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -10,12 +11,10 @@
         android:layout_height="match_parent" />
 
     <Button
-        android:id="@+id/extButton"
+        android:id="@+id/btn_confirm_location"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center|bottom"
-        android:padding="@dimen/dp8"
-        android:layout_margin="@dimen/dp8"
-        android:text="❌"
-        android:textSize="26sp" />
+        android:text="Подтвердить"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="16dp"/>
 </FrameLayout>

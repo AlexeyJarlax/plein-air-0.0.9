@@ -6,7 +6,6 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -26,9 +25,9 @@ import com.google.firebase.storage.storage
 import com.pavlovalexey.pleinair.R
 import com.pavlovalexey.pleinair.auth.AuthActivity
 import com.pavlovalexey.pleinair.databinding.ActivityMainBinding
-import com.pavlovalexey.pleinair.map.ui.MapFragment
+import com.pavlovalexey.pleinair.map.ui.UserMapFragment
 
-class MainActivity : AppCompatActivity(), MapFragment.OnLocationSelectedListener {
+class MainActivity : AppCompatActivity(), UserMapFragment.OnLocationSelectedListener {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var db: FirebaseFirestore
@@ -75,7 +74,7 @@ class MainActivity : AppCompatActivity(), MapFragment.OnLocationSelectedListener
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
-                R.id.mapFragment -> {
+                R.id.mapFragment, R.id.userMapFragment -> {
                     bottomNavigationView.visibility = View.GONE
                 }
                 else -> {

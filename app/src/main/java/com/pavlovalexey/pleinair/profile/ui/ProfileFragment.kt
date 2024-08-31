@@ -18,7 +18,7 @@ import androidx.fragment.app.viewModels
 import com.google.android.gms.maps.model.LatLng
 import com.pavlovalexey.pleinair.R
 import com.pavlovalexey.pleinair.databinding.FragmentProfileBinding
-import com.pavlovalexey.pleinair.map.ui.MapFragment
+import com.pavlovalexey.pleinair.map.ui.UserMapFragment
 import com.squareup.picasso.Picasso
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -28,7 +28,7 @@ import com.pavlovalexey.pleinair.profile.viewmodel.ProfileViewModel
 import java.io.IOException
 import java.util.Locale
 
-class ProfileFragment : Fragment(), MapFragment.OnLocationSelectedListener {
+class ProfileFragment : Fragment(), UserMapFragment.OnLocationSelectedListener {
 
     private lateinit var binding: FragmentProfileBinding
     private val viewModel: ProfileViewModel by viewModels()
@@ -65,11 +65,11 @@ class ProfileFragment : Fragment(), MapFragment.OnLocationSelectedListener {
         // Наблюдаем за изменениями данных пользователя
         viewModel.user.observe(viewLifecycleOwner) { user ->
             // Обновляем имя пользователя
-            binding.userName.text = user?.displayName ?: getString(R.string.default_user_name)
+            binding.userName.text = user?.name ?: getString(R.string.default_user_name)
 
             // Обновляем аватар пользователя
-            if (user?.photoUrl != null) {
-                Picasso.get().load(user.photoUrl).into(binding.userAvatar)
+            if (user?.profileImageUrl != null) {
+                Picasso.get().load(user.profileImageUrl).into(binding.userAvatar)
             } else {
                 binding.userAvatar.setImageResource(R.drawable.default_avatar)
             }
@@ -101,10 +101,10 @@ class ProfileFragment : Fragment(), MapFragment.OnLocationSelectedListener {
     }
 
     private fun openMapFragment() {
-        val mapFragment = MapFragment()
+        val userMapFragment = UserMapFragment()
         // Передаем текущий фрагмент как OnLocationSelectedListener
-        mapFragment.setOnLocationSelectedListener(this)
-        findNavController().navigate(R.id.action_profileFragment_to_mapFragment)
+        userMapFragment.setOnLocationSelectedListener(this)
+        findNavController().navigate(R.id.action_profileFragment_to_UserMapFragment)
     }
 
     override fun onLocationSelected(location: LatLng) {

@@ -17,9 +17,15 @@
         android:label="fragment_profile"
         tools:layout="@layout/fragment_profile" >
         <action
-            android:id="@+id/action_profileFragment_to_mapFragment"
-            app:destination="@id/mapFragment" />
+            android:id="@+id/action_profileFragment_to_UserMapFragment"
+            app:destination="@id/userMapFragment" />
     </fragment>
+
+    <fragment
+        android:id="@+id/userMapFragment"
+        android:name="com.pavlovalexey.pleinair.map.ui.UserMapFragment"
+        android:label="User Map Fragment"
+        tools:layout="@layout/fragment_user_map" />
 
     <fragment
         android:id="@+id/mapFragment"
