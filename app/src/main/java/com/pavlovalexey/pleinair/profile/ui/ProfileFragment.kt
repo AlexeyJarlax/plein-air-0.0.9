@@ -102,6 +102,18 @@ class ProfileFragment : Fragment(), UserMapFragment.OnLocationSelectedListener {
             openMapFragment()
         }
 
+        binding.exitButton.setOnClickListener {
+            AlertDialog.Builder(requireContext())
+                .setTitle("Exit")
+                .setMessage("Закрыть приложение?")
+                .setPositiveButton("✔️") { _, _ ->
+                    activity?.finishAffinity()
+                }
+                .setNegativeButton("❌", null)
+                .show()
+
+        }
+
         return binding.root
     }
 
@@ -139,8 +151,8 @@ class ProfileFragment : Fragment(), UserMapFragment.OnLocationSelectedListener {
 
     private fun showLogoutConfirmationDialog() {
         AlertDialog.Builder(requireContext())
-            .setTitle("Выход")
-            .setMessage("Вы уверены, что хотите выйти?")
+            .setTitle("Log out")
+            .setMessage("Разлогинить пользователя?")
             .setPositiveButton("✔️") { _, _ ->
                 viewModel.logout()
                 requireActivity().recreate()
