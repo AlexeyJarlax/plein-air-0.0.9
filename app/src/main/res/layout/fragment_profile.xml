@@ -97,7 +97,7 @@
         app:layout_constraintTop_toTopOf="@+id/btn_choose_location" />
 
     <Button
-        android:id="@+id/aboutUserButton"
+        android:id="@+id/editDescription"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"

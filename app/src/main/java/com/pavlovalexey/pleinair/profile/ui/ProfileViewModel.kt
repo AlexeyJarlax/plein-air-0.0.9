@@ -161,4 +161,19 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
             }
         )
     }
+
+    fun updateUserDescription(newDescription: String) {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+
+        FirebaseFirestore.getInstance().collection("users").document(userId)
+            .update("description", newDescription)
+            .addOnSuccessListener {
+                Log.d(TAG, "User description updated")
+                // Обновление описания в LiveData
+                _user.value = _user.value?.copy(description = newDescription)
+            }
+            .addOnFailureListener { e ->
+                Log.w(TAG, "Error updating user description", e)
+            }
+    }
 }

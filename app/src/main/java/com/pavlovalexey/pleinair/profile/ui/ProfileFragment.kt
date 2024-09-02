@@ -25,6 +25,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.navigation.fragment.findNavController
 import android.location.Geocoder
+import android.text.InputType
 import com.pavlovalexey.pleinair.profile.viewmodel.ProfileViewModel
 import com.pavlovalexey.pleinair.utils.CircleTransform
 import com.pavlovalexey.pleinair.utils.ImageUtils
@@ -108,6 +109,10 @@ class ProfileFragment : Fragment(), UserMapFragment.OnLocationSelectedListener {
 
         binding.btnChooseLocation.setOnClickListener {
             openMapFragment()
+        }
+
+        binding.editDescription.setOnClickListener {
+            showEditDescriptionDialog()
         }
 
         binding.exitButton.setOnClickListener {
@@ -216,5 +221,24 @@ class ProfileFragment : Fragment(), UserMapFragment.OnLocationSelectedListener {
 
     fun setLogoutListener(listener: LogoutListener) {
         logoutListener = listener
+    }
+
+    private fun showEditDescriptionDialog() {
+        val currentDescription = binding.editDescription.text.toString()
+        val editText = EditText(requireContext()).apply {
+            setText(currentDescription)
+            inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE
+        }
+
+        AlertDialog.Builder(requireContext())
+            .setTitle("Изменить описание")
+            .setView(editText)
+            .setPositiveButton("✔️") { _, _ ->
+                val newDescription = editText.text.toString()
+                viewModel.updateUserDescription(newDescription)
+                Toast.makeText(requireContext(), "Описание обновлено!", Toast.LENGTH_SHORT).show()
+            }
+            .setNegativeButton("❌", null)
+            .show()
     }
 }
