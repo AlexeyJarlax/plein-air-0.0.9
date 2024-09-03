@@ -6,6 +6,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.PopupMenu
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -56,6 +58,13 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     override fun onMapReady(map: GoogleMap) {
         googleMap = map
         showUserLocationDialog()
+
+        // Добавляем слушатель кликов на маркеры
+        googleMap.setOnMarkerClickListener { marker ->
+            val user = marker.tag as? User
+            user?.let { showUserDetailsDialog(it) }
+            true
+        }
     }
 
     private fun showUserLocationDialog() {
@@ -131,7 +140,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                     .title(user.name)
                     .snippet(user.locationName)
                     .icon(bitmap?.let { BitmapDescriptorFactory.fromBitmap(it) })
-                googleMap.addMarker(markerOptions)
+                val marker = googleMap.addMarker(markerOptions)
+                marker?.tag = user // Связываем маркер с объектом User
             }
 
             override fun onBitmapFailed(e: Exception?, errorDrawable: Drawable?) {
@@ -144,5 +154,55 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         })
 
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 10f))
+    }
+
+    private fun showUserDetailsDialog(user: User) {
+        // Создаем View для кастомного диалога
+        val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_user_details, null)
+
+        // Инициализируем кнопки
+        val callToPaintButton = dialogView.findViewById<Button>(R.id.callToPaintButton)
+        val addFriendButton = dialogView.findViewById<Button>(R.id.addFriendButton)
+        val blockButton = dialogView.findViewById<Button>(R.id.blockButton)
+        val closeButton = dialogView.findViewById<Button>(R.id.closeButton)
+
+        // Создаем и отображаем диалог
+        val alertDialog = AlertDialog.Builder(requireContext())
+            .setTitle(user.name)
+            .setMessage(
+                "\nТехники: ${user.artStyles?.joinToString(", ") ?: "Техники не выбраны"}\n\n" +
+                        "Описание профиля: ${user.description ?: "Описания нет"}\n"
+            )
+            .setView(dialogView) // Устанавливаем кастомный View
+            .setPositiveButton("OK", null)
+            .create()
+
+        // Показываем диалог
+        alertDialog.show()
+
+        // Устанавливаем обработчики для кнопок
+        callToPaintButton.setOnClickListener { showContextMenu(callToPaintButton) }
+        addFriendButton.setOnClickListener { showContextMenu(addFriendButton) }
+        blockButton.setOnClickListener { showContextMenu(blockButton) }
+        closeButton.setOnClickListener { alertDialog.dismiss() } // Закрываем диалог
+    }
+
+    private fun showContextMenu(view: View) {
+        val contextMenu = PopupMenu(requireContext(), view)
+        contextMenu.menuInflater.inflate(R.menu.context_menu, contextMenu.menu)
+        contextMenu.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.menu_item_yes -> {
+                    // Обработка выбора "✔️"
+                    true
+                }
+                R.id.menu_item_no -> {
+                    // Обработка выбора "❌"
+                    true
+                }
+                else -> false
+            }
+        }
+        contextMenu.show()
     }
 }
