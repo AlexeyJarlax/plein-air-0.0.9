@@ -2,7 +2,6 @@ package com.pavlovalexey.pleinair.profile.viewmodel
 
 import android.app.Application
 import android.graphics.Bitmap
-import android.location.Geocoder
 import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
@@ -13,12 +12,11 @@ import com.google.android.gms.tasks.Tasks
 import com.google.firebase.appcheck.internal.util.Logger.TAG
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.GeoPoint
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.pavlovalexey.pleinair.profile.model.User
 import java.io.ByteArrayOutputStream
-import java.io.IOException
-import java.util.Locale
 import java.util.UUID
 
 class ProfileViewModel(application: Application) : AndroidViewModel(application) {
@@ -42,6 +40,8 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         }
     }
     val user: LiveData<User> get() = _user
+    private val _selectedArtStyles = MutableLiveData<Set<String>>(emptySet())
+    val selectedArtStyles: LiveData<Set<String>> get() = _selectedArtStyles
 
     fun logout() {
         auth.signOut()
@@ -50,12 +50,10 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
 
     fun updateProfileImageUrl(imageUrl: String) {
         val userId = auth.currentUser?.uid ?: return
-
         firestore.collection("users").document(userId)
             .update("profileImageUrl", imageUrl)
             .addOnSuccessListener {
                 Log.d(TAG, "Profile image URL updated")
-                // Обновляем значение LiveData
                 _user.value = _user.value?.copy(profileImageUrl = imageUrl)
             }
             .addOnFailureListener { e ->
@@ -65,12 +63,10 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
 
     fun updateUserName(newName: String) {
         val userId = auth.currentUser?.uid ?: return
-
         firestore.collection("users").document(userId)
             .update("name", newName)
             .addOnSuccessListener {
                 Log.d(TAG, "User name updated")
-                // Обновляем значение LiveData
                 _user.value = _user.value?.copy(name = newName)
             }
             .addOnFailureListener { e ->
@@ -78,31 +74,23 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
             }
     }
 
-    fun updateUserLocation(location: LatLng) {
-        val geocoder = Geocoder(getApplication(), Locale.getDefault())
-        val locationName = try {
-            val addresses = geocoder.getFromLocation(location.latitude, location.longitude, 1)
-            addresses?.firstOrNull()?.locality ?: "Неизвестное место"
-        } catch (e: IOException) {
-            Log.e("LocationError", "Ошибка при выполнении геокодирования", e)
-            "Координаты: ${location.latitude}, ${location.longitude}"
-        } catch (e: IllegalArgumentException) {
-            Log.e("LocationError", "Неверные координаты", e)
-            "Координаты: ${location.latitude}, ${location.longitude}"
-        }
-
-        // Обновляем значение LiveData
-        _user.value = _user.value?.copy(locationName = locationName)
+    fun updateUserLocation(location: LatLng, onSuccess: () -> Unit) {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+        FirebaseFirestore.getInstance().collection("users").document(userId)
+            .update("location", GeoPoint(location.latitude, location.longitude))
+            .addOnSuccessListener {
+                onSuccess()
+            }
+            .addOnFailureListener { e ->
+                Log.w(TAG, "Error updating user location", e)
+            }
     }
 
     private fun clearProfileImageFolder(userId: String, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
         val folderRef = storage.reference.child("profile_images/$userId/")
-
         folderRef.listAll()
             .addOnSuccessListener { listResult ->
                 val deleteTasks = listResult.items.map { it.delete() }
-
-                // Wait for all delete tasks to complete
                 Tasks.whenAll(deleteTasks)
                     .addOnSuccessListener { onSuccess() }
                     .addOnFailureListener { onFailure(it) }
@@ -113,15 +101,11 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     fun uploadImageToFirebase(imageBitmap: Bitmap, onSuccess: (Uri) -> Unit, onFailure: (Exception) -> Unit) {
         val userId = auth.currentUser?.uid ?: return
         val storageRef: StorageReference = storage.reference.child("profile_images/$userId/${UUID.randomUUID()}.jpg")
-
         val baos = ByteArrayOutputStream()
         imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
         val data = baos.toByteArray()
-
-        // Очищаем папку перед загрузкой нового изображения
         clearProfileImageFolder(userId,
             onSuccess = {
-                // Загрузка нового изображения
                 storageRef.putBytes(data)
                     .addOnSuccessListener {
                         storageRef.downloadUrl.addOnSuccessListener { uri ->
@@ -138,27 +122,46 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         )
     }
 
-    fun uploadImageToFirebase(uri: Uri, onSuccess: (Uri) -> Unit, onFailure: (Exception) -> Unit) {
-        val userId = auth.currentUser?.uid ?: return
-        val storageRef: StorageReference = storage.reference.child("profile_images/$userId/${UUID.randomUUID()}.jpg")
-
-        // Очищаем папку перед загрузкой нового изображения
-        clearProfileImageFolder(userId,
-            onSuccess = {
-                // Загрузка нового изображения
-                storageRef.putFile(uri)
-                    .addOnSuccessListener {
-                        storageRef.downloadUrl.addOnSuccessListener { uri ->
-                            onSuccess(uri)
-                            updateProfileImageUrl(uri.toString())
-                        }
-                    }
-                    .addOnFailureListener { onFailure(it) }
-            },
-            onFailure = {
-                Log.w(TAG, "Error clearing profile image folder", it)
-                onFailure(it)
+    fun updateUserDescription(newDescription: String, onSuccess: () -> Unit) {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+        FirebaseFirestore.getInstance().collection("users").document(userId)
+            .update("description", newDescription)
+            .addOnSuccessListener {
+                Log.d(TAG, "User description updated")
+                _user.value = _user.value?.copy(description = newDescription)
+                onSuccess()
             }
-        )
+            .addOnFailureListener { e ->
+                Log.w(TAG, "Error updating user description", e)
+            }
+    }
+
+    fun updateSelectedStyles(styles: Set<String>, onSuccess: () -> Unit) {
+        val userId = auth.currentUser?.uid ?: return
+        firestore.collection("users").document(userId)
+            .update("artStyles", styles.toList()) // Сохраняем как список в Firestore
+            .addOnSuccessListener {
+                Log.d(TAG, "Art styles updated")
+                _selectedArtStyles.value = styles
+                onSuccess()
+            }
+            .addOnFailureListener { e ->
+                Log.w(TAG, "Error updating art styles", e)
+            }
+    }
+
+    fun loadSelectedStyles() {
+        val userId = auth.currentUser?.uid ?: return
+        firestore.collection("users").document(userId)
+            .get()
+            .addOnSuccessListener { document ->
+                if (document != null) {
+                    val styles = document.get("artStyles") as? List<String> ?: emptyList()
+                    _selectedArtStyles.value = styles.toSet()
+                }
+            }
+            .addOnFailureListener { e ->
+                Log.w(TAG, "Error loading art styles", e)
+            }
     }
 }

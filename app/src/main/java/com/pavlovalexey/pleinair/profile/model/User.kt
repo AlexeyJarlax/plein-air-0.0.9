@@ -5,5 +5,6 @@ data class User(
     val name: String = "",
     val profileImageUrl: String = "",
     val location: Map<String, Double> = emptyMap(),
-    val locationName: String = ""
+    val locationName: String = "",
+    val description: String = "" // Новое поле для описания
 )
