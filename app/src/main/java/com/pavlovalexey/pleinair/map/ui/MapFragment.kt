@@ -14,7 +14,6 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
-//import com.google.android.gms.maps.model.GeoPoint
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.auth.FirebaseAuth
@@ -76,13 +75,20 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         firestore.collection("users").document(userId)
             .get()
             .addOnSuccessListener { document ->
-                val location = document.getGeoPoint("location")
-                if (location != null) {
-                    val latLng = LatLng(location.latitude, location.longitude)
-                    googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10f))
+                val locationMap = document.get("location") as? Map<String, Any>
+                if (locationMap != null) {
+                    val latitude = locationMap["latitude"] as? Double
+                    val longitude = locationMap["longitude"] as? Double
 
-                    // Загружаем маркеры пользователей
-                    loadUserMarkers()
+                    if (latitude != null && longitude != null) {
+                        val latLng = LatLng(latitude, longitude)
+                        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10f))
+
+                        // Загружаем маркеры пользователей
+                        loadUserMarkers()
+                    } else {
+                        // Обработка ситуации, когда latitude или longitude отсутствует
+                    }
                 } else {
                     // Если местоположение не найдено, можно обработать это
                 }
@@ -101,8 +107,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
                     // Проверяем, что location не пуст и содержит оба ключа latitude и longitude
                     val locationMap = user.location
-                    val latitude = locationMap["latitude"]
-                    val longitude = locationMap["longitude"]
+                    val latitude = locationMap?.get("latitude") as? Double
+                    val longitude = locationMap?.get("longitude") as? Double
 
                     if (latitude != null && longitude != null) {
                         val location = LatLng(latitude, longitude)
