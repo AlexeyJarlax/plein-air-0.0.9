@@ -114,7 +114,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
                 storageRef.putBytes(data)
                     .addOnSuccessListener {
                         storageRef.downloadUrl.addOnSuccessListener { uri ->
-                            saveImageToLocalStorage(imageBitmap, userId)
+                            saveImageToLocalStorage(imageBitmap, userId) // Save image to local storage
                             onSuccess(uri)
                             updateProfileImageUrl(uri.toString())
                         }
@@ -145,7 +145,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     fun updateSelectedStyles(styles: Set<String>, onSuccess: () -> Unit) {
         val userId = auth.currentUser?.uid ?: return
         firestore.collection("users").document(userId)
-            .update("artStyles", styles.toList()) // Сохраняем как список в Firestore
+            .update("artStyles", styles.toList()) // Save as a list in Firestore
             .addOnSuccessListener {
                 Log.d(TAG, "Art styles updated")
                 _selectedArtStyles.value = styles
@@ -171,8 +171,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
             }
     }
 
-    // Новый метод для сохранения изображения на устройстве
-    private fun saveImageToLocalStorage(imageBitmap: Bitmap, userId: String) {
+    fun saveImageToLocalStorage(imageBitmap: Bitmap, userId: String) {
         val filename = "profile_image_$userId.jpg"
         val file = File(getApplication<Application>().filesDir, filename)
         var fos: FileOutputStream? = null
@@ -187,7 +186,6 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
-    // Новый метод для загрузки изображения с устройства
     private fun loadImageFromLocalStorage(userId: String): Bitmap? {
         val filename = "profile_image_$userId.jpg"
         val file = File(getApplication<Application>().filesDir, filename)
@@ -198,26 +196,31 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
-    // Модифицированный метод для загрузки изображения с устройства или Firebase
-    fun loadProfileImage(onSuccess: (Bitmap) -> Unit, onFailure: (Exception) -> Unit) {
+    fun loadProfileImageFromStorage(onSuccess: (Bitmap) -> Unit, onFailure: (Exception) -> Unit) {
         val userId = auth.currentUser?.uid ?: return
         val localImage = loadImageFromLocalStorage(userId)
         if (localImage != null) {
             onSuccess(localImage)
         } else {
             val storageRef: StorageReference = storage.reference.child("profile_images/$userId/")
-            storageRef.downloadUrl.addOnSuccessListener { uri ->
-                // Загружаем изображение с сервера
-                storageRef.getBytes(Long.MAX_VALUE).addOnSuccessListener { bytes ->
-                    val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
-                    saveImageToLocalStorage(bitmap, userId)
-                    onSuccess(bitmap)
-                }.addOnFailureListener { e ->
-                    Log.w(TAG, "Error downloading image from Firebase", e)
-                    onFailure(e)
+            storageRef.listAll().addOnSuccessListener { listResult ->
+                if (listResult.items.isNotEmpty()) {
+                    // Load the first image if available
+                    val firstItem = listResult.items[0]
+                    firstItem.getBytes(Long.MAX_VALUE).addOnSuccessListener { bytes ->
+                        val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+                        saveImageToLocalStorage(bitmap, userId) // Save to local storage
+                        onSuccess(bitmap)
+                    }.addOnFailureListener { e ->
+                        Log.w(TAG, "Error downloading image from Firebase", e)
+                        onFailure(e)
+                    }
+                } else {
+                    // No images found in Firebase
+                    onFailure(Exception("No profile image found"))
                 }
             }.addOnFailureListener { e ->
-                Log.w(TAG, "Error getting download URL from Firebase", e)
+                Log.w(TAG, "Error getting image list from Firebase", e)
                 onFailure(e)
             }
         }
