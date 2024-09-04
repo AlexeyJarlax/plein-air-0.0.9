@@ -8,7 +8,7 @@
     android:layout_height="match_parent"
     android:fillViewport="true"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".calendar.ui.СalendarFragment">
+    tools:context=".calendar.ui.CalendarFragment">
 
     <TextView
         android:id="@+id/gasket_calendar"
@@ -128,5 +128,27 @@
         app:layout_constraintStart_toStartOf="@+id/track_recycler_view"
         app:layout_constraintTop_toTopOf="parent"
         tools:visibility="visible" />
+
+    <Button
+        android:id="@+id/fabCreateEvent"
+        style="@style/SecondaryButtonsAndText"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="@dimen/dp51"
+        android:background="@color/yp_black_and_yp_black"
+        android:padding="@dimen/dp10"
+        app:icon="@drawable/add_circle_50dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <include
+        android:id="@+id/utilErrorBox"
+        layout="@layout/util_error_layout_for_fragments"
+        android:layout_marginTop="@dimen/dp44"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

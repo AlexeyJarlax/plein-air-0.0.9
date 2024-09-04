@@ -80,4 +80,5 @@
     <string name="button_logout">Выйти из системы</string>
     <string name="location">Расположение</string>
     <string name="donats">Донаты на поддержку сервера</string>
+    <string name="calendar">Календарь</string>
 </resources>

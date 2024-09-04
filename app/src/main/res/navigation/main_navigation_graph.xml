@@ -32,4 +32,10 @@
         android:name="com.pavlovalexey.pleinair.map.ui.MapFragment"
         android:label="Map Fragment"
         tools:layout="@layout/fragment_map" />
+
+    <fragment
+        android:id="@+id/calendarFragment"
+        android:name="com.pavlovalexey.pleinair.calendar.ui.CalendarFragment"
+        android:label="Calendar Fragment"
+        tools:layout="@layout/fragment_calendar" />
 </navigation>
