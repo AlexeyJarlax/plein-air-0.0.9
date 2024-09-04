@@ -2,7 +2,7 @@ package com.pavlovalexey.pleinair.calendar.model
 
 data class Event(
     val userId: String = "",
-    val avatarUrl: String = "",
+    val profileImageUrl: String = "",
     val city: String = "",
     val place: String = "",
     val date: String = "",

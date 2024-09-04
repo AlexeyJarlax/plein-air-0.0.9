@@ -24,7 +24,7 @@ class EventAdapter : ListAdapter<Event, EventAdapter.EventViewHolder>(DiffCallba
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(event: Event) {
-            Picasso.get().load(event.avatarUrl).into(binding.artworkImageView)
+            Picasso.get().load(event.profileImageUrl).into(binding.artworkImageView)
             binding.city.text = event.city
             binding.place.text = event.place
             binding.day.text = event.date

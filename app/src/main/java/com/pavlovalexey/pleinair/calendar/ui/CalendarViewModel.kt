@@ -1,5 +1,6 @@
 package com.pavlovalexey.pleinair.calendar.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -21,9 +22,11 @@ class CalendarViewModel : ViewModel() {
             .addOnSuccessListener { result ->
                 val eventList = result.mapNotNull { it.toObject(Event::class.java) }
                 _events.value = eventList
+                Log.d("CalendarViewModel", "Events loaded: $eventList")
             }
             .addOnFailureListener { exception ->
                 _errorMessage.value = "Ошибка загрузки событий: ${exception.message}"
+                Log.e("CalendarViewModel", "Error loading events", exception)
             }
     }
 
@@ -46,30 +49,30 @@ class CalendarViewModel : ViewModel() {
             }
     }
 
-    fun createEvent(event: Event, callback: (Boolean) -> Unit) {
-        db.collection("events")
-            .add(event)
-            .addOnSuccessListener {
-                callback(true)
-            }
-            .addOnFailureListener { exception ->
-                _errorMessage.value = "Ошибка создания события: ${exception.message}"
-                callback(false)
-            }
-    }
-
-    fun deleteExpiredEvents() {
-        val expirationTime = System.currentTimeMillis() - 72 * 60 * 60 * 1000
-        db.collection("events")
-            .whereLessThan("timestamp", expirationTime)
-            .get()
-            .addOnSuccessListener { result ->
-                for (document in result) {
-                    db.collection("events").document(document.id).delete()
-                }
-            }
-            .addOnFailureListener { exception ->
-                _errorMessage.value = "Ошибка удаления просроченных событий: ${exception.message}"
-            }
-    }
+//    fun createEvent(event: Event, callback: (Boolean) -> Unit) {
+//        db.collection("events")
+//            .add(event)
+//            .addOnSuccessListener {
+//                callback(true)
+//            }
+//            .addOnFailureListener { exception ->
+//                _errorMessage.value = "Ошибка создания события: ${exception.message}"
+//                callback(false)
+//            }
+//    }
+//
+//    fun deleteExpiredEvents() {
+//        val expirationTime = System.currentTimeMillis() - 72 * 60 * 60 * 1000
+//        db.collection("events")
+//            .whereLessThan("timestamp", expirationTime)
+//            .get()
+//            .addOnSuccessListener { result ->
+//                for (document in result) {
+//                    db.collection("events").document(document.id).delete()
+//                }
+//            }
+//            .addOnFailureListener { exception ->
+//                _errorMessage.value = "Ошибка удаления просроченных событий: ${exception.message}"
+//            }
+//    }
 }

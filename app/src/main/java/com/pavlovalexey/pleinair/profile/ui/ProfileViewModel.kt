@@ -2,6 +2,7 @@ package com.pavlovalexey.pleinair.profile.viewmodel
 
 import android.app.Application
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
@@ -17,6 +18,9 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.pavlovalexey.pleinair.profile.model.User
 import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
 import java.util.UUID
 
 class ProfileViewModel(application: Application) : AndroidViewModel(application) {
@@ -104,11 +108,13 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         val baos = ByteArrayOutputStream()
         imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
         val data = baos.toByteArray()
+
         clearProfileImageFolder(userId,
             onSuccess = {
                 storageRef.putBytes(data)
                     .addOnSuccessListener {
                         storageRef.downloadUrl.addOnSuccessListener { uri ->
+                            saveImageToLocalStorage(imageBitmap, userId)
                             onSuccess(uri)
                             updateProfileImageUrl(uri.toString())
                         }
@@ -163,5 +169,57 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
             .addOnFailureListener { e ->
                 Log.w(TAG, "Error loading art styles", e)
             }
+    }
+
+    // Новый метод для сохранения изображения на устройстве
+    private fun saveImageToLocalStorage(imageBitmap: Bitmap, userId: String) {
+        val filename = "profile_image_$userId.jpg"
+        val file = File(getApplication<Application>().filesDir, filename)
+        var fos: FileOutputStream? = null
+        try {
+            fos = FileOutputStream(file)
+            imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos)
+        } catch (e: IOException) {
+            Log.e(TAG, "Error saving image to local storage", e)
+        } finally {
+            fos?.flush()
+            fos?.close()
+        }
+    }
+
+    // Новый метод для загрузки изображения с устройства
+    private fun loadImageFromLocalStorage(userId: String): Bitmap? {
+        val filename = "profile_image_$userId.jpg"
+        val file = File(getApplication<Application>().filesDir, filename)
+        return if (file.exists()) {
+            BitmapFactory.decodeFile(file.absolutePath)
+        } else {
+            null
+        }
+    }
+
+    // Модифицированный метод для загрузки изображения с устройства или Firebase
+    fun loadProfileImage(onSuccess: (Bitmap) -> Unit, onFailure: (Exception) -> Unit) {
+        val userId = auth.currentUser?.uid ?: return
+        val localImage = loadImageFromLocalStorage(userId)
+        if (localImage != null) {
+            onSuccess(localImage)
+        } else {
+            val storageRef: StorageReference = storage.reference.child("profile_images/$userId/")
+            storageRef.downloadUrl.addOnSuccessListener { uri ->
+                // Загружаем изображение с сервера
+                storageRef.getBytes(Long.MAX_VALUE).addOnSuccessListener { bytes ->
+                    val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+                    saveImageToLocalStorage(bitmap, userId)
+                    onSuccess(bitmap)
+                }.addOnFailureListener { e ->
+                    Log.w(TAG, "Error downloading image from Firebase", e)
+                    onFailure(e)
+                }
+            }.addOnFailureListener { e ->
+                Log.w(TAG, "Error getting download URL from Firebase", e)
+                onFailure(e)
+            }
+        }
     }
 }

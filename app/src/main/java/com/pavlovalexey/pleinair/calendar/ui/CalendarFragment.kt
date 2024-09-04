@@ -1,6 +1,7 @@
 package com.pavlovalexey.pleinair.calendar.ui
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -33,9 +34,8 @@ class CalendarFragment : Fragment() {
         adapter = EventAdapter()
         binding.trackRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.trackRecyclerView.adapter = adapter
-
-        // Наблюдение за событиями
         viewModel.events.observe(viewLifecycleOwner, Observer { events ->
+            Log.d("CalendarFragment", "Events observed: $events")
             adapter.submitList(events)
         })
 
@@ -50,7 +50,7 @@ class CalendarFragment : Fragment() {
             if (userId != null) {
                 viewModel.checkUserEvent(userId) { canCreate ->
                     if (canCreate) {
-//                        findNavController().navigate(R.id.action_calendarFragment_to_CreateEventFragment)
+                        findNavController().navigate(R.id.action_calendarFragment_to_NewEventFragment)
                     } else {
                         Toast.makeText(
                             requireContext(),
