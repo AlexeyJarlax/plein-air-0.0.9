@@ -353,14 +353,39 @@ class ProfileFragment : Fragment(), UserMapFragment.OnLocationSelectedListener {
             .show()
     }
 
-    private fun saveIconState(iconKey: String, state: Boolean) {
-        // Save the state (checked/unchecked) for the icon
-        // This might involve saving to SharedPreferences or another storage method
+    private fun saveIconState(key: String, state: Boolean) {
+        val sharedPreferences =
+            requireContext().getSharedPreferences("ProfilePrefs", Context.MODE_PRIVATE)
+        with(sharedPreferences.edit()) {
+            putBoolean(key, state)
+            apply()
+        }
     }
 
     private fun loadSavedIconStates() {
-        // Load saved states for icons
-        // This might involve reading from SharedPreferences or another storage method
+        val sharedPreferences =
+            requireContext().getSharedPreferences("ProfilePrefs", Context.MODE_PRIVATE)
+        val locationState = sharedPreferences.getBoolean("location", false)
+        val descriptionState = sharedPreferences.getBoolean("description", false)
+        val technicState = sharedPreferences.getBoolean("technic", false)
+
+        if (locationState) {
+            updateIconToChecked(binding.txtChooseLocation)
+        } else {
+            updateIconToUnchecked(binding.txtChooseLocation)
+        }
+
+        if (descriptionState) {
+            updateIconToChecked(binding.txtEditDescription)
+        } else {
+            updateIconToUnchecked(binding.txtEditDescription)
+        }
+
+        if (technicState) {
+            updateIconToChecked(binding.txtTechnic)
+        } else {
+            updateIconToUnchecked(binding.txtTechnic)
+        }
     }
 
     private fun saveAndUploadProfileImage(bitmap: Bitmap) {
