@@ -1,5 +1,6 @@
 package com.pavlovalexey.pleinair.calendar.ui
 
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -9,13 +10,15 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
+import com.pavlovalexey.pleinair.R
 import com.pavlovalexey.pleinair.databinding.FragmentNewEventBinding
+import com.pavlovalexey.pleinair.profile.viewmodel.ProfileViewModel
 
 class NewEventFragment : Fragment() {
 
-    private lateinit var viewModel: NewEventViewModel
+    private lateinit var newEventViewModel: NewEventViewModel
+    private lateinit var profileViewModel: ProfileViewModel
     private lateinit var binding: FragmentNewEventBinding
 
     override fun onCreateView(
@@ -29,37 +32,47 @@ class NewEventFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel = ViewModelProvider(this).get(NewEventViewModel::class.java)
+        newEventViewModel = ViewModelProvider(this).get(NewEventViewModel::class.java)
+        profileViewModel = ViewModelProvider(this).get(ProfileViewModel::class.java)
 
-        // Наблюдение за состоянием ввода
-        viewModel.isFormValid.observe(viewLifecycleOwner) { isValid ->
+        // Observe the profile image and set it to the ImageView when loaded
+        profileViewModel.loadProfileImageFromStorage(
+            onSuccess = { bitmap ->
+                binding.addPicture.setImageBitmap(bitmap)
+            },
+            onFailure = {
+                // Handle the case where the image loading fails, e.g., show a default image
+                binding.addPicture.setImageResource(R.drawable.default_avatar)
+            }
+        )
+
+        // Observing the form validation state
+        newEventViewModel.isFormValid.observe(viewLifecycleOwner) { isValid ->
             binding.createPlaylist.isEnabled = isValid
         }
 
-        // Наблюдение за процессом создания события
-        viewModel.creationStatus.observe(viewLifecycleOwner) { status ->
+        // Observing the creation status
+        newEventViewModel.creationStatus.observe(viewLifecycleOwner) { status ->
             when (status) {
                 is CreationStatus.Loading -> showLoading(true)
                 is CreationStatus.Success -> {
                     showLoading(false)
-                    findNavController().navigateUp()  // Возврат назад
+                    findNavController().navigateUp()  // Navigate back
                 }
-
                 is CreationStatus.Error -> {
                     showLoading(false)
                     Toast.makeText(context, status.message, Toast.LENGTH_LONG).show()
                 }
-
                 else -> {}
             }
         }
 
-        // Установка текстовых изменений для обновления формы
+        // Set text watchers to monitor form input changes
         val afterTextChangedListener = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             override fun afterTextChanged(s: Editable?) {
-                viewModel.onFieldChanged(
+                newEventViewModel.onFieldChanged(
                     city = binding.inputCity.text.toString(),
                     place = binding.inputLocation.text.toString(),
                     date = binding.inputDay.text.toString(),
@@ -68,6 +81,7 @@ class NewEventFragment : Fragment() {
                 )
             }
         }
+
         binding.btnBack.setOnClickListener {
             findNavController().navigateUp()
         }
@@ -78,13 +92,12 @@ class NewEventFragment : Fragment() {
         binding.inputTime.addTextChangedListener(afterTextChangedListener)
         binding.inputDetails.addTextChangedListener(afterTextChangedListener)
 
-        // Кнопка создания события
+        // Create event button click listener
         binding.createPlaylist.setOnClickListener {
-            val userId = "User ID"  // Здесь нужно использовать реальный ID пользователя
-            val profileImageUrl =
-                "User Avatar URL"  // Здесь нужно использовать реальный URL аватара пользователя
+            val userId = profileViewModel.user.value?.userId ?: "User ID"
+            val profileImageUrl = profileViewModel.user.value?.profileImageUrl ?: "User Avatar URL"
 
-            viewModel.createEvent(
+            newEventViewModel.createEvent(
                 userId = userId,
                 profileImageUrl = profileImageUrl,
                 city = binding.inputCity.text.toString(),

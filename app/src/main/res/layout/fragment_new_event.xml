@@ -31,7 +31,7 @@
         app:title="@string/new_event"
         app:titleMarginBottom="@dimen/dp6" />
 
-    <ImageView
+    <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/addPicture"
         android:layout_width="150dp"
         android:layout_height="150dp"
@@ -42,7 +42,8 @@
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btnBack" />
+        app:layout_constraintTop_toBottomOf="@id/btnBack"
+        app:shapeAppearanceOverlay="@style/CircleImage"/>
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/inputCityLayout"
@@ -116,6 +117,7 @@
         android:layout_height="wrap_content"
         android:enabled="false"
         android:fontFamily="@font/ys_display_medium"
+        android:layout_marginBottom="@dimen/dp60"
         android:text="@string/create"
         app:layout_constrainedHeight="true"
         app:layout_constraintBottom_toBottomOf="parent"
