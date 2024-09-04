@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.pavlovalexey.pleinair.databinding.FragmentNewEventBinding
 
@@ -43,10 +44,12 @@ class NewEventFragment : Fragment() {
                     showLoading(false)
                     findNavController().navigateUp()  // Возврат назад
                 }
+
                 is CreationStatus.Error -> {
                     showLoading(false)
                     Toast.makeText(context, status.message, Toast.LENGTH_LONG).show()
                 }
+
                 else -> {}
             }
         }
@@ -65,6 +68,9 @@ class NewEventFragment : Fragment() {
                 )
             }
         }
+        binding.btnBack.setOnClickListener {
+            findNavController().navigateUp()
+        }
 
         binding.inputCity.addTextChangedListener(afterTextChangedListener)
         binding.inputLocation.addTextChangedListener(afterTextChangedListener)
@@ -75,7 +81,8 @@ class NewEventFragment : Fragment() {
         // Кнопка создания события
         binding.createPlaylist.setOnClickListener {
             val userId = "User ID"  // Здесь нужно использовать реальный ID пользователя
-            val profileImageUrl = "User Avatar URL"  // Здесь нужно использовать реальный URL аватара пользователя
+            val profileImageUrl =
+                "User Avatar URL"  // Здесь нужно использовать реальный URL аватара пользователя
 
             viewModel.createEvent(
                 userId = userId,

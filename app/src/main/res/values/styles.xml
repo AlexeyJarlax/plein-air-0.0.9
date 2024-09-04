@@ -327,4 +327,8 @@
     <style name="MenuBackground" parent="ThemeOverlay.AppCompat">
         <item name="android:background">@color/menu_background</item>
     </style>
+
+    <style name="BottomNavigationViewStyle" parent="Widget.MaterialComponents.BottomNavigationView">
+        <item name="itemIconSize">48dp</item> <!-- Установите размер значков, например 48dp -->
+    </style>
 </resources>
