@@ -149,7 +149,7 @@
 
     <!-- Стиль строки c автором, продолжительностью-->
     <style name="TrackTextSmall" parent="TrackText">
-        <item name="android:textSize">@dimen/text_size_sp11</item>
+        <item name="android:textSize">@dimen/text_size_sp13</item>
         <item name="android:textColor">@color/yp_text_gray_and_yp_white</item>
     </style>
 
@@ -326,5 +326,14 @@
 
     <style name="MenuBackground" parent="ThemeOverlay.AppCompat">
         <item name="android:background">@color/menu_background</item>
+    </style>
+
+    <style name="BottomNavigationViewStyle" parent="Widget.MaterialComponents.BottomNavigationView">
+        <item name="itemIconSize">48dp</item> <!-- Установите размер значков, например 48dp -->
+    </style>
+
+    <style name="CircleImage">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
     </style>
 </resources>

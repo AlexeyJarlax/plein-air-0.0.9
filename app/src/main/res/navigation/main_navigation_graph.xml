@@ -32,4 +32,20 @@
         android:name="com.pavlovalexey.pleinair.map.ui.MapFragment"
         android:label="Map Fragment"
         tools:layout="@layout/fragment_map" />
+
+    <fragment
+        android:id="@+id/calendarFragment"
+        android:name="com.pavlovalexey.pleinair.calendar.ui.CalendarFragment"
+        android:label="Calendar Fragment"
+        tools:layout="@layout/fragment_calendar">
+    <action
+        android:id="@+id/action_calendarFragment_to_NewEventFragment"
+        app:destination="@id/newEventFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/newEventFragment"
+        android:name="com.pavlovalexey.pleinair.calendar.ui.NewEventFragment"
+        android:label="New Event Fragment"
+        tools:layout="@layout/fragment_new_event" />
 </navigation>

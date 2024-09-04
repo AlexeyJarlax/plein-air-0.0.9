@@ -3,22 +3,22 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/profileFragment"
-        android:icon="@android:drawable/ic_menu_my_calendar"
+        android:icon="@drawable/account_circle_50dp"
         android:title="@string/user"
         app:iconTint="@color/yp_black_and_yp_white" />
     <item
         android:id="@+id/mapFragment"
-        android:icon="@android:drawable/ic_menu_mapmode"
+        android:icon="@drawable/location_on_50dp"
         android:title="@string/button_search"
         app:iconTint="@color/yp_black_and_yp_white" />
     <item
-        android:id="@+id/libraryFragment"
-        android:icon="@android:drawable/ic_menu_today"
-        android:title="@string/button_media_lib"
+        android:id="@+id/calendarFragment"
+        android:icon="@drawable/edit_calendar_50dp"
+        android:title="@string/calendar"
         app:iconTint="@color/yp_black_and_yp_white" />
     <item
         android:id="@+id/settingsFragment"
-        android:icon="@android:drawable/ic_menu_preferences"
+        android:icon="@drawable/settings_50dp"
         android:title="@string/button_settings"
         app:iconTint="@color/yp_black_and_yp_white" />
 </menu>

@@ -2,7 +2,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/dp60"
+    android:layout_height="77dp"
     android:background="@color/yp_white_and_yp_black"
     android:gravity="center"
     android:id="@+id/util_item_track"
@@ -15,8 +15,8 @@
         android:layout_width="@dimen/dp44"
         android:layout_height="@dimen/dp44"
         android:scaleType="centerCrop"
-        android:src="@drawable/ic_placeholder"
-        tools:src="@drawable/ic_placeholder" />
+        android:src="@drawable/ic_launcher_foreground"
+        tools:src="@drawable/ic_launcher_foreground" />
 
     <LinearLayout
 
@@ -27,14 +27,22 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/track_name_text_view"
+            android:id="@+id/city"
             style="@style/TrackText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="@dimen/z"
-            tools:text="@string/placeholder_track_name"
-            android:maxLines="2"/>
+            tools:text="@string/city"
+            android:maxLines="1"/>
 
+        <TextView
+            android:id="@+id/place"
+            style="@style/TrackText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/z"
+            tools:text="@string/location"
+            android:maxLines="1"/>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -42,13 +50,13 @@
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/artist_name_text_view"
+                android:id="@+id/day"
                 style="@style/TrackTextSmall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:singleLine="true"
                 android:maxLength="40"
-                tools:text="@string/placeholder_artist_name" />
+                tools:text="@string/day" />
 
             <ImageView
                 android:id="@+id/ic_point"
@@ -60,12 +68,21 @@
                 tools:src="@drawable/ic_point" />
 
             <TextView
-                android:id="@+id/track_duration_text_view"
+                android:id="@+id/time"
                 style="@style/TrackTextSmall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:text="@string/placeholder_track_time" />
+                tools:text="@string/time" />
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/ditales"
+            style="@style/TrackTextSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:maxLength="40"
+            tools:text="Дополнительные детали" />
 
     </LinearLayout>
 

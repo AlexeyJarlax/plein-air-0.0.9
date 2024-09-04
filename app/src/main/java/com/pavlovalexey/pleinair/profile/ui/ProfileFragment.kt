@@ -9,30 +9,30 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.text.InputType
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.google.android.gms.maps.model.LatLng
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.pavlovalexey.pleinair.R
 import com.pavlovalexey.pleinair.databinding.FragmentProfileBinding
 import com.pavlovalexey.pleinair.map.ui.UserMapFragment
-import com.squareup.picasso.Picasso
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.navigation.fragment.findNavController
-import android.text.InputType
-import android.widget.LinearLayout
-import android.widget.TextView
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
 import com.pavlovalexey.pleinair.profile.viewmodel.ProfileViewModel
 import com.pavlovalexey.pleinair.utils.CircleTransform
 import com.pavlovalexey.pleinair.utils.ImageUtils
+import com.squareup.picasso.Picasso
 import java.io.IOException
 
 class ProfileFragment : Fragment(), UserMapFragment.OnLocationSelectedListener {
@@ -62,11 +62,7 @@ class ProfileFragment : Fragment(), UserMapFragment.OnLocationSelectedListener {
                 val imageBitmap = result.data?.extras?.get("data") as Bitmap
                 val processedBitmap = ImageUtils.compressAndGetCircularBitmap(imageBitmap)
                 binding.userAvatar.setImageBitmap(processedBitmap)
-                viewModel.uploadImageToFirebase(
-                    processedBitmap,
-                    ::onUploadSuccess,
-                    ::onUploadFailure
-                )
+                saveAndUploadProfileImage(processedBitmap)
             }
         }
 
@@ -104,10 +100,18 @@ class ProfileFragment : Fragment(), UserMapFragment.OnLocationSelectedListener {
         viewModel.user.observe(viewLifecycleOwner) { user ->
             binding.userName.text = user?.name ?: getString(R.string.default_user_name)
             if (user?.profileImageUrl != null) {
-                Picasso.get()
-                    .load(user.profileImageUrl)
-                    .transform(CircleTransform()) // Устанавливаем закругленные углы
-                    .into(binding.userAvatar)
+                // Load the image from local storage if it exists, otherwise load from Firebase Storage
+                viewModel.loadProfileImageFromStorage(
+                    { bitmap ->
+                        binding.userAvatar.setImageBitmap(bitmap)
+                    },
+                    {
+                        Picasso.get()
+                            .load(user.profileImageUrl)
+                            .transform(CircleTransform()) // Устанавливаем закругленные углы
+                            .into(binding.userAvatar)
+                    }
+                )
             } else {
                 binding.userAvatar.setImageResource(R.drawable.default_avatar)
             }
@@ -287,17 +291,15 @@ class ProfileFragment : Fragment(), UserMapFragment.OnLocationSelectedListener {
                     inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE
                     minLines = 5
                     maxLines = 10
-                    // Устанавливаем высоту для отображения нескольких строк
                     layoutParams = LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,
                         LinearLayout.LayoutParams.WRAP_CONTENT
                     ).apply {
-                        height =
-                            (resources.displayMetrics.density * 300).toInt() // Примерный расчет высоты для 5 строк
+                        height = (resources.displayMetrics.density * 300).toInt() // Приблизительная высота для 5 строк
                     }
                 }
 
-                // Создаем и показываем диалог
+                // Создаем и отображаем диалоговое окно
                 AlertDialog.Builder(requireContext())
                     .setTitle("Изменить описание")
                     .setView(editText)
@@ -306,24 +308,17 @@ class ProfileFragment : Fragment(), UserMapFragment.OnLocationSelectedListener {
                         viewModel.updateUserDescription(newDescription) {
                             updateIconToChecked(binding.txtEditDescription)
                             saveIconState("description", true)
-                            Toast.makeText(
-                                requireContext(),
-                                "Описание обновлено!",
-                                Toast.LENGTH_SHORT
-                            )
-                                .show()
+                            Toast.makeText(requireContext(), "Описание обновлено!", Toast.LENGTH_SHORT).show()
                         }
                     }
                     .setNegativeButton("❌", null)
                     .show()
             }
             .addOnFailureListener { e ->
-                Log.w(TAG, "Error fetching user description", e)
-                Toast.makeText(requireContext(), "Ошибка загрузки описания", Toast.LENGTH_SHORT)
-                    .show()
+                Log.w(TAG, "Ошибка при получении описания пользователя", e)
+                Toast.makeText(requireContext(), "Ошибка загрузки описания", Toast.LENGTH_SHORT).show()
             }
     }
-
 
     private fun showTechnicDialog() {
         val artStyles = arrayOf(
@@ -351,8 +346,7 @@ class ProfileFragment : Fragment(), UserMapFragment.OnLocationSelectedListener {
                     binding.txtTechnic.text = selectedStyles.joinToString(", ")
                     updateIconToChecked(binding.txtTechnic)
                     saveIconState("technic", true)
-                    Toast.makeText(requireContext(), "Техники сохранены!", Toast.LENGTH_SHORT)
-                        .show()
+                    Toast.makeText(requireContext(), "Техники сохранены!", Toast.LENGTH_SHORT).show()
                 }
             }
             .setNegativeButton("❌", null)
@@ -392,5 +386,9 @@ class ProfileFragment : Fragment(), UserMapFragment.OnLocationSelectedListener {
         } else {
             updateIconToUnchecked(binding.txtTechnic)
         }
+    }
+
+    private fun saveAndUploadProfileImage(bitmap: Bitmap) {
+        viewModel.uploadImageToFirebase(bitmap, ::onUploadSuccess, ::onUploadFailure)
     }
 }
