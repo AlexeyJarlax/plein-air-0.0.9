@@ -95,4 +95,6 @@
     <string name="i_have_read_user_policy">Я ознакомлен с Пользовательским соглашением</string>
     <string name="load_privacy_policy">Загрузка Политики конфиденциальности…</string>
     <string name="load_user_policy">Загрузка Пользовательского соглашения…</string>
+    <string name="ua">Пользовательское соглашение</string>
+    <string name="pp">Политика конфиденциальности</string>
 </resources>
