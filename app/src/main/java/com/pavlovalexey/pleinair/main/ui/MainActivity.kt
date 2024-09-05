@@ -1,5 +1,13 @@
 package com.pavlovalexey.pleinair.main.ui
 
+/** Приложение построено как синглАктивити на фрагментах с отправной точкой MainActivity.
+ * TermsActivity и AuthActivity выделены как отдельные активити чтобы безопасно изолировать
+ * неавторизованных / несогластных пользователей от основной структуры фрагментов.
+ * 1 Этап - подписание соглашений в TermsActivity
+ * 2 Этап - авторизация в AuthActivity
+ * 3 Этап - MainActivity и фрагменты по всему функционалу приложения с с навигацией через НавГраф
+ */
+
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -24,7 +32,7 @@ import com.google.firebase.initialize
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.storage
 import com.pavlovalexey.pleinair.R
-import com.pavlovalexey.pleinair.auth.AuthActivity
+import com.pavlovalexey.pleinair.auth.ui.AuthActivity
 import com.pavlovalexey.pleinair.databinding.ActivityMainBinding
 import com.pavlovalexey.pleinair.map.ui.UserMapFragment
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -40,16 +48,12 @@ class MainActivity : AppCompatActivity(), UserMapFragment.OnLocationSelectedList
     private lateinit var mMap: GoogleMap
     private lateinit var googleSignInClient: GoogleSignInClient
 
-    // Переменная для хранения выбранного местоположения
     private var selectedLocation: LatLng? = null
-
-    // Координаты Петропавловской крепости
-    private val defaultLocation = LatLng(59.9500019, 30.3166718)
+    private val defaultLocation = LatLng(59.9500019, 30.3166718)    // Координаты Петропавловской крепости используются как отправная точка поиска на карте
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Инициализация Firebase
         com.google.firebase.Firebase.initialize(this)
         db = com.google.firebase.Firebase.firestore
         auth = FirebaseAuth.getInstance()

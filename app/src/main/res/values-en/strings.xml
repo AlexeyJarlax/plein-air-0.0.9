@@ -16,7 +16,7 @@
     <string name="support_email">a9633238@gmail.com</string>
     <string name="support_email_subject">Message to the developer of this app</string>
     <string name="support_email_text">Hey! Yes, you! Youre awesome!</string>
-    <string name="user_agreement_url">https://raw.githubusercontent.com/AlexeyJarlax/Privacy-Policy-1.8.txt/main/Privacy-Policy-1.8.txt</string>
+    <string name="privacy_policy_url">https://raw.githubusercontent.com/AlexeyJarlax/Privacy-Policy-1.8.txt/main/Privacy-Policy-1.8.txt</string>
     <string name="heading_search_history_list_view">Search string query history</string>
     <string name="todo">TODO</string>
     <string name="there_wil_be_media_library">there will be a media library in this window</string>

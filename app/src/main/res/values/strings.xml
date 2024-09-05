@@ -15,7 +15,8 @@
     <string name="support_email">a9633238@gmail.com</string>
     <string name="support_email_subject">Сообщение разработчику этого приложения</string>
     <string name="support_email_text">Ты! Да, ты! Ты супер красавчик!</string>
-    <string name="user_agreement_url">https://raw.githubusercontent.com/AlexeyJarlax/Privacy-Policy-1.8.txt/main/Privacy-Policy-1.8.txt</string>
+    <string name="privacy_policy_url">https://raw.githubusercontent.com/AlexeyJarlax/Privacy-Policy/main/PP2.0.txt</string>
+    <string name="user_agreement_url">https://raw.githubusercontent.com/AlexeyJarlax/Privacy-Policy/main/UA2.0.txt</string>
     <string name="heading_search_history_list_view">История запросов поисковой строки:</string>
     <string name="todo">TODO</string>
     <string name="there_wil_be_media_library">в этом окне будет медиатека</string>
@@ -85,4 +86,13 @@
     <string name="city">Город</string>
     <string name="day">Дата</string>
     <string name="time">Время</string>
+    <string name="terms_of_agreement">Пользовательское соглашение для %1$s. Дата вступления в силу: %2$s</string>
+    <string name="terms_of_privacy">Политикой конфиденциальности для %1$s. Дата вступления в силу: %2$s</string>
+    <string name="error_loading_policy">Ошибка при загрузке Политики конфиденциальности</string>
+    <string name="error_loading_agreement">Ошибка при загрузке Пользовательского соглашения</string>
+    <string name="resume">Продолжить</string>
+    <string name="i_have_read_privacy_policy">Я ознакомлен с Политикой конфиденциальности</string>
+    <string name="i_have_read_user_policy">Я ознакомлен с Пользовательским соглашением</string>
+    <string name="load_privacy_policy">Загрузка Политики конфиденциальности…</string>
+    <string name="load_user_policy">Загрузка Пользовательского соглашения…</string>
 </resources>
