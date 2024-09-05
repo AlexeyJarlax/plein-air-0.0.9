@@ -59,7 +59,7 @@
         app:layout_constraintEnd_toEndOf="parent" />
 
     <Button
-        android:id="@+id/button_settings_user_agreement"
+        android:id="@+id/button_settings_privacy_policy"
         style="@style/SecondaryButtonsAndText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -70,7 +70,7 @@
         app:layout_constraintTop_toBottomOf="@id/button_settings_write_to_supp" />
 
     <Button
-        android:id="@+id/button_settings_privacy_policy"
+        android:id="@+id/button_settings_user_agreement"
         style="@style/SecondaryButtonsAndText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -78,7 +78,7 @@
         app:icon="@drawable/ic_btn_arrow_forward"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/button_settings_user_agreement" />
+        app:layout_constraintTop_toBottomOf="@id/button_settings_privacy_policy" />
 
     <Button
         android:id="@+id/donats"
@@ -89,6 +89,6 @@
         app:icon="@drawable/currency_ruble_30dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button_settings_privacy_policy" />
+        app:layout_constraintTop_toBottomOf="@+id/button_settings_user_agreement" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

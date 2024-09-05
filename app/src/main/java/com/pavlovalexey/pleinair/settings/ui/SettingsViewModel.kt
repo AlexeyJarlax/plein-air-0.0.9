@@ -27,15 +27,23 @@ class SettingsViewModel(private val settingsInteractor: SettingsInteractor) : Vi
         }
     }
 
-        fun shareApp() {
-            settingsInteractor.buttonToShareApp()
-        }
-
-        fun goToHelp() {
-            settingsInteractor.buttonToHelp()
-        }
-
-        fun seeUserAgreement() {
-            settingsInteractor.buttonToSeeUserAgreement()
-        }
+    fun shareApp() {
+        settingsInteractor.buttonToShareApp()
     }
+
+    fun goToHelp() {
+        settingsInteractor.buttonToHelp()
+    }
+
+    fun seeUserAgreement() {
+        settingsInteractor.buttonToSeeUserAgreement()
+    }
+
+    fun seePrivacyPolicy() {
+        settingsInteractor.buttonToSeePrivacyPolicy()
+    }
+
+    fun seeDonat() {
+        settingsInteractor.buttonDonat()
+    }
+}

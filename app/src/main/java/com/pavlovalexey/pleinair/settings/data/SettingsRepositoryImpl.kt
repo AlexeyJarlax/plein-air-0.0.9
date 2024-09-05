@@ -54,9 +54,24 @@ class SettingsRepositoryImpl(private val context: Context, private val sharedPre
             .body(body)
             .start()
     }
+    override fun buttonToSeePrivacyPolicy() {
+        val url = context.getString(R.string.privacy_policy_url)
+        val intent = Intent(Intent.ACTION_VIEW)
+        intent.data = Uri.parse(url)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        context.startActivity(intent)
+    }
 
     override fun buttonToSeeUserAgreement() {
-        val url = context.getString(R.string.privacy_policy_url)
+        val url = context.getString(R.string.user_agreement_url)
+        val intent = Intent(Intent.ACTION_VIEW)
+        intent.data = Uri.parse(url)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        context.startActivity(intent)
+    }
+
+    override fun buttonDonat() {
+        val url = context.getString(R.string.donat)
         val intent = Intent(Intent.ACTION_VIEW)
         intent.data = Uri.parse(url)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)

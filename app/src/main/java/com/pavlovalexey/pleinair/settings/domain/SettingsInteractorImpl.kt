@@ -24,6 +24,14 @@ class SettingsInteractorImpl(private val settingsRepository: SettingsRepository)
         settingsRepository.buttonToSeeUserAgreement()
     }
 
+    override fun buttonToSeePrivacyPolicy() {
+        settingsRepository.buttonToSeePrivacyPolicy()
+    }
+
+    override fun buttonDonat() {
+        settingsRepository.buttonDonat()
+    }
+
     override fun applyTheme() {
         settingsRepository.applyTheme()
     }

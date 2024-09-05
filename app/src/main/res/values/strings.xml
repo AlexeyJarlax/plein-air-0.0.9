@@ -15,8 +15,7 @@
     <string name="support_email">a9633238@gmail.com</string>
     <string name="support_email_subject">Сообщение разработчику этого приложения</string>
     <string name="support_email_text">Ты! Да, ты! Ты супер красавчик!</string>
-    <string name="privacy_policy_url">https://raw.githubusercontent.com/AlexeyJarlax/Privacy-Policy/main/PP2.0.txt</string>
-    <string name="user_agreement_url">https://raw.githubusercontent.com/AlexeyJarlax/Privacy-Policy/main/UA2.0.txt</string>
+
     <string name="heading_search_history_list_view">История запросов поисковой строки:</string>
     <string name="todo">TODO</string>
     <string name="there_wil_be_media_library">в этом окне будет медиатека</string>
@@ -97,4 +96,7 @@
     <string name="load_user_policy">Загрузка Пользовательского соглашения…</string>
     <string name="ua">Пользовательское соглашение</string>
     <string name="pp">Политика конфиденциальности</string>
+    <string name="privacy_policy_url">https://raw.githubusercontent.com/AlexeyJarlax/Privacy-Policy/main/PP2.0.txt</string>
+    <string name="user_agreement_url">https://raw.githubusercontent.com/AlexeyJarlax/Privacy-Policy/main/UA2.0.txt</string>
+    <string name="donat">https://pay.cloudtips.ru/p/da048bc5</string>
 </resources>
