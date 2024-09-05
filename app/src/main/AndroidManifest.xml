@@ -31,12 +31,21 @@
         tools:targetApi="tiramisu">
 
         <activity
-            android:name=".auth.AuthActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            android:name=".auth.ui.AuthActivity"
+            android:exported="true"
+            android:windowSoftInputMode="adjustPan"
+            android:screenOrientation="fullSensor">
+        </activity>
+
+        <activity
+            android:name=".auth.ui.TermsActivity"
+            android:exported="true"
+            android:windowSoftInputMode="adjustPan"
+            android:screenOrientation="fullSensor">
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
         </activity>
 
         <activity

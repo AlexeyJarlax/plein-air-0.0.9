@@ -63,31 +63,27 @@ object ErrorUtils {
         context: Context,
         problemTipo: String
     ) {
-        val utilErrorBox = view?.findViewById<LinearLayout>(R.id.utilErrorBoxForFragments)
+
         val errorTextWeb = view?.findViewById<TextView>(R.id.error_text_web)
         val retryButton = view?.findViewById<Button>(R.id.retry_button)
-        utilErrorBox?.visibility = View.VISIBLE
+
 
         when (problemTipo) {
 
             AppPreferencesKeys.FAVORITES_EMPTY -> {
-                errorTextWeb?.text = context.resources.getString(R.string.media_library_is_empty)
+                errorTextWeb?.text = context.resources.getString(R.string.app_name)
                 retryButton?.visibility = View.GONE
             }
 
             AppPreferencesKeys.PLAYLISTS_EMPTY -> {
                 errorTextWeb?.text =
-                    context.resources.getString(R.string.havent_created_any_playlists)
+                    context.resources.getString(R.string.app_name)
                 retryButton?.visibility = View.GONE
             }
 
             AppPreferencesKeys.LOADING -> {
                 errorTextWeb?.text = ""
                 retryButton?.visibility = View.GONE
-            }
-
-            AppPreferencesKeys.HIDE -> {
-                utilErrorBox?.visibility = View.GONE
             }
 
             else -> {

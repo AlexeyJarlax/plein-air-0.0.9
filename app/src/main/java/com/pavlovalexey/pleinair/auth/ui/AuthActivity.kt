@@ -1,10 +1,17 @@
-package com.pavlovalexey.pleinair.auth
+package com.pavlovalexey.pleinair.auth.ui
 
-/** точка входа в приложение*/
+/** Приложение построено как синглактивити на фрагментах с отправной точкой MainActivity
+ * TermsActivity и AuthActivity выделены как отдельные активити чтобы безопасно изолировать
+ * от основной структуры фрагментов.
+ * 1 Этап - подписание соглашений в TermsActivity
+ * 2 Этап - авторизация в AuthActivity
+ * 3 Этап - MainActivity и фрагменты по всему функционалу приложения с с навигацией через НавГраф
+*/
 
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -14,12 +21,14 @@ import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.pavlovalexey.pleinair.R
+import com.pavlovalexey.pleinair.databinding.ActivityAuthBinding
 import com.pavlovalexey.pleinair.main.ui.MainActivity
 
 class AuthActivity : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
     private lateinit var googleSignInClient: GoogleSignInClient
+    private lateinit var binding: ActivityAuthBinding
     private lateinit var authStateListener: FirebaseAuth.AuthStateListener
 
     companion object {
@@ -28,7 +37,10 @@ class AuthActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_auth)
+        binding = ActivityAuthBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        hideSystemUI()
 
         auth = FirebaseAuth.getInstance()
 
@@ -39,8 +51,12 @@ class AuthActivity : AppCompatActivity() {
 
         googleSignInClient = GoogleSignIn.getClient(this, gso)
 
-        findViewById<com.google.android.gms.common.SignInButton>(R.id.btnSignInWithGoogle).setOnClickListener {
+        binding.btnSignInWithGoogle.setOnClickListener {
             signInWithGoogle()
+        }
+
+        binding.exitButton.setOnClickListener {
+            finishAffinity()
         }
 
         checkAuthState()
@@ -75,14 +91,6 @@ class AuthActivity : AppCompatActivity() {
         super.onStop()
         // Убираем слушателя состояния аутентификации
         auth.removeAuthStateListener(authStateListener)
-    }
-
-    private fun checkAuthState() {
-        if (auth.currentUser != null) {
-            // Если пользователь залогинен, перейти на главный экран
-            startActivity(Intent(this, MainActivity::class.java))
-            finish()
-        }
     }
 
     private fun signInWithGoogle() {
@@ -123,5 +131,22 @@ class AuthActivity : AppCompatActivity() {
                     Log.w("AuthActivity", "signInWithCredential:failure", task.exception)
                 }
             }
+    }
+
+    private fun checkAuthState() {
+        if (auth.currentUser != null) {
+            startActivity(Intent(this, MainActivity::class.java))
+            finish()
+        }
+    }
+
+    private fun hideSystemUI() {
+        window.decorView.systemUiVisibility = (
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        or View.SYSTEM_UI_FLAG_FULLSCREEN
+                        or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                        or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                )
     }
 }

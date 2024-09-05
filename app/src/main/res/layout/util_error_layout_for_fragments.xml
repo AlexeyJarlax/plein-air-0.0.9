@@ -19,7 +19,7 @@
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp36"
             android:layout_gravity="center_horizontal"
-            android:text="@string/new_play_list" />
+            android:text="" />
 
         <View
             android:layout_width="match_parent"

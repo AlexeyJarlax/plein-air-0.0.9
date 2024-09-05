@@ -1,8 +1,6 @@
 package com.pavlovalexey.pleinair.settings.ui
 
 import android.app.AlertDialog
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -32,6 +30,7 @@ class SettingsFragment : Fragment() {
         setupShareButton()
         setupSupportButton()
         setupUserAgreementButton()
+        setupPrivacyPolicy()
         donat()
     }
 
@@ -67,14 +66,19 @@ class SettingsFragment : Fragment() {
         }
     }
 
+    private fun setupPrivacyPolicy() {
+        binding.buttonSettingsPrivacyPolicy.setDebouncedClickListener {
+            viewModel.seePrivacyPolicy()
+        }
+    }
+
     private fun donat() {
         binding.donats.setDebouncedClickListener {
             val builder = AlertDialog.Builder(requireContext())
             builder.setTitle("Подтверждение")
             builder.setMessage("Вы перейдете на платежную систему для пожертвований. Продолжить?")
             builder.setPositiveButton("✔️") { dialog, which ->
-                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://pay.cloudtips.ru/p/da048bc5"))
-                startActivity(intent)
+                viewModel.seeDonat()
             }
             builder.setNegativeButton("❌") { dialog, which ->
                 dialog.dismiss()

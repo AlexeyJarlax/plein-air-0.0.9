@@ -6,6 +6,8 @@ interface SettingsRepository {
     fun buttonToShareApp()
     fun buttonToHelp()
     fun buttonToSeeUserAgreement()
+    fun buttonToSeePrivacyPolicy()
+    fun buttonDonat()
     fun applyTheme()
     fun sharePlaylist(message: String)
 }

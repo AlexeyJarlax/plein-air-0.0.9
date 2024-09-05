@@ -10,18 +10,13 @@
     <string name="write_to_support">Написать в поддержку</string>
     <string name="user_agreement">Пользовательское соглашение</string>
     <string name="share_app_text">https://play.google.com/store/apps/details?id=</string>
-    <string name="app_id">com.pavlovalexey.torpedo</string>
+    <string name="app_id">com.pavlovalexey.pleinair</string>
     <string name="share_app_title">Поделиться приложением</string>
     <string name="support_email">a9633238@gmail.com</string>
     <string name="support_email_subject">Сообщение разработчику этого приложения</string>
     <string name="support_email_text">Ты! Да, ты! Ты супер красавчик!</string>
-    <string name="user_agreement_url">https://raw.githubusercontent.com/AlexeyJarlax/Privacy-Policy-1.8.txt/main/Privacy-Policy-1.8.txt</string>
     <string name="heading_search_history_list_view">История запросов поисковой строки:</string>
     <string name="todo">TODO</string>
-    <string name="there_wil_be_media_library">в этом окне будет медиатека</string>
-    <string name="placeholder_track_name">Название песни</string>
-    <string name="placeholder_artist_name">Имя исполнителя</string>
-    <string name="placeholder_track_time">5:12</string>
     <string name="error_text_web">Проблемы со связью \n
         \n Загрузка не удалась. Проверьте\n
         подключение к интернету</string>
@@ -37,26 +32,10 @@
     <string name="error500">500 - внутренняя ошибка сервера</string>
     <string name="error503">503 - сервис временно недоступен</string>
     <string name="error0">неустановленная ошибка</string>
-    <string name="added">Добавлен:&#160;&#160;&#160;</string>
-    <string name="duration">Длительность&#160;&#160;&#160;</string>
-    <string name="album">Альбом&#160;&#160;&#160;</string>
-    <string name="year">Год&#160;&#160;&#160;</string>
-    <string name="genre">Жанр&#160;&#160;&#160;</string>
-    <string name="country">Страна&#160;&#160;&#160;</string>
     <string name="toast">toast</string>
     <string name="zero_time">00:00</string>
-    <string name="favorite_tracks">Избранные треки</string>
-    <string name="playlists">Плейлисты</string>
-    <string name="media_library_is_empty">Ваша медиатека пуста</string>
-    <string name="havent_created_any_playlists">Вы не создали ни одного плейлиста</string>
-    <string name="new_play_list">Новый плейлист</string>
-    <string name="dialog_title">title</string>
     <string name="name">Название*</string>
     <string name="description">Описание</string>
-    <string name="addToPlaylist">Добавить в плейлист</string>
-    <string name="addToPlaylistSuccess">Трек добавлен в плейлист</string>
-    <string name="addToPlaylistDefeat">Трек уже добавлен в плейлист</string>
-    <string name="finishCreatingPlaylist">Завершить создание плейлиста?</string>
     <string name="unsavedDataWillBeLost">Все несохраненные данные будут потеряны</string>
     <string name="create">Создать</string>
     <string name="cancel">Отменить</string>
@@ -64,13 +43,8 @@
     <string name="save">Сохранить</string>
     <string name="share_playlist">Поделиться</string>
     <string name="edit_info">Редактировать информацию</string>
-    <string name="deletePlaylist">Удалить плейлист</string>
-    <string name="delete_track">Удалить трек</string>
-    <string name="deletePlaylist2">Хотите удалить плейлист?</string>
-    <string name="delete_track2">Вы уверены, что хотите удалить трек из плейлиста?</string>
     <string name="yes">Да</string>
     <string name="no">Нет</string>
-    <string name="havent_created_any_track">Вы не добавили ни одного трека</string>
     <string name="about_this_app">...</string>
     <string name="about_this_app2">...</string>
     <string name="default_web_client_id">а тут будет залупа для тех, кто хочет сломать мне проект, выкусите</string>
@@ -85,4 +59,18 @@
     <string name="city">Город</string>
     <string name="day">Дата</string>
     <string name="time">Время</string>
+    <string name="terms_of_agreement">Пользовательское соглашение для %1$s. Дата вступления в силу: %2$s</string>
+    <string name="terms_of_privacy">Политикой конфиденциальности для %1$s. Дата вступления в силу: %2$s</string>
+    <string name="error_loading_policy">Ошибка при загрузке Политики конфиденциальности</string>
+    <string name="error_loading_agreement">Ошибка при загрузке Пользовательского соглашения</string>
+    <string name="resume">Продолжить</string>
+    <string name="i_have_read_privacy_policy">Я ознакомлен с Политикой конфиденциальности</string>
+    <string name="i_have_read_user_policy">Я ознакомлен с Пользовательским соглашением</string>
+    <string name="load_privacy_policy">Загрузка Политики конфиденциальности…</string>
+    <string name="load_user_policy">Загрузка Пользовательского соглашения…</string>
+    <string name="ua">Пользовательское соглашение</string>
+    <string name="pp">Политика конфиденциальности</string>
+    <string name="privacy_policy_url">https://raw.githubusercontent.com/AlexeyJarlax/Privacy-Policy/main/PP2.0.txt</string>
+    <string name="user_agreement_url">https://raw.githubusercontent.com/AlexeyJarlax/Privacy-Policy/main/UA2.0.txt</string>
+    <string name="donat">https://pay.cloudtips.ru/p/da048bc5</string>
 </resources>
