@@ -60,7 +60,7 @@
     <string name="day">Дата</string>
     <string name="time">Время</string>
     <string name="terms_of_agreement">Пользовательское соглашение для %1$s. Дата вступления в силу: %2$s</string>
-    <string name="terms_of_privacy">Политикой конфиденциальности для %1$s. Дата вступления в силу: %2$s</string>
+    <string name="terms_of_privacy">Политика конфиденциальности для %1$s. Дата вступления в силу: %2$s</string>
     <string name="error_loading_policy">Ошибка при загрузке Политики конфиденциальности</string>
     <string name="error_loading_agreement">Ошибка при загрузке Пользовательского соглашения</string>
     <string name="resume">Продолжить</string>
@@ -73,4 +73,5 @@
     <string name="privacy_policy_url">https://raw.githubusercontent.com/AlexeyJarlax/Privacy-Policy/main/PP2.0.txt</string>
     <string name="user_agreement_url">https://raw.githubusercontent.com/AlexeyJarlax/Privacy-Policy/main/UA2.0.txt</string>
     <string name="donat">https://pay.cloudtips.ru/p/da048bc5</string>
+    <string name="delit_me">Удалить аккаунт</string>
 </resources>
