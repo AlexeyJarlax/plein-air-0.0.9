@@ -2,10 +2,13 @@ package com.pavlovalexey.pleinair.settings.ui
 
 import android.app.AlertDialog
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.pavlovalexey.pleinair.databinding.FragmentSettingsBinding
 import com.pavlovalexey.pleinair.utils.setDebouncedClickListener
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -32,6 +35,7 @@ class SettingsFragment : Fragment() {
         setupUserAgreementButton()
         setupPrivacyPolicy()
         donat()
+        setupDeleteAccountButton()
     }
 
     override fun onDestroyView() {
@@ -85,5 +89,27 @@ class SettingsFragment : Fragment() {
             }
             builder.show()
         }
+    }
+
+    private fun setupDeleteAccountButton() {
+        binding.buttonDeleteAccount.setDebouncedClickListener {
+            showDeleteConfirmationDialog()
+        }
+    }
+
+    private fun showDeleteConfirmationDialog() {
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setTitle("Подтверждение удаления")
+        builder.setMessage("Будут удалены все данные пользователя и аккаунт в этом приложении. Вы уверены, что хотите продолжить?")
+        builder.setPositiveButton("✔️") { dialog, _ ->
+            viewModel.deleteUserAccount {
+                activity?.finishAffinity()
+            }
+            dialog.dismiss()
+        }
+        builder.setNegativeButton("❌") { dialog, _ ->
+            dialog.dismiss()
+        }
+        builder.show()
     }
 }
