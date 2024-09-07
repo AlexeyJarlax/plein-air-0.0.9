@@ -52,31 +52,54 @@
         app:layout_constraintTop_toBottomOf="@id/addPicture"
         tools:layout_editor_absoluteX="6dp">
 
-        <com.google.android.material.textfield.TextInputEditText
+        <AutoCompleteTextView
             android:id="@+id/inputCity"
+            android:layout_height="50dp"
+            android:paddingStart="@dimen/dp16"
             style="@style/PLEditTextForNewPlaylist"
-            android:hint="@string/city" />
+            android:hint="@string/city"
+            android:completionThreshold="1" />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/inputLocationLayout"
-        style="@style/PLLayoutForNewPlaylist"
+<!--    <com.google.android.material.textfield.TextInputLayout-->
+<!--        android:id="@+id/inputLocationLayout"-->
+<!--        style="@style/PLLayoutForNewPlaylist"-->
+<!--        android:layout_margin="@dimen/dp6"-->
+<!--        android:tag="inputDescriptionLayout"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/inputCityLayout">-->
+
+<!--        <com.google.android.material.textfield.TextInputEditText-->
+<!--            android:id="@+id/inputLocation"-->
+<!--            style="@style/PLEditTextForNewPlaylist"-->
+<!--            android:hint="@string/location" />-->
+<!--    </com.google.android.material.textfield.TextInputLayout>-->
+
+
+    <Button
+        android:id="@+id/btnChooseLocation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_margin="@dimen/dp6"
-        android:tag="inputDescriptionLayout"
-        app:layout_constraintTop_toBottomOf="@id/inputCityLayout">
+        android:gravity="center_horizontal"
+        android:padding="@dimen/dp16"
+        android:text="@string/location"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/inputCityLayout" />
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/inputLocation"
-            style="@style/PLEditTextForNewPlaylist"
-            android:hint="@string/location" />
-    </com.google.android.material.textfield.TextInputLayout>
+    <TextView
+        android:id="@+id/pointLocation"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp60"
+        app:layout_constraintBottom_toBottomOf="@+id/btnChooseLocation"
+        app:layout_constraintStart_toEndOf="@+id/btnChooseLocation"
+        app:layout_constraintTop_toTopOf="@+id/btnChooseLocation" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/inputDayLayout"
         style="@style/PLLayoutForNewPlaylist"
         android:layout_margin="@dimen/dp6"
         android:tag="inputDescriptionLayout"
-        app:layout_constraintTop_toBottomOf="@id/inputLocationLayout">
+        app:layout_constraintTop_toBottomOf="@id/btnChooseLocation">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/inputDay"

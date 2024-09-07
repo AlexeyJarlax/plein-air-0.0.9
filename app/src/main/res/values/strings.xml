@@ -52,7 +52,7 @@
     <string name="user_avatar">Аватар пользователя</string>
     <string name="default_user_name">Аноним</string>
     <string name="button_logout">Выйти из системы</string>
-    <string name="location">Расположение</string>
+    <string name="location">Указать\nрасположение</string>
     <string name="donats">Донаты на поддержку сервера</string>
     <string name="calendar">Календарь</string>
     <string name="new_event">Новый ивент</string>

@@ -52,7 +52,7 @@
     <string name="user_avatar">User Avatar</string>
     <string name="default_user_name">Anonymous</string>
     <string name="button_logout">Log Out</string>
-    <string name="location">Location</string>
+    <string name="location">Specify the location</string>
     <string name="donats">Donations to support the server</string>
     <string name="calendar">Calendar</string>
     <string name="new_event">New Event</string>

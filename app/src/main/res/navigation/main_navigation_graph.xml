@@ -47,5 +47,15 @@
         android:id="@+id/newEventFragment"
         android:name="com.pavlovalexey.pleinair.calendar.ui.NewEventFragment"
         android:label="New Event Fragment"
-        tools:layout="@layout/fragment_new_event" />
+        tools:layout="@layout/fragment_new_event">
+    <action
+        android:id="@+id/action_newEventFragment_to_eventMapFragment"
+        app:destination="@id/eventMapFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/eventMapFragment"
+        android:name="com.pavlovalexey.pleinair.calendar.ui.EventMapFragment"
+        android:label="Event Map Fragment"
+        tools:layout="@layout/fragment_event_map" />
 </navigation>
