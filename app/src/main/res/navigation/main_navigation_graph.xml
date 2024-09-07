@@ -35,7 +35,7 @@
 
     <fragment
         android:id="@+id/calendarFragment"
-        android:name="com.pavlovalexey.pleinair.calendar.ui.CalendarFragment"
+        android:name="com.pavlovalexey.pleinair.calendar.ui.calendar.CalendarFragment"
         android:label="Calendar Fragment"
         tools:layout="@layout/fragment_calendar">
     <action
@@ -45,7 +45,7 @@
 
     <fragment
         android:id="@+id/newEventFragment"
-        android:name="com.pavlovalexey.pleinair.calendar.ui.NewEventFragment"
+        android:name="com.pavlovalexey.pleinair.calendar.ui.event.NewEventFragment"
         android:label="New Event Fragment"
         tools:layout="@layout/fragment_new_event">
     <action
@@ -55,7 +55,7 @@
 
     <fragment
         android:id="@+id/eventMapFragment"
-        android:name="com.pavlovalexey.pleinair.calendar.ui.EventMapFragment"
+        android:name="com.pavlovalexey.pleinair.calendar.ui.event.EventMapFragment"
         android:label="Event Map Fragment"
         tools:layout="@layout/fragment_event_map" />
 </navigation>

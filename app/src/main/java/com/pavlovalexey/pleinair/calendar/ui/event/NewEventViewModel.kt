@@ -1,4 +1,4 @@
-package com.pavlovalexey.pleinair.calendar.ui
+package com.pavlovalexey.pleinair.calendar.ui.event
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel

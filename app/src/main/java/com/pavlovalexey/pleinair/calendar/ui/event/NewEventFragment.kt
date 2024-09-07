@@ -1,4 +1,4 @@
-package com.pavlovalexey.pleinair.calendar.ui
+package com.pavlovalexey.pleinair.calendar.ui.event
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
@@ -8,6 +8,7 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
@@ -21,6 +22,7 @@ import java.util.Calendar
 import java.util.Locale
 import java.util.concurrent.TimeUnit
 import com.google.android.gms.maps.model.LatLng
+import java.io.BufferedReader
 
 class NewEventFragment : Fragment() {
 
@@ -42,6 +44,12 @@ class NewEventFragment : Fragment() {
 
         newEventViewModel = ViewModelProvider(this).get(NewEventViewModel::class.java)
         profileViewModel = ViewModelProvider(this).get(ProfileViewModel::class.java)
+
+        val inputStream = resources.openRawResource(R.raw.cities)
+        val cities = inputStream.bufferedReader().use(BufferedReader::readLines)
+        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, cities)
+        binding.inputCity.setAdapter(adapter)
+        binding.inputCity.threshold = 1 // Показывать список после ввода 1 символа
 
         // Слушатель для результата выбора местоположения
         setFragmentResultListener("locationRequestKey") { _, bundle ->
