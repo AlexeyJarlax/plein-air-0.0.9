@@ -14,7 +14,7 @@
 
     <!-- Кнопки для действий -->
     <Button
-        android:id="@+id/callToPaintButton"
+        android:id="@+id/participateButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="18sp"

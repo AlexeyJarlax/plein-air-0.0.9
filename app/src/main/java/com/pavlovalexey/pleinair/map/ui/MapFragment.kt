@@ -61,6 +61,18 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         googleMap = map
         val initialPosition = LatLng(59.9343, 30.3351) // Координаты центра Санкт-Петербурга
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(initialPosition, 12f))
+
+        // Устанавливаем обработчик кликов по маркерам
+        googleMap.setOnMarkerClickListener { marker ->
+            val tag = marker.tag
+            if (tag is User) {
+                showUserDetailsDialog(tag)
+            } else if (tag is Event) {
+                showEventDetailsDialog(tag)
+            }
+            true // Указывает, что обработка клика завершена
+        }
+
         showFilterDialog()
     }
 
@@ -182,14 +194,25 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun addEventMarker(event: Event, location: LatLng) {
-        val markerOptions = MarkerOptions()
-            .position(location)
-            .title(event.city)
-            .snippet("${event.place} - ${event.date} ${event.time}")
-            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE))
+        Picasso.get().load(event.profileImageUrl).transform(CircleTransform()).into(object : com.squareup.picasso.Target {
+            override fun onBitmapLoaded(bitmap: Bitmap?, from: Picasso.LoadedFrom?) {
+                val markerOptions = MarkerOptions()
+                    .position(location)
+                    .title(event.city)
+                    .snippet("${event.place} - ${event.date} ${event.time}")
+                    .icon(bitmap?.let { BitmapDescriptorFactory.fromBitmap(it) })
+                val marker = googleMap.addMarker(markerOptions)
+                marker?.tag = event // Связываем маркер с объектом Event
+            }
 
-        val marker = googleMap.addMarker(markerOptions)
-        marker?.tag = event // Связываем маркер с объектом Event
+            override fun onBitmapFailed(e: Exception?, errorDrawable: Drawable?) {
+                // Обработка ошибки
+            }
+
+            override fun onPrepareLoad(placeHolderDrawable: Drawable?) {
+                // Подготовка к загрузке
+            }
+        })
     }
 
     private fun addUserMarker(user: User, location: LatLng) {
@@ -217,7 +240,12 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun showEventDetailsDialog(event: Event) {
-        AlertDialog.Builder(requireContext())
+        val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_event_details, null)
+        val participateButton = dialogView.findViewById<Button>(R.id.participateButton)
+        val addFriendButton = dialogView.findViewById<Button>(R.id.addFriendButton)
+        val closeButton = dialogView.findViewById<Button>(R.id.closeButton)
+
+        val alertDialog = AlertDialog.Builder(requireContext())
             .setTitle(event.city)
             .setMessage(
                 "Место: ${event.place}\n" +
@@ -225,15 +253,21 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                         "Время: ${event.time}\n" +
                         "Описание: ${event.description}"
             )
-            .setPositiveButton("OK", null)
-            .show()
+            .setView(dialogView)
+            .setCancelable(false)
+            .create()
+
+        alertDialog.show()
+
+        participateButton.setOnClickListener { showContextMenu(participateButton) }
+        addFriendButton.setOnClickListener { showContextMenu(addFriendButton) }
+        closeButton.setOnClickListener { alertDialog.dismiss() }
     }
 
     private fun showUserDetailsDialog(user: User) {
         val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_user_details, null)
         val callToPaintButton = dialogView.findViewById<Button>(R.id.callToPaintButton)
         val addFriendButton = dialogView.findViewById<Button>(R.id.addFriendButton)
-        val blockButton = dialogView.findViewById<Button>(R.id.blockButton)
         val closeButton = dialogView.findViewById<Button>(R.id.closeButton)
 
         val alertDialog = AlertDialog.Builder(requireContext())
@@ -250,7 +284,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
         callToPaintButton.setOnClickListener { showContextMenu(callToPaintButton) }
         addFriendButton.setOnClickListener { showContextMenu(addFriendButton) }
-        blockButton.setOnClickListener { showContextMenu(blockButton) }
         closeButton.setOnClickListener { alertDialog.dismiss() }
     }
 
