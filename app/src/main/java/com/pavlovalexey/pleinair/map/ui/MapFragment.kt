@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.PopupMenu
+import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -244,12 +245,28 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         val participateButton = dialogView.findViewById<Button>(R.id.participateButton)
         val addFriendButton = dialogView.findViewById<Button>(R.id.addFriendButton)
         val closeButton = dialogView.findViewById<Button>(R.id.closeButton)
+        val userNameTextView = dialogView.findViewById<TextView>(R.id.userName)
+
+        if (!event.userId.isNullOrEmpty()) {
+            firestore.collection("users").document(event.userId)
+                .get()
+                .addOnSuccessListener { userDocument ->
+                    val user = userDocument.toObject(User::class.java)
+                    val userName = user?.name ?: "Неизвестный пользователь"
+                    userNameTextView.text = "Создатель: $userName"
+                }
+                .addOnFailureListener { exception ->
+                    // Обработка ошибки
+                    userNameTextView.text = "Создатель: Неизвестный пользователь"
+                }
+        } else {
+            userNameTextView.text = "Создатель: Неизвестный пользователь"
+        }
 
         val alertDialog = AlertDialog.Builder(requireContext())
             .setTitle(event.city)
             .setMessage(
-                "Место: ${event.place}\n" +
-                        "Дата: ${event.date}\n" +
+                "Дата: ${event.date}\n" +
                         "Время: ${event.time}\n" +
                         "Описание: ${event.description}"
             )
