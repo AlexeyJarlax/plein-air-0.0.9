@@ -91,7 +91,7 @@ class MainActivity : AppCompatActivity(), UserMapFragment.OnLocationSelectedList
         bottomNavigationView.setBackgroundColor(ContextCompat.getColor(this, R.color.menu_background))
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
-                R.id.mapFragment, R.id.userMapFragment -> {
+                R.id.mapFragment, R.id.userMapFragment, R.id.eventMapFragment -> {
                     bottomNavigationView.visibility = View.GONE
                 }
                 else -> {

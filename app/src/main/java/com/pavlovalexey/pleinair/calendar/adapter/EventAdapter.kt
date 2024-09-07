@@ -26,7 +26,6 @@ class EventAdapter : ListAdapter<Event, EventAdapter.EventViewHolder>(DiffCallba
         fun bind(event: Event) {
             Picasso.get().load(event.profileImageUrl).into(binding.artworkImageView)
             binding.city.text = event.city
-            binding.place.text = event.place
             binding.day.text = event.date
             binding.time.text = event.time
             binding.ditales.text = event.description

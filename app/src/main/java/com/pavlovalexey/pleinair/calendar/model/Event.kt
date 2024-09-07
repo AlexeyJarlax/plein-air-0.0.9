@@ -8,5 +8,7 @@ data class Event(
     val date: String = "",
     val time: String = "",
     val description: String = "",
-    val timestamp: Long = System.currentTimeMillis() // используется для удаления просроченных событий
+    val latitude: Double = 0.0,
+    val longitude: Double = 0.0,
+    val timestamp: Long = System.currentTimeMillis()
 )

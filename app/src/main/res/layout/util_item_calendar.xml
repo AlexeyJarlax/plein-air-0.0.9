@@ -35,14 +35,6 @@
             tools:text="@string/city"
             android:maxLines="1"/>
 
-        <TextView
-            android:id="@+id/place"
-            style="@style/TrackText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/z"
-            tools:text="@string/location"
-            android:maxLines="1"/>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -51,12 +43,12 @@
 
             <TextView
                 android:id="@+id/day"
-                style="@style/TrackTextSmall"
+                style="@style/TrackText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:singleLine="true"
-                android:maxLength="40"
-                tools:text="@string/day" />
+                android:padding="@dimen/z"
+                tools:text="@string/day"
+                android:maxLines="1"/>
 
             <ImageView
                 android:id="@+id/ic_point"
@@ -69,10 +61,11 @@
 
             <TextView
                 android:id="@+id/time"
-                style="@style/TrackTextSmall"
+                style="@style/TrackText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 tools:text="@string/time" />
+
         </LinearLayout>
 
         <TextView
@@ -80,8 +73,8 @@
             style="@style/TrackTextSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:singleLine="true"
-            android:maxLength="40"
+            android:maxLines="2"
+            android:ellipsize="end"
             tools:text="Дополнительные детали" />
 
     </LinearLayout>

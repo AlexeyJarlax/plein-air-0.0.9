@@ -90,6 +90,7 @@
         android:id="@+id/pointLocation"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp60"
+        android:gravity="center"
         app:layout_constraintBottom_toBottomOf="@+id/btnChooseLocation"
         app:layout_constraintStart_toEndOf="@+id/btnChooseLocation"
         app:layout_constraintTop_toTopOf="@+id/btnChooseLocation" />
@@ -134,7 +135,7 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/createPlaylist"
+        android:id="@+id/create_event"
         style="@style/PLbuttonCreateNewPlaylist"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
