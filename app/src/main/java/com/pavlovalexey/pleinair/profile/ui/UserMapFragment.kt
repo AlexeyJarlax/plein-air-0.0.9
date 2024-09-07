@@ -72,7 +72,7 @@ class UserMapFragment : Fragment(), OnMapReadyCallback {
         }
 
         // Установите начальную позицию карты на Петропавловскую крепость
-        val initialPosition = LatLng(59.9500019, 30.3166718)
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(initialPosition, 15f))
+        val initialPosition = LatLng(59.9343, 30.3351) // Координаты центра Санкт-Петербурга
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(initialPosition, 12f))
     }
 }

@@ -8,4 +8,5 @@ data class User(
     val profileImageUrl: String = "",
     val location: Map<String, Double> = emptyMap(),
     val locationName: String = "",
+    val isOnline: Boolean? = null
 )

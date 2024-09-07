@@ -18,8 +18,10 @@ firebaseAuth = "23.6.0"
 firebaseAuthVersion = "22.0.0"
 firebaseBom = "33.2.0"
 firebaseBomVersion = "33.1.2"
+firebaseCore = "21.1.1"
 firebaseCrashlyticsGradle = "3.0.2"
 firebaseCrashlyticsGradleVersion = "2.10.1"
+firebaseDatabase = "21.0.0"
 firebaseFirestore = "25.1.0"
 firebaseFirestoreVersion = "24.4.2"
 firebaseStorage = "21.0.0"
@@ -151,8 +153,10 @@ firebase-auth-v2200 = { module = "com.google.firebase:firebase-auth", version.re
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 firebase-bom-v3231 = { module = "com.google.firebase:firebase-bom", version.ref = "googleFirebaseBom" }
 firebase-bom-v3312 = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBomVersion" }
+firebase-core = { module = "com.google.firebase:firebase-core", version.ref = "firebaseCore" }
 firebase-crashlytics-gradle = { module = "com.google.firebase:firebase-crashlytics-gradle", version.ref = "firebaseCrashlyticsGradle" }
 firebase-crashlytics-gradle-v2101 = { module = "com.google.firebase:firebase-crashlytics-gradle", version.ref = "firebaseCrashlyticsGradleVersion" }
+firebase-database = { module = "com.google.firebase:firebase-database", version.ref = "firebaseDatabase" }
 firebase-firestore = { module = "com.google.firebase:firebase-firestore", version.ref = "firebaseFirestore" }
 firebase-firestore-v2442 = { module = "com.google.firebase:firebase-firestore", version.ref = "firebaseFirestoreVersion" }
 firebase-storage = { module = "com.google.firebase:firebase-storage" }

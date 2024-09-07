@@ -12,6 +12,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -38,6 +39,11 @@ import com.pavlovalexey.pleinair.profile.ui.UserMapFragment
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ServerValue
+import com.google.firebase.database.ValueEventListener
 
 class MainActivity : AppCompatActivity(), UserMapFragment.OnLocationSelectedListener {
 
@@ -47,6 +53,7 @@ class MainActivity : AppCompatActivity(), UserMapFragment.OnLocationSelectedList
     private lateinit var storage: FirebaseStorage
     private lateinit var mMap: GoogleMap
     private lateinit var googleSignInClient: GoogleSignInClient
+    private lateinit var progressBar: ProgressBar
 
     private var selectedLocation: LatLng? = null
     private val defaultLocation = LatLng(59.9500019, 30.3166718)    // Координаты Петропавловской крепости используются как отправная точка поиска на карте
@@ -81,6 +88,7 @@ class MainActivity : AppCompatActivity(), UserMapFragment.OnLocationSelectedList
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         hideSystemUI()
+        progressBar = findViewById(R.id.loading_indicator)
 
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
@@ -99,6 +107,37 @@ class MainActivity : AppCompatActivity(), UserMapFragment.OnLocationSelectedList
                 }
             }
         }
+        setupOnlineStatusListener()
+    }
+
+    private fun setupOnlineStatusListener() {
+        val database = FirebaseDatabase.getInstance()
+        val userStatusDatabaseRef = database.getReference("status/${FirebaseAuth.getInstance().currentUser?.uid}")
+
+        val onlineStatus = mapOf(
+            "state" to "online",
+            "last_changed" to ServerValue.TIMESTAMP
+        )
+
+        val offlineStatus = mapOf(
+            "state" to "offline",
+            "last_changed" to ServerValue.TIMESTAMP
+        )
+
+        val connectedRef = database.getReference(".info/connected")
+        connectedRef.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val connected = snapshot.getValue(Boolean::class.java) ?: false
+                if (connected) {
+                    userStatusDatabaseRef.onDisconnect().setValue(offlineStatus)
+                    userStatusDatabaseRef.setValue(onlineStatus)
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                // Обработка ошибки
+            }
+        })
     }
 
     private fun setUserProfile() {

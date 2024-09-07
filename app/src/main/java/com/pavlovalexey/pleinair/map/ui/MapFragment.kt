@@ -34,6 +34,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private var _binding: FragmentMapBinding? = null
     private val binding get() = _binding!!
     private var showOnlineOnly = false
+    private var showEventsOnly = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -58,31 +59,39 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
     override fun onMapReady(map: GoogleMap) {
         googleMap = map
-        loadUserLocationAndMarkers()
-        loadEventMarkers()
-        showUserLocationDialog()
-
-        googleMap.setOnMarkerClickListener { marker ->
-            when (val tag = marker.tag) {
-                is User -> showUserDetailsDialog(tag)
-                is Event -> showEventDetailsDialog(tag)
-                else -> false
-            }
-            true
-        }
+        val initialPosition = LatLng(59.9343, 30.3351) // Координаты центра Санкт-Петербурга
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(initialPosition, 12f))
+        showFilterDialog()
     }
 
-    private fun showUserLocationDialog() {
+    private fun showFilterDialog() {
         AlertDialog.Builder(requireContext())
             .setTitle("Выберите фильтр")
-            .setItems(arrayOf("Все пользователи", "Только онлайн-пользователи")) { _, which ->
-                showOnlineOnly = which == 1
-                loadUserLocationAndMarkers()
+            .setItems(arrayOf("Показать только ивенты\n", "\nПоказать только онлайн пользователей\n", "\nПоказать всех пользователей")) { _, which ->
+                when (which) {
+                    0 -> {
+                        showEventsOnly = true
+                        showOnlineOnly = false
+                        loadEventMarkers()
+                    }
+                    1 -> {
+                        showOnlineOnly = true
+                        showEventsOnly = false
+                        loadUserLocationAndMarkers() // Загружаем только онлайн пользователей
+                    }
+                    2 -> {
+                        showOnlineOnly = false
+                        showEventsOnly = false
+                        loadUserLocationAndMarkers() // Загружаем всех пользователей
+                    }
+                }
             }
             .show()
     }
 
     private fun loadUserLocationAndMarkers() {
+        showLoadingIndicator(true)
+
         val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
 
         // Получаем местоположение пользователя
@@ -113,9 +122,13 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun loadEventMarkers() {
+        showLoadingIndicator(true)
+
         firestore.collection("events")
             .get()
             .addOnSuccessListener { result ->
+                googleMap.clear() // Очищаем карту перед добавлением новых маркеров
+
                 for (document in result) {
                     val event = document.toObject(Event::class.java)
 
@@ -125,9 +138,12 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                         addEventMarker(event, location)
                     }
                 }
+
+                showLoadingIndicator(false) // Скрываем ProgressBar
             }
             .addOnFailureListener { exception ->
                 // Обработка ошибки
+                showLoadingIndicator(false) // Скрываем ProgressBar
             }
     }
 
@@ -135,25 +151,34 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         firestore.collection("users")
             .get()
             .addOnSuccessListener { result ->
+                googleMap.clear() // Очищаем карту перед добавлением новых маркеров
+
                 for (document in result) {
                     val user = document.toObject(User::class.java)
 
-                    // Проверяем, что location не пуст и содержит оба ключа latitude и longitude
-                    val locationMap = user.location
-                    val latitude = locationMap?.get("latitude") as? Double
-                    val longitude = locationMap?.get("longitude") as? Double
+                    // Проверяем статус пользователя, если выбран режим "только онлайн"
+                    if (!showOnlineOnly || user.isOnline == true) {
+                        val locationMap = user.location
+                        val latitude = locationMap?.get("latitude") as? Double
+                        val longitude = locationMap?.get("longitude") as? Double
 
-                    if (latitude != null && longitude != null) {
-                        val location = LatLng(latitude, longitude)
-                        addUserMarker(user, location)
-                    } else {
-                        // Обработка ситуации, когда latitude или longitude отсутствует
+                        if (latitude != null && longitude != null) {
+                            val location = LatLng(latitude, longitude)
+                            addUserMarker(user, location)
+                        }
                     }
                 }
+
+                showLoadingIndicator(false) // Скрываем ProgressBar
             }
             .addOnFailureListener { exception ->
                 // Обработка ошибки
+                showLoadingIndicator(false) // Скрываем ProgressBar
             }
+    }
+
+    private fun showLoadingIndicator(show: Boolean) {
+        binding.loadingIndicator.visibility = if (show) View.VISIBLE else View.GONE
     }
 
     private fun addEventMarker(event: Event, location: LatLng) {
@@ -205,34 +230,28 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun showUserDetailsDialog(user: User) {
-        // Создаем View для кастомного диалога
         val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_user_details, null)
-
-        // Инициализируем кнопки
         val callToPaintButton = dialogView.findViewById<Button>(R.id.callToPaintButton)
         val addFriendButton = dialogView.findViewById<Button>(R.id.addFriendButton)
         val blockButton = dialogView.findViewById<Button>(R.id.blockButton)
         val closeButton = dialogView.findViewById<Button>(R.id.closeButton)
 
-        // Создаем и отображаем диалог
         val alertDialog = AlertDialog.Builder(requireContext())
             .setTitle(user.name)
             .setMessage(
                 "\nТехники: ${user.artStyles?.joinToString(", ") ?: "Техники не выбраны"}\n\n" +
                         "Описание профиля: ${user.description ?: "Описания нет"}\n"
             )
-            .setView(dialogView) // Устанавливаем кастомный View
+            .setView(dialogView)
             .setPositiveButton("OK", null)
             .create()
 
-        // Показываем диалог
         alertDialog.show()
 
-        // Устанавливаем обработчики для кнопок
         callToPaintButton.setOnClickListener { showContextMenu(callToPaintButton) }
         addFriendButton.setOnClickListener { showContextMenu(addFriendButton) }
         blockButton.setOnClickListener { showContextMenu(blockButton) }
-        closeButton.setOnClickListener { alertDialog.dismiss() } // Закрываем диалог
+        closeButton.setOnClickListener { alertDialog.dismiss() }
     }
 
     private fun showContextMenu(view: View) {
@@ -240,14 +259,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         contextMenu.menuInflater.inflate(R.menu.context_menu, contextMenu.menu)
         contextMenu.setOnMenuItemClickListener { item ->
             when (item.itemId) {
-                R.id.menu_item_yes -> {
-                    // Обработка выбора "✔️"
-                    true
-                }
-                R.id.menu_item_no -> {
-                    // Обработка выбора "❌"
-                    true
-                }
+                R.id.menu_item_yes -> true
+                R.id.menu_item_no -> true
                 else -> false
             }
         }
