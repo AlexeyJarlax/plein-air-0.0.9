@@ -1,6 +1,5 @@
-package com.pavlovalexey.pleinair.map.ui
+package com.pavlovalexey.pleinair.calendar.ui.event
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -16,28 +15,10 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.pavlovalexey.pleinair.R
 
-class UserMapFragment : Fragment(), OnMapReadyCallback {
+class EventMapFragment : Fragment(), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
     private var selectedLocation: LatLng? = null
-    private var listener: OnLocationSelectedListener? = null
-
-    interface OnLocationSelectedListener {
-        fun onLocationSelected(location: LatLng)
-    }
-
-    fun setOnLocationSelectedListener(listener: OnLocationSelectedListener) {
-        this.listener = listener
-    }
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        if (context is OnLocationSelectedListener) {
-            listener = context
-        } else {
-            throw RuntimeException("$context must implement OnLocationSelectedListener")
-        }
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,14 +26,21 @@ class UserMapFragment : Fragment(), OnMapReadyCallback {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_user_map, container, false)
 
+        // Инициализация карты
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
+        // Обработка нажатия на кнопку подтверждения местоположения
         view.findViewById<Button>(R.id.btn_confirm_location).setOnClickListener {
             selectedLocation?.let {
-                // Обновляем координаты пользователя в Firebase
-                listener?.onLocationSelected(it)
-                // Закрываем фрагмент карты и возвращаемся назад
+                // Передаем координаты обратно в NewEventFragment через FragmentResultAPI
+                val resultBundle = Bundle().apply {
+                    putDouble("latitude", it.latitude)
+                    putDouble("longitude", it.longitude)
+                }
+                parentFragmentManager.setFragmentResult("locationRequestKey", resultBundle)
+
+                // Закрываем фрагмент карты
                 parentFragmentManager.popBackStack()
             } ?: run {
                 Toast.makeText(requireContext(), "Выберите местоположение", Toast.LENGTH_SHORT).show()
@@ -62,16 +50,18 @@ class UserMapFragment : Fragment(), OnMapReadyCallback {
         return view
     }
 
+    // Когда карта готова
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
 
+        // Обработка клика по карте для выбора местоположения
         mMap.setOnMapClickListener { latLng ->
             mMap.clear()
             mMap.addMarker(MarkerOptions().position(latLng).title("Выбрано местоположение"))
             selectedLocation = latLng
         }
 
-        // Установите начальную позицию карты на Петропавловскую крепость
+        // Установка начальной позиции карты (Петропавловская крепость)
         val initialPosition = LatLng(59.9500019, 30.3166718)
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(initialPosition, 15f))
     }

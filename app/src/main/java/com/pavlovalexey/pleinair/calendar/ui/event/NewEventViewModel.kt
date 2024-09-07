@@ -1,4 +1,4 @@
-package com.pavlovalexey.pleinair.calendar.ui
+package com.pavlovalexey.pleinair.calendar.ui.event
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
@@ -32,7 +32,17 @@ class NewEventViewModel(application: Application) : AndroidViewModel(application
         return city.isNotEmpty() && place.isNotEmpty() && date.isNotEmpty() && time.isNotEmpty() && description.isNotEmpty()
     }
 
-    fun createEvent(userId: String, profileImageUrl: String, city: String, place: String, date: String, time: String, description: String) {
+    fun createEvent(
+        userId: String,
+        profileImageUrl: String,
+        city: String,
+        place: String,
+        date: String,
+        time: String,
+        description: String,
+        latitude: Double,
+        longitude: Double
+    ) {
         _creationStatus.value = CreationStatus.Loading
 
         val event = Event(
@@ -43,6 +53,8 @@ class NewEventViewModel(application: Application) : AndroidViewModel(application
             date = date,
             time = time,
             description = description,
+            latitude = latitude,
+            longitude = longitude,
             timestamp = System.currentTimeMillis()
         )
 

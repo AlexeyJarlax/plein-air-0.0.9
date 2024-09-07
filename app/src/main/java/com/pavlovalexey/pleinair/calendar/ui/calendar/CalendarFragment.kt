@@ -1,4 +1,4 @@
-package com.pavlovalexey.pleinair.calendar.ui
+package com.pavlovalexey.pleinair.calendar.ui.calendar
 
 import android.os.Bundle
 import android.util.Log
@@ -13,10 +13,8 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
 import com.pavlovalexey.pleinair.R
 import com.pavlovalexey.pleinair.databinding.FragmentCalendarBinding
-import com.pavlovalexey.pleinair.calendar.viewmodel.CalendarViewModel
 import com.pavlovalexey.pleinair.calendar.adapter.EventAdapter
 
 class CalendarFragment : Fragment() {

@@ -1,4 +1,4 @@
-package com.pavlovalexey.pleinair.calendar.ui
+package com.pavlovalexey.pleinair.calendar.ui.event
 
 sealed class CreationStatus {
     object Loading : CreationStatus()
