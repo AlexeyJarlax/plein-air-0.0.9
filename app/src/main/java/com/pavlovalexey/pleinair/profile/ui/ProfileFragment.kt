@@ -28,7 +28,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.pavlovalexey.pleinair.R
 import com.pavlovalexey.pleinair.databinding.FragmentProfileBinding
-import com.pavlovalexey.pleinair.map.ui.UserMapFragment
 import com.pavlovalexey.pleinair.profile.viewmodel.ProfileViewModel
 import com.pavlovalexey.pleinair.utils.CircleTransform
 import com.pavlovalexey.pleinair.utils.ImageUtils

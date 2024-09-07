@@ -1,4 +1,4 @@
-package com.pavlovalexey.pleinair.map.ui
+package com.pavlovalexey.pleinair.profile.ui
 
 import android.content.Context
 import android.os.Bundle

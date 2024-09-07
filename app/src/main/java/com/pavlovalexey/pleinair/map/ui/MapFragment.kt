@@ -21,6 +21,7 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.pavlovalexey.pleinair.R
+import com.pavlovalexey.pleinair.calendar.model.Event
 import com.pavlovalexey.pleinair.databinding.FragmentMapBinding
 import com.pavlovalexey.pleinair.profile.model.User
 import com.pavlovalexey.pleinair.utils.CircleTransform
@@ -57,12 +58,16 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
     override fun onMapReady(map: GoogleMap) {
         googleMap = map
+        loadUserLocationAndMarkers()
+        loadEventMarkers()
         showUserLocationDialog()
 
-        // Добавляем слушатель кликов на маркеры
         googleMap.setOnMarkerClickListener { marker ->
-            val user = marker.tag as? User
-            user?.let { showUserDetailsDialog(it) }
+            when (val tag = marker.tag) {
+                is User -> showUserDetailsDialog(tag)
+                is Event -> showEventDetailsDialog(tag)
+                else -> false
+            }
             true
         }
     }
@@ -107,6 +112,25 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             }
     }
 
+    private fun loadEventMarkers() {
+        firestore.collection("events")
+            .get()
+            .addOnSuccessListener { result ->
+                for (document in result) {
+                    val event = document.toObject(Event::class.java)
+
+                    // Проверяем, что координаты присутствуют
+                    if (event.latitude != 0.0 && event.longitude != 0.0) {
+                        val location = LatLng(event.latitude, event.longitude)
+                        addEventMarker(event, location)
+                    }
+                }
+            }
+            .addOnFailureListener { exception ->
+                // Обработка ошибки
+            }
+    }
+
     private fun loadUserMarkers() {
         firestore.collection("users")
             .get()
@@ -132,6 +156,17 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             }
     }
 
+    private fun addEventMarker(event: Event, location: LatLng) {
+        val markerOptions = MarkerOptions()
+            .position(location)
+            .title(event.city)
+            .snippet("${event.place} - ${event.date} ${event.time}")
+            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE))
+
+        val marker = googleMap.addMarker(markerOptions)
+        marker?.tag = event // Связываем маркер с объектом Event
+    }
+
     private fun addUserMarker(user: User, location: LatLng) {
         Picasso.get().load(user.profileImageUrl).transform(CircleTransform()).into(object : com.squareup.picasso.Target {
             override fun onBitmapLoaded(bitmap: Bitmap?, from: Picasso.LoadedFrom?) {
@@ -154,6 +189,19 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         })
 
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 10f))
+    }
+
+    private fun showEventDetailsDialog(event: Event) {
+        AlertDialog.Builder(requireContext())
+            .setTitle(event.city)
+            .setMessage(
+                "Место: ${event.place}\n" +
+                        "Дата: ${event.date}\n" +
+                        "Время: ${event.time}\n" +
+                        "Описание: ${event.description}"
+            )
+            .setPositiveButton("OK", null)
+            .show()
     }
 
     private fun showUserDetailsDialog(user: User) {

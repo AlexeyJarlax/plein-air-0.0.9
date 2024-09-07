@@ -47,31 +47,4 @@ class CalendarViewModel : ViewModel() {
                 _errorMessage.value = "Ошибка проверки событий: ${exception.message}"
             }
     }
-
-//    fun createEvent(event: Event, callback: (Boolean) -> Unit) {
-//        db.collection("events")
-//            .add(event)
-//            .addOnSuccessListener {
-//                callback(true)
-//            }
-//            .addOnFailureListener { exception ->
-//                _errorMessage.value = "Ошибка создания события: ${exception.message}"
-//                callback(false)
-//            }
-//    }
-//
-//    fun deleteExpiredEvents() {
-//        val expirationTime = System.currentTimeMillis() - 72 * 60 * 60 * 1000
-//        db.collection("events")
-//            .whereLessThan("timestamp", expirationTime)
-//            .get()
-//            .addOnSuccessListener { result ->
-//                for (document in result) {
-//                    db.collection("events").document(document.id).delete()
-//                }
-//            }
-//            .addOnFailureListener { exception ->
-//                _errorMessage.value = "Ошибка удаления просроченных событий: ${exception.message}"
-//            }
-//    }
 }

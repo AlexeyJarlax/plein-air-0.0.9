@@ -34,7 +34,7 @@ import com.google.firebase.storage.storage
 import com.pavlovalexey.pleinair.R
 import com.pavlovalexey.pleinair.auth.ui.AuthActivity
 import com.pavlovalexey.pleinair.databinding.ActivityMainBinding
-import com.pavlovalexey.pleinair.map.ui.UserMapFragment
+import com.pavlovalexey.pleinair.profile.ui.UserMapFragment
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions

@@ -23,7 +23,7 @@
 
     <fragment
         android:id="@+id/userMapFragment"
-        android:name="com.pavlovalexey.pleinair.map.ui.UserMapFragment"
+        android:name="com.pavlovalexey.pleinair.profile.ui.UserMapFragment"
         android:label="User Map Fragment"
         tools:layout="@layout/fragment_user_map" />
 
