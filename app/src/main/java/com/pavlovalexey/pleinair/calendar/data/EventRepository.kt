@@ -20,4 +20,11 @@ class EventRepository(private val application: Application) {
             throw e
         }
     }
+
+    // Метод для обновления URL изображения события
+    suspend fun updateEventImageUrl(eventId: String, imageUrl: String) {
+        val eventRef = db.collection("events").document(eventId)
+        eventRef.update("imageUrl", imageUrl)
+            .await() // Используйте Kotlin Coroutines для ожидания завершения операции
+    }
 }

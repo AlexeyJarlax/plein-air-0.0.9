@@ -1,6 +1,7 @@
 package com.pavlovalexey.pleinair.calendar.ui.event
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -25,6 +26,16 @@ class NewEventViewModel(application: Application) : AndroidViewModel(application
 
     fun onFieldChanged(city: String, place: String, date: String, time: String, description: String) {
         _isFormValid.value = validateForm(city, place, date, time, description)
+    }
+
+    fun updateEventImageUrl(eventId: String, imageUrl: String) {
+        viewModelScope.launch {
+            try {
+                eventRepository.updateEventImageUrl(eventId, imageUrl)
+            } catch (e: Exception) {
+                Log.e("NewEventViewModel", "Failed to update event image URL", e)
+            }
+        }
     }
 
     private fun validateForm(city: String, place: String, date: String, time: String, description: String): Boolean {
@@ -59,8 +70,8 @@ class NewEventViewModel(application: Application) : AndroidViewModel(application
 
         viewModelScope.launch {
             try {
-                eventRepository.addEvent(event)
-                _creationStatus.value = CreationStatus.Success
+                val eventId = eventRepository.addEvent(event)
+                _creationStatus.value = CreationStatus.Success(eventId.toString())
             } catch (e: Exception) {
                 _creationStatus.value = CreationStatus.Error(e.localizedMessage ?: "Unknown error")
             }
