@@ -40,7 +40,6 @@ class TermsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_terms)
 
-        // Инициализация SharedPreferences
         sharedPreferences = getSharedPreferences(AppPreferencesKeys.PREFS_NAME, MODE_PRIVATE)
 
         // Проверяем состояние согласия
@@ -116,13 +115,14 @@ class TermsActivity : AppCompatActivity() {
     }
 
     private fun saveTermsAccepted(accepted: Boolean) {
+        Log.d("TermsActivity", "Saving terms accepted: $accepted")
         with(sharedPreferences.edit()) {
-            putBoolean("terms_accepted", accepted)
+            putBoolean("all_terms_accepted", accepted)
             apply()
         }
     }
 
     private fun isTermsAccepted(): Boolean {
-        return sharedPreferences.getBoolean("terms_accepted", false)
+        return sharedPreferences.getBoolean("all_terms_accepted", false)
     }
 }

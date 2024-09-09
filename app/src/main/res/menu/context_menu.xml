@@ -9,4 +9,8 @@
         android:id="@+id/menu_item_no"
         android:title="❌ Отменить"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/info1"
+        android:title="🛑 Кнопки пока не работают🛑 "
+        app:showAsAction="never" />
 </menu>

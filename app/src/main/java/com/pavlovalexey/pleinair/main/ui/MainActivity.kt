@@ -56,7 +56,6 @@ class MainActivity : AppCompatActivity(), UserMapFragment.OnLocationSelectedList
     private lateinit var mMap: GoogleMap
     private lateinit var progressBar: ProgressBar
     private lateinit var googleSignInClient: GoogleSignInClient
-    private val sharedPreferences = getSharedPreferences(AppPreferencesKeys.PREFS_NAME, Context.MODE_PRIVATE)
 
     private var selectedLocation: LatLng? = null
     private val defaultLocation = LatLng(59.9500019, 30.3166718)    // Координаты Петропавловской крепости
@@ -145,8 +144,8 @@ class MainActivity : AppCompatActivity(), UserMapFragment.OnLocationSelectedList
 
     private fun setUserProfile() {
         val user = auth.currentUser ?: return
-
         val userId = user.uid
+        val sharedPreferences = getSharedPreferences(AppPreferencesKeys.PREFS_NAME, Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
         editor.putString("userId", userId)
         editor.apply()
