@@ -145,12 +145,12 @@ class MainActivity : AppCompatActivity(), UserMapFragment.OnLocationSelectedList
         val userId = user.uid
         val userDocRef = db.collection("users").document(userId)
 
-        // Путь к дефолтной аватарке
-        val defaultAvatar = R.drawable.defaut_avatar_120dp
+        // Путь к дефолтной аватарке - пустая строка
+        val defaultAvatar = ""
 
         // Создаем начальные данные профиля пользователя
         val userProfile = hashMapOf(
-            "profileImageUrl" to defaultAvatar, // Используем дефолтную аватарку
+            "profileImageUrl" to defaultAvatar, // Используем пустую строку как дефолтное значение
             "location" to hashMapOf(
                 "latitude" to defaultLocation.latitude,
                 "longitude" to defaultLocation.longitude

@@ -98,7 +98,7 @@ class ProfileFragment : Fragment(), UserMapFragment.OnLocationSelectedListener {
 
         viewModel.user.observe(viewLifecycleOwner) { user ->
             binding.userName.text = user?.name ?: getString(R.string.default_user_name)
-            if (user?.profileImageUrl != null) {
+            if (!user?.profileImageUrl.isNullOrEmpty()) {
                 // Load the image from local storage if it exists, otherwise load from Firebase Storage
                 viewModel.loadProfileImageFromStorage(
                     { bitmap ->
@@ -106,13 +106,13 @@ class ProfileFragment : Fragment(), UserMapFragment.OnLocationSelectedListener {
                     },
                     {
                         Picasso.get()
-                            .load(user.profileImageUrl)
+                            .load(user?.profileImageUrl)
                             .transform(CircleTransform()) // Устанавливаем закругленные углы
                             .into(binding.userAvatar)
                     }
                 )
             } else {
-                binding.userAvatar.setImageResource(R.drawable.default_avatar)
+                binding.userAvatar.setImageResource(R.drawable.account_circle_50dp)
             }
             binding.txtChooseLocation.text = user?.locationName ?: getString(R.string.location)
             updateIconIfLocationExists(user?.locationName)
