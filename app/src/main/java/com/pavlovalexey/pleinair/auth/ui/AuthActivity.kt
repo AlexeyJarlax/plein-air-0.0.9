@@ -8,6 +8,7 @@ package com.pavlovalexey.pleinair.auth.ui
  * 3 Этап - MainActivity и фрагменты по всему функционалу приложения с с навигацией через НавГраф
 */
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -23,6 +24,7 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.pavlovalexey.pleinair.R
 import com.pavlovalexey.pleinair.databinding.ActivityAuthBinding
 import com.pavlovalexey.pleinair.main.ui.MainActivity
+import com.pavlovalexey.pleinair.utils.AppPreferencesKeys
 
 class AuthActivity : AppCompatActivity() {
 
@@ -124,7 +126,6 @@ class AuthActivity : AppCompatActivity() {
         auth.signInWithCredential(credential)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    // Авторизация прошла успешно, переход на главный экран
                     startActivity(Intent(this, MainActivity::class.java))
                     finish()
                 } else {

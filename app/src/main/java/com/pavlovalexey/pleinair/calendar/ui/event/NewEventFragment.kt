@@ -2,6 +2,7 @@ package com.pavlovalexey.pleinair.calendar.ui.event
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -22,6 +23,7 @@ import java.util.Calendar
 import java.util.Locale
 import java.util.concurrent.TimeUnit
 import com.google.android.gms.maps.model.LatLng
+import com.pavlovalexey.pleinair.utils.AppPreferencesKeys
 import java.io.BufferedReader
 
 class NewEventFragment : Fragment() {
@@ -29,7 +31,7 @@ class NewEventFragment : Fragment() {
     private lateinit var newEventViewModel: NewEventViewModel
     private lateinit var profileViewModel: ProfileViewModel
     private lateinit var binding: FragmentNewEventBinding
-    private var selectedLocation: LatLng? = null  // Изменение типа на nullable
+    private var selectedLocation: LatLng? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,17 +47,18 @@ class NewEventFragment : Fragment() {
         newEventViewModel = ViewModelProvider(this).get(NewEventViewModel::class.java)
         profileViewModel = ViewModelProvider(this).get(ProfileViewModel::class.java)
 
+        // Загрузка списка городов
         val inputStream = resources.openRawResource(R.raw.cities)
         val cities = inputStream.bufferedReader().use(BufferedReader::readLines)
         val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, cities)
         binding.inputCity.setAdapter(adapter)
-        binding.inputCity.threshold = 1 // Показывать список после ввода 1 символа
+        binding.inputCity.threshold = 1
 
         // Слушатель для результата выбора местоположения
         setFragmentResultListener("locationRequestKey") { _, bundle ->
             val latitude = bundle.getDouble("latitude")
             val longitude = bundle.getDouble("longitude")
-            selectedLocation = LatLng(latitude, longitude)  // Инициализация переменной
+            selectedLocation = LatLng(latitude, longitude)
             binding.pointLocation.setText("Широта: $latitude,\nДолгота: $longitude")
         }
 
@@ -85,13 +88,12 @@ class NewEventFragment : Fragment() {
                 is CreationStatus.Loading -> showLoading(true)
                 is CreationStatus.Success -> {
                     showLoading(false)
-                    findNavController().navigateUp()  // Навигация назад
+                    findNavController().navigateUp()
                 }
                 is CreationStatus.Error -> {
                     showLoading(false)
                     Toast.makeText(context, status.message, Toast.LENGTH_LONG).show()
                 }
-                else -> {}
             }
         }
 
@@ -136,8 +138,8 @@ class NewEventFragment : Fragment() {
                 Toast.makeText(requireContext(), "Пожалуйста, выберите местоположение", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-
-            val userId = profileViewModel.user.value?.userId ?: "User ID"
+            val sharedPreferences = requireContext().getSharedPreferences(AppPreferencesKeys.PREFS_NAME, Context.MODE_PRIVATE)
+            val userId = sharedPreferences.getString("userId", "") ?: ""
             val profileImageUrl = profileViewModel.user.value?.profileImageUrl ?: "User Avatar URL"
             val latitude = selectedLocation?.latitude ?: 0.0
             val longitude = selectedLocation?.longitude ?: 0.0
@@ -156,7 +158,6 @@ class NewEventFragment : Fragment() {
         }
     }
 
-    // Метод для отображения DatePickerDialog с кастомизированными кнопками
     private fun openDatePickerDialog(calendar: Calendar) {
         val datePickerDialog = DatePickerDialog(
             requireContext(),
@@ -185,7 +186,6 @@ class NewEventFragment : Fragment() {
         datePickerDialog.show()
     }
 
-    // Метод для отображения TimePickerDialog с кастомизированными кнопками
     private fun openTimePickerDialog() {
         val timePickerDialog = TimePickerDialog(
             requireContext(),

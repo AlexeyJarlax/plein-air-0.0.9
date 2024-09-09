@@ -12,10 +12,12 @@ class EventRepository(private val application: Application) {
     private val db = FirebaseFirestore.getInstance()
 
     suspend fun addEvent(event: Event) {
-        withContext(Dispatchers.IO) {
+        try {
             db.collection("events")
                 .add(event)
-                .await() // Используем await для асинхронного выполнения
+                .await()  // Используйте coroutines для ожидания завершения операции
+        } catch (e: Exception) {
+            throw e
         }
     }
 }

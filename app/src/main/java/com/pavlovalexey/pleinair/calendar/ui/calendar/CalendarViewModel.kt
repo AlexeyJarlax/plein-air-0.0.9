@@ -21,11 +21,9 @@ class CalendarViewModel : ViewModel() {
             .addOnSuccessListener { result ->
                 val eventList = result.mapNotNull { it.toObject(Event::class.java) }
                 _events.value = eventList
-                Log.d("CalendarViewModel", "Events loaded: $eventList")
             }
             .addOnFailureListener { exception ->
                 _errorMessage.value = "Ошибка загрузки событий: ${exception.message}"
-                Log.e("CalendarViewModel", "Error loading events", exception)
             }
     }
 

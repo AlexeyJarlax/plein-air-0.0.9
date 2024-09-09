@@ -8,6 +8,7 @@ package com.pavlovalexey.pleinair.main.ui
  * 3 Этап - MainActivity и фрагменты по всему функционалу приложения с с навигацией через НавГраф
  */
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -44,6 +45,7 @@ import com.pavlovalexey.pleinair.R
 import com.pavlovalexey.pleinair.auth.ui.AuthActivity
 import com.pavlovalexey.pleinair.databinding.ActivityMainBinding
 import com.pavlovalexey.pleinair.profile.ui.UserMapFragment
+import com.pavlovalexey.pleinair.utils.AppPreferencesKeys
 
 class MainActivity : AppCompatActivity(), UserMapFragment.OnLocationSelectedListener {
 
@@ -54,6 +56,7 @@ class MainActivity : AppCompatActivity(), UserMapFragment.OnLocationSelectedList
     private lateinit var mMap: GoogleMap
     private lateinit var progressBar: ProgressBar
     private lateinit var googleSignInClient: GoogleSignInClient
+    private val sharedPreferences = getSharedPreferences(AppPreferencesKeys.PREFS_NAME, Context.MODE_PRIVATE)
 
     private var selectedLocation: LatLng? = null
     private val defaultLocation = LatLng(59.9500019, 30.3166718)    // Координаты Петропавловской крепости
@@ -142,13 +145,14 @@ class MainActivity : AppCompatActivity(), UserMapFragment.OnLocationSelectedList
 
     private fun setUserProfile() {
         val user = auth.currentUser ?: return
+
         val userId = user.uid
+        val editor = sharedPreferences.edit()
+        editor.putString("userId", userId)
+        editor.apply()
+
         val userDocRef = db.collection("users").document(userId)
-
-        // Путь к дефолтной аватарке - пустая строка
         val defaultAvatar = ""
-
-        // Создаем начальные данные профиля пользователя
         val userProfile = hashMapOf(
             "profileImageUrl" to defaultAvatar, // Используем пустую строку как дефолтное значение
             "location" to hashMapOf(

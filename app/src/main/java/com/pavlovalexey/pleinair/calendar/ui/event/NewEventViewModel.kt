@@ -28,7 +28,6 @@ class NewEventViewModel(application: Application) : AndroidViewModel(application
     }
 
     private fun validateForm(city: String, place: String, date: String, time: String, description: String): Boolean {
-        // Проверка, что все поля заполнены
         return city.isNotEmpty() && place.isNotEmpty() && date.isNotEmpty() && time.isNotEmpty() && description.isNotEmpty()
     }
 
