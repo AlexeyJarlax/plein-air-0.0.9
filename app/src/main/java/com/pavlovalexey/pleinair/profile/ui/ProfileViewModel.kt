@@ -3,6 +3,10 @@ package com.pavlovalexey.pleinair.profile.viewmodel
 import android.app.Application
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Canvas
+import android.graphics.LinearGradient
+import android.graphics.Paint
+import android.graphics.Shader
 import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
@@ -10,18 +14,19 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.tasks.Tasks
-import com.google.firebase.appcheck.internal.util.Logger.TAG
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.GeoPoint
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
+import com.pavlovalexey.pleinair.R
 import com.pavlovalexey.pleinair.profile.model.User
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.util.UUID
+import kotlin.random.Random
 
 class ProfileViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -29,19 +34,19 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
     private val storage: FirebaseStorage = FirebaseStorage.getInstance()
 
+    private val animals: List<String> by lazy { loadFile(R.raw.animals) }
+    private val verbs: List<String> by lazy { loadFile(R.raw.verbs) }
+    private val nouns: List<String> by lazy { loadFile(R.raw.nouns) }
+
     private val _user = MutableLiveData<User>().apply {
-        val currentUser = auth.currentUser
-        value = currentUser?.let {
-            it.displayName?.let { it1 ->
-                it.photoUrl?.toString()?.let { it2 ->
-                    User(
-                        name = it1,
-                        profileImageUrl = it2,
-                        locationName = null.toString()
-                    )
-                }
-            }
-        }
+        val userId = auth.currentUser?.uid ?: UUID.randomUUID().toString()
+        val avatarUri = generateAndSaveRandomAvatar(userId)
+
+        value = User(
+            name = generateRandomUserName(), // случайно сгенерированное имя пользователя
+            profileImageUrl = avatarUri, // случайно сгенерированная аватарка
+            locationName = null.toString()
+        )
     }
     val user: LiveData<User> get() = _user
     private val _selectedArtStyles = MutableLiveData<Set<String>>(emptySet())
@@ -57,11 +62,11 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         firestore.collection("users").document(userId)
             .update("profileImageUrl", imageUrl)
             .addOnSuccessListener {
-                Log.d(TAG, "Profile image URL updated")
+                Log.d("ProfileViewModel", "Profile image URL updated")
                 _user.value = _user.value?.copy(profileImageUrl = imageUrl)
             }
             .addOnFailureListener { e ->
-                Log.w(TAG, "Error updating profile image URL", e)
+                Log.w("ProfileViewModel", "Error updating profile image URL", e)
             }
     }
 
@@ -70,11 +75,11 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         firestore.collection("users").document(userId)
             .update("name", newName)
             .addOnSuccessListener {
-                Log.d(TAG, "User name updated")
+                Log.d("ProfileViewModel", "User name updated")
                 _user.value = _user.value?.copy(name = newName)
             }
             .addOnFailureListener { e ->
-                Log.w(TAG, "Error updating user name", e)
+                Log.w("ProfileViewModel", "Error updating user name", e)
             }
     }
 
@@ -86,7 +91,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
                 onSuccess()
             }
             .addOnFailureListener { e ->
-                Log.w(TAG, "Error updating user location", e)
+                Log.w("ProfileViewModel", "Error updating user location", e)
             }
     }
 
@@ -122,7 +127,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
                     .addOnFailureListener { onFailure(it) }
             },
             onFailure = {
-                Log.w(TAG, "Error clearing profile image folder", it)
+                Log.w("ProfileViewModel", "Error clearing profile image folder", it)
                 onFailure(it)
             }
         )
@@ -133,12 +138,12 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         FirebaseFirestore.getInstance().collection("users").document(userId)
             .update("description", newDescription)
             .addOnSuccessListener {
-                Log.d(TAG, "User description updated")
+                Log.d("ProfileViewModel", "User description updated")
                 _user.value = _user.value?.copy(description = newDescription)
                 onSuccess()
             }
             .addOnFailureListener { e ->
-                Log.w(TAG, "Error updating user description", e)
+                Log.w("ProfileViewModel", "Error updating user description", e)
             }
     }
 
@@ -147,12 +152,12 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         firestore.collection("users").document(userId)
             .update("artStyles", styles.toList()) // Save as a list in Firestore
             .addOnSuccessListener {
-                Log.d(TAG, "Art styles updated")
+                Log.d("ProfileViewModel", "Art styles updated")
                 _selectedArtStyles.value = styles
                 onSuccess()
             }
             .addOnFailureListener { e ->
-                Log.w(TAG, "Error updating art styles", e)
+                Log.w("ProfileViewModel", "Error updating art styles", e)
             }
     }
 
@@ -167,8 +172,72 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
                 }
             }
             .addOnFailureListener { e ->
-                Log.w(TAG, "Error loading art styles", e)
+                Log.w("ProfileViewModel", "Error loading art styles", e)
             }
+    }
+
+    private fun generateRandomAvatar(): Bitmap {
+        val width = 200
+        val height = 200
+        val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+
+        // Генерация градиента
+        val paint = Paint()
+        val colorStart = (0xFF000000 or Random.nextInt(0xFFFFFF).toLong()).toInt()
+        val colorEnd = (0xFF000000 or Random.nextInt(0xFFFFFF).toLong()).toInt()
+        val shader = LinearGradient(0f, 0f, width.toFloat(), height.toFloat(), colorStart, colorEnd, Shader.TileMode.CLAMP)
+        paint.shader = shader
+
+        val canvas = Canvas(bitmap)
+        canvas.drawRect(0f, 0f, width.toFloat(), height.toFloat(), paint)
+
+        // Размеры для квадратов
+        val squareSize = 50
+        val centerX = width / 2
+        val centerY = height / 2
+
+        // Координаты углов квадратиков
+        val squares = listOf(
+            Pair(centerX - squareSize, centerY - squareSize), // Левый верхний
+            Pair(centerX, centerY - squareSize),              // Правый верхний
+            Pair(centerX - squareSize, centerY),              // Левый нижний
+            Pair(centerX, centerY)                            // Правый нижний
+        )
+
+        // Генерация случайных цветов для квадратиков
+        val colors = List(4) { (0xFF000000 or Random.nextInt(0xFFFFFF).toLong()).toInt() }
+
+        // Рисуем квадратики
+        for (i in squares.indices) {
+            val (startX, startY) = squares[i]
+            val color = colors[i]
+            for (x in startX until startX + squareSize) {
+                for (y in startY until startY + squareSize) {
+                    if (x < width && y < height) { // Проверка на выход за границы изображения
+                        bitmap.setPixel(x, y, color)
+                    }
+                }
+            }
+        }
+
+        return bitmap
+    }
+
+    private fun generateAndSaveRandomAvatar(userId: String): String {
+        val savedAvatar = loadImageFromLocalStorage(userId)
+        if (savedAvatar != null) {
+            return avatarBitmapToUri(savedAvatar, userId).toString()
+        }
+
+        val avatarBitmap = generateRandomAvatar()
+        saveImageToLocalStorage(avatarBitmap, userId)
+        return avatarBitmapToUri(avatarBitmap, userId).toString()
+    }
+
+    private fun avatarBitmapToUri(bitmap: Bitmap, userId: String): Uri {
+        val filename = "profile_image_$userId.jpg"
+        val file = File(getApplication<Application>().filesDir, filename)
+        return Uri.fromFile(file)
     }
 
     fun saveImageToLocalStorage(imageBitmap: Bitmap, userId: String) {
@@ -179,7 +248,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
             fos = FileOutputStream(file)
             imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos)
         } catch (e: IOException) {
-            Log.e(TAG, "Error saving image to local storage", e)
+            Log.e("ProfileViewModel", "Error saving image to local storage", e)
         } finally {
             fos?.flush()
             fos?.close()
@@ -205,24 +274,34 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
             val storageRef: StorageReference = storage.reference.child("profile_images/$userId/")
             storageRef.listAll().addOnSuccessListener { listResult ->
                 if (listResult.items.isNotEmpty()) {
-                    // Load the first image if available
                     val firstItem = listResult.items[0]
                     firstItem.getBytes(Long.MAX_VALUE).addOnSuccessListener { bytes ->
                         val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
                         saveImageToLocalStorage(bitmap, userId) // Save to local storage
                         onSuccess(bitmap)
                     }.addOnFailureListener { e ->
-                        Log.w(TAG, "Error downloading image from Firebase", e)
+                        Log.w("ProfileViewModel", "Error downloading image from Firebase", e)
                         onFailure(e)
                     }
                 } else {
-                    // No images found in Firebase
                     onFailure(Exception("No profile image found"))
                 }
             }.addOnFailureListener { e ->
-                Log.w(TAG, "Error getting image list from Firebase", e)
+                Log.w("ProfileViewModel", "Error getting image list from Firebase", e)
                 onFailure(e)
             }
         }
+    }
+
+    private fun loadFile(resourceId: Int): List<String> {
+        val inputStream = getApplication<Application>().resources.openRawResource(resourceId)
+        return inputStream.bufferedReader().use { it.readLines() }
+    }
+
+    private fun generateRandomUserName(): String {
+        val animal = animals.random()
+        val verb = verbs.random()
+        val noun = nouns.random()
+        return "$animal $verb $noun"
     }
 }

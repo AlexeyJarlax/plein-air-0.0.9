@@ -44,7 +44,6 @@ import com.pavlovalexey.pleinair.R
 import com.pavlovalexey.pleinair.auth.ui.AuthActivity
 import com.pavlovalexey.pleinair.databinding.ActivityMainBinding
 import com.pavlovalexey.pleinair.profile.ui.UserMapFragment
-import kotlin.random.Random
 
 class MainActivity : AppCompatActivity(), UserMapFragment.OnLocationSelectedListener {
 
@@ -146,16 +145,11 @@ class MainActivity : AppCompatActivity(), UserMapFragment.OnLocationSelectedList
         val userId = user.uid
         val userDocRef = db.collection("users").document(userId)
 
-        // Генерация случайного забавного имени
-        val funnyNames = listOf("FlyingPanda", "JumpingCat", "DancingBanana", "CrazyKoala", "SingingPenguin")
-        val randomName = funnyNames[Random.nextInt(funnyNames.size)]
-
         // Путь к дефолтной аватарке
         val defaultAvatar = R.drawable.defaut_avatar_120dp
 
         // Создаем начальные данные профиля пользователя
         val userProfile = hashMapOf(
-            "name" to randomName,
             "profileImageUrl" to defaultAvatar, // Используем дефолтную аватарку
             "location" to hashMapOf(
                 "latitude" to defaultLocation.latitude,
