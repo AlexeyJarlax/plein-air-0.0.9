@@ -109,9 +109,16 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
             }
     }
 
-    fun logout() {
+    fun logout() { // чистим префы кроме галочки на чтение соглашений
         auth.signOut()
-        sharedPreferences.edit().clear().apply()
+        val prefs = sharedPreferences.all
+        val editor = sharedPreferences.edit()
+        for (key in prefs.keys) {
+            if (key != "all_terms_accepted") {
+                editor.remove(key)
+            }
+        }
+        editor.apply()
         _user.value = null
     }
 

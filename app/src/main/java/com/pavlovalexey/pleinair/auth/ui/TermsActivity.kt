@@ -34,13 +34,13 @@ class TermsActivity : AppCompatActivity() {
     private lateinit var tvAgreement: TextView
     private lateinit var tvBeforePolicy: TextView
     private lateinit var tvPrivacyPolicy: TextView
-    private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var sharedPreferencesFS: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_terms)
 
-        sharedPreferences = getSharedPreferences(AppPreferencesKeys.PREFS_NAME, MODE_PRIVATE)
+        sharedPreferencesFS = getSharedPreferences(AppPreferencesKeys.PREFS_NAME, MODE_PRIVATE)
 
         // Проверяем состояние согласия
         if (isTermsAccepted()) {
@@ -116,13 +116,13 @@ class TermsActivity : AppCompatActivity() {
 
     private fun saveTermsAccepted(accepted: Boolean) {
         Log.d("TermsActivity", "Saving terms accepted: $accepted")
-        with(sharedPreferences.edit()) {
+        with(sharedPreferencesFS.edit()) {
             putBoolean("all_terms_accepted", accepted)
             apply()
         }
     }
 
     private fun isTermsAccepted(): Boolean {
-        return sharedPreferences.getBoolean("all_terms_accepted", false)
+        return sharedPreferencesFS.getBoolean("all_terms_accepted", false)
     }
 }

@@ -157,7 +157,7 @@ class ProfileFragment : Fragment(), UserMapFragment.OnLocationSelectedListener {
         }
 
         viewModel.selectedArtStyles.observe(viewLifecycleOwner) { selectedStyles ->
-            // Можно обновить UI или сохранить эти данные для использования
+
         }
 
         return binding.root
@@ -278,13 +278,11 @@ class ProfileFragment : Fragment(), UserMapFragment.OnLocationSelectedListener {
     private fun showEditDescriptionDialog() {
         val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
 
-        // Сначала получаем текущее описание пользователя
         FirebaseFirestore.getInstance().collection("users").document(userId)
             .get()
             .addOnSuccessListener { documentSnapshot ->
                 val currentDescription = documentSnapshot.getString("description") ?: ""
 
-                // Создаем поле ввода и настраиваем его
                 val editText = EditText(requireContext()).apply {
                     setText(currentDescription)
                     inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE
