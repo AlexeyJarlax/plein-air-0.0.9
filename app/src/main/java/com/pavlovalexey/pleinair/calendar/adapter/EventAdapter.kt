@@ -2,65 +2,51 @@ package com.pavlovalexey.pleinair.calendar.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.google.firebase.firestore.FirebaseFirestore
 import com.pavlovalexey.pleinair.R
 import com.pavlovalexey.pleinair.databinding.UtilItemCalendarBinding
 import com.pavlovalexey.pleinair.calendar.model.Event
 import com.squareup.picasso.Picasso
 
-class EventAdapter(
-    private val context: Context,
-    private val userProfileImageUrl: String? // Передаем URL изображения пользователя в адаптер
-) : ListAdapter<Event, EventAdapter.EventViewHolder>(DiffCallback()) {
+class EventAdapter : ListAdapter<Event, EventAdapter.EventViewHolder>(DiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventViewHolder {
-        val binding = UtilItemCalendarBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return EventViewHolder(binding, context, userProfileImageUrl)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.util_item_calendar, parent, false)
+        return EventViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: EventViewHolder, position: Int) {
-        holder.bind(getItem(position))
+        val event = getItem(position)
+        holder.bind(event)
     }
 
-    class EventViewHolder(
-        private val binding: UtilItemCalendarBinding,
-        private val context: Context,
-        private val userProfileImageUrl: String? // Получаем URL изображения пользователя в ViewHolder
-    ) : RecyclerView.ViewHolder(binding.root) {
-
+    class EventViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(event: Event) {
-            // Определяем, какое изображение использовать
-            val imageUrlToLoad = when {
-                !userProfileImageUrl.isNullOrEmpty() -> userProfileImageUrl
-                !event.profileImageUrl.isNullOrEmpty() -> event.profileImageUrl
-                else -> null
-            }
-
-            // Загрузка изображения с использованием Picasso
-            if (imageUrlToLoad != null) {
-                Picasso.get()
-                    .load(imageUrlToLoad)
-                    .placeholder(R.drawable.account_circle_50dp) // Заглушка на время загрузки
-                    .into(binding.artworkImageView)
-            } else {
-                // Если URL не найден, используем заглушку
-                binding.artworkImageView.setImageResource(R.drawable.account_circle_50dp)
-            }
-
-            // Устанавливаем другие данные события
-            binding.city.text = event.city
-            binding.day.text = event.date
-            binding.time.text = event.time
-            binding.ditales.text = event.description
+            // Привяжите данные события к элементам UI
+            itemView.findViewById<TextView>(R.id.city).text = event.city
+            itemView.findViewById<TextView>(R.id.day).text = event.date
+            itemView.findViewById<TextView>(R.id.time).text = event.time
+            itemView.findViewById<TextView>(R.id.ditales).text = event.description
+            // Загрузите изображение профиля
+            val imageView = itemView.findViewById<ImageView>(R.id.artwork_image_view)
+            Glide.with(itemView.context)
+                .load(event.profileImageUrl)
+                .placeholder(R.drawable.account_circle_50dp)
+                .into(imageView)
         }
     }
 
     private class DiffCallback : DiffUtil.ItemCallback<Event>() {
         override fun areItemsTheSame(oldItem: Event, newItem: Event): Boolean {
-            return oldItem.timestamp == newItem.timestamp
+            return oldItem.timestamp == newItem.timestamp // Или другой уникальный идентификатор
         }
 
         override fun areContentsTheSame(oldItem: Event, newItem: Event): Boolean {
