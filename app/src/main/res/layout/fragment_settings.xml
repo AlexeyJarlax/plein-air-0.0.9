@@ -102,4 +102,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/donats" />
 
+    <ProgressBar
+    android:id="@+id/loading_indicator"
+    style="?android:attr/progressBarStyle"
+    android:layout_width="@dimen/dp91"
+    android:layout_height="@dimen/dp91"
+    android:indeterminateTint="@color/yp_blue_and_yp_blue"
+    android:visibility="gone"
+    android:layout_gravity="center"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    tools:visibility="visible" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

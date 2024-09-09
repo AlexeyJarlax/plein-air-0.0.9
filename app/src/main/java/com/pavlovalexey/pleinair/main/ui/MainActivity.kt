@@ -1,5 +1,13 @@
 package com.pavlovalexey.pleinair.main.ui
 
+/** Приложение построено как синглАктивити на фрагментах с отправной точкой MainActivity.
+ * TermsActivity и AuthActivity выделены как отдельные активити чтобы безопасно изолировать
+ * неавторизованных / несогластных пользователей от основной структуры фрагментов.
+ * 1 Этап - подписание соглашений в TermsActivity
+ * 2 Этап - авторизация в AuthActivity
+ * 3 Этап - MainActivity и фрагменты по всему функционалу приложения с с навигацией через НавГраф
+ */
+
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -10,11 +18,17 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.Firebase
+import com.google.firebase.appcheck.appCheck
+import com.google.firebase.appcheck.playintegrity.PlayIntegrityAppCheckProviderFactory
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.database.DataSnapshot
@@ -40,6 +54,7 @@ class MainActivity : AppCompatActivity(), UserMapFragment.OnLocationSelectedList
     private lateinit var storage: FirebaseStorage
     private lateinit var mMap: GoogleMap
     private lateinit var progressBar: ProgressBar
+    private lateinit var googleSignInClient: GoogleSignInClient
 
     private var selectedLocation: LatLng? = null
     private val defaultLocation = LatLng(59.9500019, 30.3166718)    // Координаты Петропавловской крепости
@@ -51,6 +66,15 @@ class MainActivity : AppCompatActivity(), UserMapFragment.OnLocationSelectedList
         db = com.google.firebase.Firebase.firestore
         auth = FirebaseAuth.getInstance()
         storage = com.google.firebase.Firebase.storage
+        Firebase.appCheck.installAppCheckProviderFactory(
+            PlayIntegrityAppCheckProviderFactory.getInstance(),
+        )
+
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestEmail()
+            .build()
+        googleSignInClient = GoogleSignIn.getClient(this, gso)
 
         if (auth.currentUser == null) {
             // Если пользователь не авторизован, перенаправляем его на AuthActivity
@@ -217,8 +241,15 @@ class MainActivity : AppCompatActivity(), UserMapFragment.OnLocationSelectedList
 
     fun logoutAndRevokeAccess() {
         auth.signOut()
-        startActivity(Intent(this, AuthActivity::class.java))
-        finish()
+        googleSignInClient.revokeAccess().addOnCompleteListener {
+            // После выхода из аккаунта можно перенаправить пользователя на экран авторизации
+            startActivity(Intent(this, AuthActivity::class.java))
+            finish()
+        }
+    }
+
+    fun onLogout() {
+        logoutAndRevokeAccess()
     }
 
     private fun hideSystemUI() {

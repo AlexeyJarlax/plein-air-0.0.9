@@ -23,6 +23,7 @@ import java.util.Date
 import java.util.Locale
 import kotlin.concurrent.thread
 import android.content.SharedPreferences
+import com.pavlovalexey.pleinair.utils.AppPreferencesKeys
 
 class TermsActivity : AppCompatActivity() {
 
@@ -40,7 +41,7 @@ class TermsActivity : AppCompatActivity() {
         setContentView(R.layout.activity_terms)
 
         // Инициализация SharedPreferences
-        sharedPreferences = getSharedPreferences("AppPrefs", MODE_PRIVATE)
+        sharedPreferences = getSharedPreferences(AppPreferencesKeys.PREFS_NAME, MODE_PRIVATE)
 
         // Проверяем состояние согласия
         if (isTermsAccepted()) {

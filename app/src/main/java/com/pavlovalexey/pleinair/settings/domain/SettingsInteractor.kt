@@ -10,4 +10,5 @@ interface SettingsInteractor {
     fun buttonDonat()
     fun applyTheme()
     fun sharePlaylist(message: String)
+    fun deleteUserAccount(onAccountDeleted: () -> Unit)
 }
