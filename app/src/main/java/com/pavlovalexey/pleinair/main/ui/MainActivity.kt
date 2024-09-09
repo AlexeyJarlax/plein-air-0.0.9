@@ -1,13 +1,5 @@
 package com.pavlovalexey.pleinair.main.ui
 
-/** Приложение построено как синглАктивити на фрагментах с отправной точкой MainActivity.
- * TermsActivity и AuthActivity выделены как отдельные активити чтобы безопасно изолировать
- * неавторизованных / несогластных пользователей от основной структуры фрагментов.
- * 1 Этап - подписание соглашений в TermsActivity
- * 2 Этап - авторизация в AuthActivity
- * 3 Этап - MainActivity и фрагменты по всему функционалу приложения с с навигацией через НавГраф
- */
-
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -23,11 +15,13 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.firebase.Firebase
-import com.google.firebase.appcheck.appCheck
-import com.google.firebase.appcheck.playintegrity.PlayIntegrityAppCheckProviderFactory
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ServerValue
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.firestore.firestore
 import com.google.firebase.initialize
 import com.google.firebase.storage.FirebaseStorage
@@ -36,14 +30,7 @@ import com.pavlovalexey.pleinair.R
 import com.pavlovalexey.pleinair.auth.ui.AuthActivity
 import com.pavlovalexey.pleinair.databinding.ActivityMainBinding
 import com.pavlovalexey.pleinair.profile.ui.UserMapFragment
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ServerValue
-import com.google.firebase.database.ValueEventListener
+import kotlin.random.Random
 
 class MainActivity : AppCompatActivity(), UserMapFragment.OnLocationSelectedListener {
 
@@ -52,11 +39,10 @@ class MainActivity : AppCompatActivity(), UserMapFragment.OnLocationSelectedList
     private lateinit var auth: FirebaseAuth
     private lateinit var storage: FirebaseStorage
     private lateinit var mMap: GoogleMap
-    private lateinit var googleSignInClient: GoogleSignInClient
     private lateinit var progressBar: ProgressBar
 
     private var selectedLocation: LatLng? = null
-    private val defaultLocation = LatLng(59.9500019, 30.3166718)    // Координаты Петропавловской крепости используются как отправная точка поиска на карте
+    private val defaultLocation = LatLng(59.9500019, 30.3166718)    // Координаты Петропавловской крепости
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,15 +51,6 @@ class MainActivity : AppCompatActivity(), UserMapFragment.OnLocationSelectedList
         db = com.google.firebase.Firebase.firestore
         auth = FirebaseAuth.getInstance()
         storage = com.google.firebase.Firebase.storage
-        Firebase.appCheck.installAppCheckProviderFactory(
-            PlayIntegrityAppCheckProviderFactory.getInstance(),
-        )
-
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.default_web_client_id))
-            .requestEmail()
-            .build()
-        googleSignInClient = GoogleSignIn.getClient(this, gso)
 
         if (auth.currentUser == null) {
             // Если пользователь не авторизован, перенаправляем его на AuthActivity
@@ -145,10 +122,17 @@ class MainActivity : AppCompatActivity(), UserMapFragment.OnLocationSelectedList
         val userId = user.uid
         val userDocRef = db.collection("users").document(userId)
 
-        // Создаем начальные данные профиля пользователя, включая координаты по умолчанию
+        // Генерация случайного забавного имени
+        val funnyNames = listOf("FlyingPanda", "JumpingCat", "DancingBanana", "CrazyKoala", "SingingPenguin")
+        val randomName = funnyNames[Random.nextInt(funnyNames.size)]
+
+        // Путь к дефолтной аватарке
+        val defaultAvatar = R.drawable.defaut_avatar_120dp
+
+        // Создаем начальные данные профиля пользователя
         val userProfile = hashMapOf(
-            "name" to (user.displayName ?: "User Name"),
-            "profileImageUrl" to (user.photoUrl?.toString() ?: "default_url"),
+            "name" to randomName,
+            "profileImageUrl" to defaultAvatar, // Используем дефолтную аватарку
             "location" to hashMapOf(
                 "latitude" to defaultLocation.latitude,
                 "longitude" to defaultLocation.longitude
@@ -193,7 +177,6 @@ class MainActivity : AppCompatActivity(), UserMapFragment.OnLocationSelectedList
     }
 
     override fun onLocationSelected(location: LatLng) {
-        // Обработка выбранного местоположения
         Log.d(TAG, "Location selected: $location")
         selectedLocation = location
 
@@ -234,15 +217,8 @@ class MainActivity : AppCompatActivity(), UserMapFragment.OnLocationSelectedList
 
     fun logoutAndRevokeAccess() {
         auth.signOut()
-        googleSignInClient.revokeAccess().addOnCompleteListener {
-            // После выхода из аккаунта можно перенаправить пользователя на экран авторизации
-            startActivity(Intent(this, AuthActivity::class.java))
-            finish()
-        }
-    }
-
-    fun onLogout() {
-        logoutAndRevokeAccess()
+        startActivity(Intent(this, AuthActivity::class.java))
+        finish()
     }
 
     private fun hideSystemUI() {

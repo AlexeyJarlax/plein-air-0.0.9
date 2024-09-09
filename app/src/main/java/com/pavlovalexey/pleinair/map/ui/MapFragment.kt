@@ -80,7 +80,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private fun showFilterDialog() {
         AlertDialog.Builder(requireContext())
             .setTitle("Выберите фильтр")
-            .setItems(arrayOf("Показать только ивенты\n", "\nПоказать только онлайн пользователей\n", "\nПоказать всех пользователей")) { _, which ->
+            .setItems(arrayOf("\nПоказать только ивенты\n", "\nПоказать только онлайн пользователей\n", "\nПоказать всех пользователей\n")) { _, which ->
                 when (which) {
                     0 -> {
                         showEventsOnly = true

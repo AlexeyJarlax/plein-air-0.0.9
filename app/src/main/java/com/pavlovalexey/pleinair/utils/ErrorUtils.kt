@@ -45,7 +45,7 @@ object ErrorUtils {
             }
 
             AppPreferencesKeys.RESULTS_EMPTY -> {
-                errorIcon?.setImageResource(R.drawable.ic_error_notfound)
+                errorIcon?.setImageResource(R.drawable.defaut_avatar_120dp)
                 errorTextWeb?.text = resources.getString(R.string.nothing_was_found)
                 retryButton?.visibility = View.GONE
                 utilErrorBox?.setDebouncedClickListener {

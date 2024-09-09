@@ -31,7 +31,7 @@
             android:layout_width="@dimen/dp120"
             android:layout_height="@dimen/dp120"
             android:layout_gravity="center_horizontal"
-            android:src="@drawable/ic_error_notfound" />
+            android:src="@drawable/defaut_avatar_120dp" />
 
         <View
             android:layout_width="match_parent"
