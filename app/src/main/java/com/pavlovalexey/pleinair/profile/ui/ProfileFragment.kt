@@ -71,7 +71,7 @@ class ProfileFragment : Fragment(), UserMapFragment.OnLocationSelectedListener {
         })
 
         viewModel.selectedArtStyles.observe(viewLifecycleOwner, Observer { selectedStyles ->
-            // Handle selected art styles if needed
+
         })
     }
 
