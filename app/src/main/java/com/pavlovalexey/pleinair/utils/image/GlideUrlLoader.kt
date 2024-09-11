@@ -1,10 +1,11 @@
-package com.pavlovalexey.pleinair.utils
+package com.pavlovalexey.pleinair.utils.image
 
 import android.net.Uri
 import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.pavlovalexey.pleinair.utils.AppPreferencesKeys
 
 internal class GlideUrlLoader(private val placeholderResourceId: Int) {
 

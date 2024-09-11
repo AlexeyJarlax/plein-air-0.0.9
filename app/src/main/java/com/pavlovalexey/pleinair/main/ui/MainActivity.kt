@@ -8,6 +8,7 @@ package com.pavlovalexey.pleinair.main.ui
  * 3 Этап - MainActivity и фрагменты по всему функционалу приложения с с навигацией через НавГраф
  */
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -18,6 +19,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng
@@ -28,6 +32,11 @@ import com.google.firebase.appcheck.appCheck
 import com.google.firebase.appcheck.playintegrity.PlayIntegrityAppCheckProviderFactory
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ServerValue
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.firestore.firestore
 import com.google.firebase.initialize
 import com.google.firebase.storage.FirebaseStorage
@@ -36,14 +45,7 @@ import com.pavlovalexey.pleinair.R
 import com.pavlovalexey.pleinair.auth.ui.AuthActivity
 import com.pavlovalexey.pleinair.databinding.ActivityMainBinding
 import com.pavlovalexey.pleinair.profile.ui.UserMapFragment
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ServerValue
-import com.google.firebase.database.ValueEventListener
+import com.pavlovalexey.pleinair.utils.AppPreferencesKeys
 
 class MainActivity : AppCompatActivity(), UserMapFragment.OnLocationSelectedListener {
 
@@ -52,11 +54,11 @@ class MainActivity : AppCompatActivity(), UserMapFragment.OnLocationSelectedList
     private lateinit var auth: FirebaseAuth
     private lateinit var storage: FirebaseStorage
     private lateinit var mMap: GoogleMap
-    private lateinit var googleSignInClient: GoogleSignInClient
     private lateinit var progressBar: ProgressBar
+    private lateinit var googleSignInClient: GoogleSignInClient
 
     private var selectedLocation: LatLng? = null
-    private val defaultLocation = LatLng(59.9500019, 30.3166718)    // Координаты Петропавловской крепости используются как отправная точка поиска на карте
+    private val defaultLocation = LatLng(59.9500019, 30.3166718)    // Координаты Петропавловской крепости
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -143,12 +145,15 @@ class MainActivity : AppCompatActivity(), UserMapFragment.OnLocationSelectedList
     private fun setUserProfile() {
         val user = auth.currentUser ?: return
         val userId = user.uid
-        val userDocRef = db.collection("users").document(userId)
+        val sharedPreferences = getSharedPreferences(AppPreferencesKeys.PREFS_NAME, Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putString("userId", userId)
+        editor.apply()
 
-        // Создаем начальные данные профиля пользователя, включая координаты по умолчанию
+        val userDocRef = db.collection("users").document(userId)
+        val defaultAvatar = ""
         val userProfile = hashMapOf(
-            "name" to (user.displayName ?: "User Name"),
-            "profileImageUrl" to (user.photoUrl?.toString() ?: "default_url"),
+            "profileImageUrl" to defaultAvatar, // Используем пустую строку как дефолтное значение
             "location" to hashMapOf(
                 "latitude" to defaultLocation.latitude,
                 "longitude" to defaultLocation.longitude
@@ -193,7 +198,6 @@ class MainActivity : AppCompatActivity(), UserMapFragment.OnLocationSelectedList
     }
 
     override fun onLocationSelected(location: LatLng) {
-        // Обработка выбранного местоположения
         Log.d(TAG, "Location selected: $location")
         selectedLocation = location
 

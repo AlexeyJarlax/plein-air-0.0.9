@@ -29,8 +29,8 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.pavlovalexey.pleinair.R
 import com.pavlovalexey.pleinair.databinding.FragmentProfileBinding
 import com.pavlovalexey.pleinair.profile.viewmodel.ProfileViewModel
-import com.pavlovalexey.pleinair.utils.CircleTransform
-import com.pavlovalexey.pleinair.utils.ImageUtils
+import com.pavlovalexey.pleinair.utils.image.CircleTransform
+import com.pavlovalexey.pleinair.utils.image.ImageUtils
 import com.squareup.picasso.Picasso
 import java.io.IOException
 
@@ -98,7 +98,7 @@ class ProfileFragment : Fragment(), UserMapFragment.OnLocationSelectedListener {
 
         viewModel.user.observe(viewLifecycleOwner) { user ->
             binding.userName.text = user?.name ?: getString(R.string.default_user_name)
-            if (user?.profileImageUrl != null) {
+            if (!user?.profileImageUrl.isNullOrEmpty()) {
                 // Load the image from local storage if it exists, otherwise load from Firebase Storage
                 viewModel.loadProfileImageFromStorage(
                     { bitmap ->
@@ -106,13 +106,13 @@ class ProfileFragment : Fragment(), UserMapFragment.OnLocationSelectedListener {
                     },
                     {
                         Picasso.get()
-                            .load(user.profileImageUrl)
+                            .load(user?.profileImageUrl)
                             .transform(CircleTransform()) // Устанавливаем закругленные углы
                             .into(binding.userAvatar)
                     }
                 )
             } else {
-                binding.userAvatar.setImageResource(R.drawable.default_avatar)
+                binding.userAvatar.setImageResource(R.drawable.account_circle_50dp)
             }
             binding.txtChooseLocation.text = user?.locationName ?: getString(R.string.location)
             updateIconIfLocationExists(user?.locationName)
@@ -157,7 +157,7 @@ class ProfileFragment : Fragment(), UserMapFragment.OnLocationSelectedListener {
         }
 
         viewModel.selectedArtStyles.observe(viewLifecycleOwner) { selectedStyles ->
-            // Можно обновить UI или сохранить эти данные для использования
+
         }
 
         return binding.root
@@ -278,13 +278,11 @@ class ProfileFragment : Fragment(), UserMapFragment.OnLocationSelectedListener {
     private fun showEditDescriptionDialog() {
         val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
 
-        // Сначала получаем текущее описание пользователя
         FirebaseFirestore.getInstance().collection("users").document(userId)
             .get()
             .addOnSuccessListener { documentSnapshot ->
                 val currentDescription = documentSnapshot.getString("description") ?: ""
 
-                // Создаем поле ввода и настраиваем его
                 val editText = EditText(requireContext()).apply {
                     setText(currentDescription)
                     inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE

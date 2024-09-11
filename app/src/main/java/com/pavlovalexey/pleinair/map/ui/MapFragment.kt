@@ -25,7 +25,7 @@ import com.pavlovalexey.pleinair.R
 import com.pavlovalexey.pleinair.calendar.model.Event
 import com.pavlovalexey.pleinair.databinding.FragmentMapBinding
 import com.pavlovalexey.pleinair.profile.model.User
-import com.pavlovalexey.pleinair.utils.CircleTransform
+import com.pavlovalexey.pleinair.utils.image.CircleTransform
 import com.squareup.picasso.Picasso
 
 class MapFragment : Fragment(), OnMapReadyCallback {
@@ -80,7 +80,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private fun showFilterDialog() {
         AlertDialog.Builder(requireContext())
             .setTitle("Выберите фильтр")
-            .setItems(arrayOf("Показать только ивенты\n", "\nПоказать только онлайн пользователей\n", "\nПоказать всех пользователей")) { _, which ->
+            .setItems(arrayOf("\nПоказать только ивенты\n", "\nПоказать только онлайн пользователей\n", "\nПоказать всех пользователей\n")) { _, which ->
                 when (which) {
                     0 -> {
                         showEventsOnly = true

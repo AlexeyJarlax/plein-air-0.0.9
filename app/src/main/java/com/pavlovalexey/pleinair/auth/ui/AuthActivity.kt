@@ -124,7 +124,6 @@ class AuthActivity : AppCompatActivity() {
         auth.signInWithCredential(credential)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    // Авторизация прошла успешно, переход на главный экран
                     startActivity(Intent(this, MainActivity::class.java))
                     finish()
                 } else {

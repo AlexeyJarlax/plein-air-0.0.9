@@ -39,4 +39,8 @@ class SettingsInteractorImpl(private val settingsRepository: SettingsRepository)
     override fun sharePlaylist(message: String) {
         settingsRepository.sharePlaylist(message)
     }
+
+    override fun deleteUserAccount(onAccountDeleted: () -> Unit) {
+        settingsRepository.deleteUserAccount(onAccountDeleted)
+    }
 }

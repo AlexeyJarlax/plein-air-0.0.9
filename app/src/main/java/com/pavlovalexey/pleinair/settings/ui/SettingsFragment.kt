@@ -36,6 +36,18 @@ class SettingsFragment : Fragment() {
         setupPrivacyPolicy()
         donat()
         setupDeleteAccountButton()
+
+        viewModel.accountDeleted.observe(viewLifecycleOwner) { accountDeleted ->
+            if (accountDeleted) {
+                // Закрыть активити независимо от результата
+                activity?.finish()
+            }
+        }
+
+        // Добавьте наблюдателя для отслеживания состояния загрузки
+        viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+            binding.loadingIndicator.visibility = if (isLoading) View.VISIBLE else View.GONE
+        }
     }
 
     override fun onDestroyView() {
@@ -102,9 +114,7 @@ class SettingsFragment : Fragment() {
         builder.setTitle("Подтверждение удаления")
         builder.setMessage("Будут удалены все данные пользователя и аккаунт в этом приложении. Вы уверены, что хотите продолжить?")
         builder.setPositiveButton("✔️") { dialog, _ ->
-            viewModel.deleteUserAccount {
-                activity?.finishAffinity()
-            }
+            viewModel.deleteUserAccount()
             dialog.dismiss()
         }
         builder.setNegativeButton("❌") { dialog, _ ->

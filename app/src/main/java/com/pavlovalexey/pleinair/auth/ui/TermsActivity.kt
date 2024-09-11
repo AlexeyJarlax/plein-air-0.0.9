@@ -16,13 +16,14 @@ import android.widget.CheckBox
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.pavlovalexey.pleinair.R
-import com.pavlovalexey.pleinair.main.ui.MainActivity
 import java.net.URL
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import kotlin.concurrent.thread
 import android.content.SharedPreferences
+import com.pavlovalexey.pleinair.utils.AppPreferencesKeys
+import com.pavlovalexey.pleinair.utils.LoginAndUserUtils
 
 class TermsActivity : AppCompatActivity() {
 
@@ -33,20 +34,21 @@ class TermsActivity : AppCompatActivity() {
     private lateinit var tvAgreement: TextView
     private lateinit var tvBeforePolicy: TextView
     private lateinit var tvPrivacyPolicy: TextView
-    private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var sharedPreferencesFS: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_terms)
 
-        // Инициализация SharedPreferences
-        sharedPreferences = getSharedPreferences("AppPrefs", MODE_PRIVATE)
+        sharedPreferencesFS = getSharedPreferences(AppPreferencesKeys.PREFS_NAME, MODE_PRIVATE)
 
         // Проверяем состояние согласия
         if (isTermsAccepted()) {
             startActivity(Intent(this, AuthActivity::class.java))
             finish()
             return
+        } else {
+            LoginAndUserUtils.logout(application) // если пользователь удалил и поставил заново приложень, чистим его аутентификацию
         }
 
         checkAgreement = findViewById(R.id.checkAgreement)
@@ -115,13 +117,14 @@ class TermsActivity : AppCompatActivity() {
     }
 
     private fun saveTermsAccepted(accepted: Boolean) {
-        with(sharedPreferences.edit()) {
-            putBoolean("terms_accepted", accepted)
+        Log.d("TermsActivity", "Saving terms accepted: $accepted")
+        with(sharedPreferencesFS.edit()) {
+            putBoolean("all_terms_accepted", accepted)
             apply()
         }
     }
 
     private fun isTermsAccepted(): Boolean {
-        return sharedPreferences.getBoolean("terms_accepted", false)
+        return sharedPreferencesFS.getBoolean("all_terms_accepted", false)
     }
 }

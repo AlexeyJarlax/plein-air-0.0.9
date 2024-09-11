@@ -2,21 +2,34 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="77dp"
+    android:layout_height="85dp"
     android:background="@color/yp_white_and_yp_black"
     android:gravity="center"
     android:id="@+id/util_item_track"
     android:orientation="horizontal"
     android:paddingStart="@dimen/dp12">
 
-    <ImageView
+<!--    <ImageView-->
+<!--        android:id="@+id/artwork_image_view"-->
+<!--        style="@style/Placeholder"-->
+<!--        android:layout_width="@dimen/dp60"-->
+<!--        android:layout_height="@dimen/dp60"-->
+<!--        android:scaleType="centerCrop"-->
+<!--        android:src="@drawable/ic_launcher_foreground"-->
+<!--        tools:src="@drawable/ic_launcher_foreground" />-->
+
+    <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/artwork_image_view"
-        style="@style/Placeholder"
-        android:layout_width="@dimen/dp44"
-        android:layout_height="@dimen/dp44"
+        android:layout_width="@dimen/dp60"
+        android:layout_height="@dimen/dp60"
+        android:layout_margin="@dimen/dp6"
+        android:background="@drawable/pl_add_photo_background"
         android:scaleType="centerCrop"
-        android:src="@drawable/ic_launcher_foreground"
-        tools:src="@drawable/ic_launcher_foreground" />
+        android:src="@drawable/pl_plus_photo"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:shapeAppearanceOverlay="@style/CircleImage"/>
 
     <LinearLayout
 

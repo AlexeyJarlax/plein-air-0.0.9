@@ -1,4 +1,4 @@
-package com.pavlovalexey.pleinair.utils
+package com.pavlovalexey.pleinair.utils.image
 
 import android.graphics.Bitmap
 import android.graphics.BitmapShader
@@ -8,6 +8,7 @@ import android.graphics.Shader
 import com.squareup.picasso.Transformation
 
 class CircleTransform : Transformation {
+
     override fun transform(source: Bitmap): Bitmap {
         val size = Math.min(source.width, source.height)
         val x = (source.width - size) / 2

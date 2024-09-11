@@ -11,9 +11,11 @@ import org.koin.android.ext.koin.androidContext
 
     val dataModule = module {
 
+//        single {
+//            androidContext().getSharedPreferences(AppPreferencesKeys.PREFS_FIRST_STEP, Context.MODE_PRIVATE)
+//        }
         single {
-            androidContext()
-                .getSharedPreferences(AppPreferencesKeys.PREFS_NAME, Context.MODE_PRIVATE)
+            androidContext().getSharedPreferences(AppPreferencesKeys.PREFS_NAME, Context.MODE_PRIVATE)
         }
 
         single<SettingsRepository> {
