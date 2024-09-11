@@ -16,7 +16,7 @@ import java.util.UUID
 
 class FirebaseUserManager(private val context: Context) {
 
-    private val auth: FirebaseAuth = FirebaseAuth.getInstance()
+    val auth: FirebaseAuth = FirebaseAuth.getInstance()
     private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
     private val storage: FirebaseStorage = FirebaseStorage.getInstance()
     private val sharedPreferences =
