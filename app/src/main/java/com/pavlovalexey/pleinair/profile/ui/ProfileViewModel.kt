@@ -18,8 +18,8 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
 
     private val firebaseUserManager = FirebaseUserManager(application.applicationContext)
     private val auth = firebaseUserManager.auth
-    private val _user = MutableLiveData<User>()
-    val user: LiveData<User> get() = _user
+    private val _user = MutableLiveData<User?>()
+    val user: MutableLiveData<User?> get() = _user
     private val _selectedArtStyles = MutableLiveData<Set<String>>(emptySet())
     val selectedArtStyles: LiveData<Set<String>> get() = _selectedArtStyles
     private val sharedPreferences =
@@ -52,7 +52,17 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
             userId,
             imageBitmap,
             onSuccess = { uri ->
-                _user.value = _user.value?.copy(profileImageUrl = uri.toString())
+                // Обновляем объект User с новым URL
+                val updatedUser = _user.value?.copy(profileImageUrl = uri.toString())
+                _user.value = updatedUser
+
+                // Сохраняем новый URL в SharedPreferences (если нужно)
+                with(sharedPreferences.edit()) {
+                    putString("profileImageUrl", uri.toString())
+                    apply()
+                }
+
+                // Вызываем success callback
                 onSuccess(uri)
             },
             onFailure = {

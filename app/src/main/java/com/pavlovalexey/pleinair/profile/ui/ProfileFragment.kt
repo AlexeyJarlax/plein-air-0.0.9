@@ -89,7 +89,15 @@ class ProfileFragment : Fragment(), UserMapFragment.OnLocationSelectedListener {
 
     private fun handleImageSelection(processedBitmap: Bitmap) {
         binding.userAvatar.setImageBitmap(processedBitmap)
-        viewModel.uploadImageToFirebase(processedBitmap, ::onUploadSuccess, ::onUploadFailure)
+        viewModel.uploadImageToFirebase(processedBitmap,
+            onSuccess = { uri ->
+                // Обновляем аватар с использованием нового URL
+                Picasso.get().load(uri).transform(CircleTransform()).into(binding.userAvatar)
+            },
+            onFailure = {
+                // Обработка ошибок
+            }
+        )
     }
 
     private fun showLogoutConfirmationDialog() {
