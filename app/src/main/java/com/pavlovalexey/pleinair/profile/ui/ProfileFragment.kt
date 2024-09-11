@@ -22,6 +22,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.auth.FirebaseAuth
@@ -52,16 +53,20 @@ class ProfileFragment : Fragment(), UserMapFragment.OnLocationSelectedListener {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentProfileBinding.inflate(inflater, container, false)
-        viewModel.loadSelectedStyles()
+        setupActivityResultLaunchers()
+        setupObservers()
+        setupListeners()
+        loadSavedIconStates()
+        return binding.root
+    }
 
+    private fun setupActivityResultLaunchers() {
         cameraActivityResultLauncher = registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
         ) { result ->
             if (result.resultCode == RESULT_OK) {
                 val imageBitmap = result.data?.extras?.get("data") as Bitmap
-                val processedBitmap = ImageUtils.compressAndGetCircularBitmap(imageBitmap)
-                binding.userAvatar.setImageBitmap(processedBitmap)
-                saveAndUploadProfileImage(processedBitmap)
+                handleImageSelection(ImageUtils.compressAndGetCircularBitmap(imageBitmap))
             }
         }
 
@@ -74,93 +79,153 @@ class ProfileFragment : Fragment(), UserMapFragment.OnLocationSelectedListener {
                     try {
                         val inputStream = requireContext().contentResolver.openInputStream(uri)
                         val imageBitmap = BitmapFactory.decodeStream(inputStream)
-                        val processedBitmap =
-                            imageBitmap?.let { ImageUtils.compressAndGetCircularBitmap(it) }
-                        binding.userAvatar.setImageBitmap(processedBitmap)
-                        processedBitmap?.let {
-                            viewModel.uploadImageToFirebase(
-                                it,
-                                ::onUploadSuccess,
-                                ::onUploadFailure
-                            )
-                        }
+                        handleImageSelection(ImageUtils.compressAndGetCircularBitmap(imageBitmap))
                     } catch (e: IOException) {
+                        showToast("Не удалось загрузить изображение")
                         Log.e(TAG, "Ошибка при открытии InputStream для URI", e)
-                        Toast.makeText(
-                            requireContext(),
-                            "Не удалось загрузить изображение",
-                            Toast.LENGTH_SHORT
-                        ).show()
                     }
                 }
             }
         }
+    }
 
-        viewModel.user.observe(viewLifecycleOwner) { user ->
+    private fun setupObservers() {
+        viewModel.user.observe(viewLifecycleOwner, Observer { user ->
             binding.userName.text = user?.name ?: getString(R.string.default_user_name)
             if (!user?.profileImageUrl.isNullOrEmpty()) {
-                // Load the image from local storage if it exists, otherwise load from Firebase Storage
                 viewModel.loadProfileImageFromStorage(
-                    { bitmap ->
-                        binding.userAvatar.setImageBitmap(bitmap)
-                    },
-                    {
-                        Picasso.get()
-                            .load(user?.profileImageUrl)
-                            .transform(CircleTransform()) // Устанавливаем закругленные углы
-                            .into(binding.userAvatar)
-                    }
+                    { bitmap -> binding.userAvatar.setImageBitmap(bitmap) },
+                    { Picasso.get().load(user?.profileImageUrl).transform(CircleTransform()).into(binding.userAvatar) }
                 )
             } else {
                 binding.userAvatar.setImageResource(R.drawable.account_circle_50dp)
             }
             binding.txtChooseLocation.text = user?.locationName ?: getString(R.string.location)
             updateIconIfLocationExists(user?.locationName)
-        }
+        })
 
-        // Load saved icon states
-        loadSavedIconStates()
+        viewModel.selectedArtStyles.observe(viewLifecycleOwner, Observer { selectedStyles ->
+            // Handle selected art styles if needed
+        })
+    }
 
-        binding.logoutButton.setOnClickListener {
-            showLogoutConfirmationDialog()
-        }
+    private fun setupListeners() {
+        binding.logoutButton.setOnClickListener { showLogoutConfirmationDialog() }
+        binding.userAvatar.setOnClickListener { showAvatarSelectionDialog() }
+        binding.userName.setOnClickListener { showEditNameDialog() }
+        binding.btnChooseLocation.setOnClickListener { openMapFragment() }
+        binding.editDescription.setOnClickListener { showEditDescriptionDialog() }
+        binding.exitButton.setOnClickListener { showExitConfirmationDialog() }
+        binding.btnTechnic.setOnClickListener { showTechnicDialog() }
+    }
 
-        binding.userAvatar.setOnClickListener {
-            showAvatarSelectionDialog()
-        }
+    private fun handleImageSelection(processedBitmap: Bitmap) {
+        binding.userAvatar.setImageBitmap(processedBitmap)
+        viewModel.uploadImageToFirebase(processedBitmap, ::onUploadSuccess, ::onUploadFailure)
+    }
 
-        binding.userName.setOnClickListener {
-            showEditNameDialog()
-        }
+    private fun showLogoutConfirmationDialog() {
+        showConfirmationDialog(
+            title = "Log out",
+            message = "Разлогинить пользователя?",
+            onConfirm = {
+                viewModel.logout()
+                requireActivity().recreate()
+            }
+        )
+    }
 
-        binding.btnChooseLocation.setOnClickListener {
-            openMapFragment()
-        }
-
-        binding.editDescription.setOnClickListener {
-            showEditDescriptionDialog()
-        }
-
-        binding.exitButton.setOnClickListener {
-            AlertDialog.Builder(requireContext())
-                .setTitle("Exit")
-                .setMessage("Закрыть приложение?")
-                .setPositiveButton("✔️") { _, _ ->
-                    activity?.finishAffinity()
+    private fun showAvatarSelectionDialog() {
+        showOptionsDialog(
+            title = "Выберите аватарку",
+            options = arrayOf("Сделать фото", "Выбрать из галереи"),
+            onOptionSelected = { which ->
+                when (which) {
+                    0 -> launchCamera()
+                    1 -> openGallery()
                 }
-                .setNegativeButton("❌", null)
-                .show()
+            }
+        )
+    }
+
+    private fun showEditNameDialog() {
+        val currentName = binding.userName.text.toString()
+        showInputDialog(
+            title = "Изменить имя",
+            initialText = currentName,
+            onConfirm = { newName ->
+                viewModel.updateUserName(newName)
+                showToast("Имя обновлено!")
+            }
+        )
+    }
+
+    private fun showEditDescriptionDialog() {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+
+        FirebaseFirestore.getInstance().collection("users").document(userId)
+            .get()
+            .addOnSuccessListener { documentSnapshot ->
+                val currentDescription = documentSnapshot.getString("description") ?: ""
+                showInputDialog(
+                    title = "Изменить описание",
+                    initialText = currentDescription,
+                    inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE,
+                    onConfirm = { newDescription ->
+                        viewModel.updateUserDescription(newDescription) {
+                            updateIconToChecked(binding.txtEditDescription)
+                            saveIconState("description", true)
+                            showToast("Описание обновлено!")
+                        }
+                    }
+                )
+            }
+            .addOnFailureListener { e ->
+                showToast("Ошибка загрузки описания")
+                Log.w(TAG, "Ошибка при получении описания пользователя", e)
+            }
+    }
+
+    private fun showTechnicDialog() {
+        val artStyles = arrayOf(
+            "Масляная живопись", "Акварель", "Акриловая живопись", "Темпера",
+            "Гуашь", "Фреска", "Пастель", "Энкаустика",
+            "Чернила и тушь", "Аэрография", "Графические техники", "Другое"
+        )
+        val selectedStyles = viewModel.selectedArtStyles.value?.toMutableSet() ?: mutableSetOf()
+
+        val checkedItems = BooleanArray(artStyles.size) { index ->
+            selectedStyles.contains(artStyles[index])
         }
 
-        binding.btnTechnic.setOnClickListener {
-            showTechnicDialog()
-        }
+        showMultiChoiceDialog(
+            title = "Выберите технику",
+            items = artStyles,
+            checkedItems = checkedItems,
+            onSelectionChanged = { which, isChecked ->
+                if (isChecked) {
+                    selectedStyles.add(artStyles[which])
+                } else {
+                    selectedStyles.remove(artStyles[which])
+                }
+            },
+            onConfirm = {
+                viewModel.updateSelectedStyles(selectedStyles) {
+                    binding.txtTechnic.text = selectedStyles.joinToString(", ")
+                    updateIconToChecked(binding.txtTechnic)
+                    saveIconState("technic", true)
+                    showToast("Техники сохранены!")
+                }
+            }
+        )
+    }
 
-        viewModel.selectedArtStyles.observe(viewLifecycleOwner) { selectedStyles ->
-
-        }
-
-        return binding.root
+    private fun showExitConfirmationDialog() {
+        showConfirmationDialog(
+            title = "Exit",
+            message = "Закрыть приложение?",
+            onConfirm = { activity?.finishAffinity() }
+        )
     }
 
     private fun openMapFragment() {
@@ -173,68 +238,14 @@ class ProfileFragment : Fragment(), UserMapFragment.OnLocationSelectedListener {
         viewModel.updateUserLocation(location) {
             updateIconToChecked(binding.txtChooseLocation)
             saveIconState("location", true)
-            Toast.makeText(requireContext(), "Местоположение сохранено!", Toast.LENGTH_SHORT).show()
+            showToast("Местоположение сохранено!")
             parentFragmentManager.popBackStack()
         }
     }
 
-    private fun showLogoutConfirmationDialog() {
-        AlertDialog.Builder(requireContext())
-            .setTitle("Log out")
-            .setMessage("Разлогинить пользователя?")
-            .setPositiveButton("✔️") { _, _ ->
-                viewModel.logout()
-                requireActivity().recreate()
-            }
-            .setNegativeButton("❌", null)
-            .show()
-    }
-
-    private fun showAvatarSelectionDialog() {
-        val options = arrayOf("Сделать фото", "Выбрать из галереи")
-        AlertDialog.Builder(requireContext())
-            .setTitle("Выберите аватарку")
-            .setItems(options) { _, which ->
-                when (which) {
-                    0 -> {
-                        val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-                        if (takePictureIntent.resolveActivity(requireActivity().packageManager) != null) {
-                            cameraActivityResultLauncher.launch(takePictureIntent)
-                        }
-                    }
-
-                    1 -> {
-                        val pickPhotoIntent =
-                            Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-                        galleryActivityResultLauncher.launch(pickPhotoIntent)
-                    }
-                }
-            }
-            .show()
-    }
-
-    private fun showEditNameDialog() {
-        val currentName = binding.userName.text.toString()
-        val editText = EditText(requireContext()).apply {
-            setText(currentName)
-        }
-
-        AlertDialog.Builder(requireContext())
-            .setTitle("Изменить имя")
-            .setView(editText)
-            .setPositiveButton("✔️") { _, _ ->
-                val newName = editText.text.toString()
-                viewModel.updateUserName(newName)
-                Toast.makeText(requireContext(), "Имя обновлено!", Toast.LENGTH_SHORT).show()
-            }
-            .setNegativeButton("❌", null)
-            .show()
-    }
-
     private fun onUploadSuccess(uri: Uri) {
         if (isAdded) {
-            Toast.makeText(requireContext(), "Аватарка успешно загружена!", Toast.LENGTH_SHORT)
-                .show()
+            showToast("Аватарка успешно загружена!")
             viewModel.updateProfileImageUrl(uri.toString())
         } else {
             Log.w(TAG, "Фрагмент не был присоединён, не удалось показать Toast")
@@ -242,15 +253,58 @@ class ProfileFragment : Fragment(), UserMapFragment.OnLocationSelectedListener {
     }
 
     private fun onUploadFailure(exception: Exception) {
-        Toast.makeText(
-            requireContext(),
-            "Ошибка загрузки аватарки: ${exception.message}",
-            Toast.LENGTH_LONG
-        ).show()
+        showToast("Ошибка загрузки аватарки: ${exception.message}")
     }
 
-    fun setLogoutListener(listener: LogoutListener) {
-        logoutListener = listener
+    private fun showToast(message: String) {
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun showConfirmationDialog(title: String, message: String, onConfirm: () -> Unit) {
+        AlertDialog.Builder(requireContext())
+            .setTitle(title)
+            .setMessage(message)
+            .setPositiveButton("✔️") { _, _ -> onConfirm() }
+            .setNegativeButton("❌", null)
+            .show()
+    }
+
+    private fun showInputDialog(title: String, initialText: String, inputType: Int = InputType.TYPE_CLASS_TEXT, onConfirm: (String) -> Unit) {
+        val editText = EditText(requireContext()).apply {
+            setText(initialText)
+            this.inputType = inputType
+            minLines = 5
+            maxLines = 10
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply {
+                height = (resources.displayMetrics.density * 300).toInt()
+            }
+        }
+
+        AlertDialog.Builder(requireContext())
+            .setTitle(title)
+            .setView(editText)
+            .setPositiveButton("✔️") { _, _ -> onConfirm(editText.text.toString()) }
+            .setNegativeButton("❌", null)
+            .show()
+    }
+
+    private fun showOptionsDialog(title: String, options: Array<String>, onOptionSelected: (Int) -> Unit) {
+        AlertDialog.Builder(requireContext())
+            .setTitle(title)
+            .setItems(options) { _, which -> onOptionSelected(which) }
+            .show()
+    }
+
+    private fun showMultiChoiceDialog(title: String, items: Array<String>, checkedItems: BooleanArray, onSelectionChanged: (Int, Boolean) -> Unit, onConfirm: () -> Unit) {
+        AlertDialog.Builder(requireContext())
+            .setTitle(title)
+            .setMultiChoiceItems(items, checkedItems) { _, which, isChecked -> onSelectionChanged(which, isChecked) }
+            .setPositiveButton("✔️") { _, _ -> onConfirm() }
+            .setNegativeButton("❌", null)
+            .show()
     }
 
     private fun updateIconIfLocationExists(locationName: String?) {
@@ -275,84 +329,8 @@ class ProfileFragment : Fragment(), UserMapFragment.OnLocationSelectedListener {
         }
     }
 
-    private fun showEditDescriptionDialog() {
-        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
-
-        FirebaseFirestore.getInstance().collection("users").document(userId)
-            .get()
-            .addOnSuccessListener { documentSnapshot ->
-                val currentDescription = documentSnapshot.getString("description") ?: ""
-
-                val editText = EditText(requireContext()).apply {
-                    setText(currentDescription)
-                    inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE
-                    minLines = 5
-                    maxLines = 10
-                    layoutParams = LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        LinearLayout.LayoutParams.WRAP_CONTENT
-                    ).apply {
-                        height = (resources.displayMetrics.density * 300).toInt() // Приблизительная высота для 5 строк
-                    }
-                }
-
-                // Создаем и отображаем диалоговое окно
-                AlertDialog.Builder(requireContext())
-                    .setTitle("Изменить описание")
-                    .setView(editText)
-                    .setPositiveButton("✔️") { _, _ ->
-                        val newDescription = editText.text.toString()
-                        viewModel.updateUserDescription(newDescription) {
-                            updateIconToChecked(binding.txtEditDescription)
-                            saveIconState("description", true)
-                            Toast.makeText(requireContext(), "Описание обновлено!", Toast.LENGTH_SHORT).show()
-                        }
-                    }
-                    .setNegativeButton("❌", null)
-                    .show()
-            }
-            .addOnFailureListener { e ->
-                Log.w(TAG, "Ошибка при получении описания пользователя", e)
-                Toast.makeText(requireContext(), "Ошибка загрузки описания", Toast.LENGTH_SHORT).show()
-            }
-    }
-
-    private fun showTechnicDialog() {
-        val artStyles = arrayOf(
-            "Масляная живопись", "Акварель", "Акриловая живопись", "Темпера",
-            "Гуашь", "Фреска", "Пастель", "Энкаустика",
-            "Чернила и тушь", "Аэрография", "Графические техники", "Другое"
-        )
-        val selectedStyles = viewModel.selectedArtStyles.value?.toMutableSet() ?: mutableSetOf()
-
-        val checkedItems = BooleanArray(artStyles.size) { index ->
-            selectedStyles.contains(artStyles[index])
-        }
-
-        AlertDialog.Builder(requireContext())
-            .setTitle("Выберите технику")
-            .setMultiChoiceItems(artStyles, checkedItems) { _, which, isChecked ->
-                if (isChecked) {
-                    selectedStyles.add(artStyles[which])
-                } else {
-                    selectedStyles.remove(artStyles[which])
-                }
-            }
-            .setPositiveButton("✔️") { _, _ ->
-                viewModel.updateSelectedStyles(selectedStyles) {
-                    binding.txtTechnic.text = selectedStyles.joinToString(", ")
-                    updateIconToChecked(binding.txtTechnic)
-                    saveIconState("technic", true)
-                    Toast.makeText(requireContext(), "Техники сохранены!", Toast.LENGTH_SHORT).show()
-                }
-            }
-            .setNegativeButton("❌", null)
-            .show()
-    }
-
     private fun saveIconState(key: String, state: Boolean) {
-        val sharedPreferences =
-            requireContext().getSharedPreferences("ProfilePrefs", Context.MODE_PRIVATE)
+        val sharedPreferences = requireContext().getSharedPreferences("ProfilePrefs", Context.MODE_PRIVATE)
         with(sharedPreferences.edit()) {
             putBoolean(key, state)
             apply()
@@ -360,8 +338,7 @@ class ProfileFragment : Fragment(), UserMapFragment.OnLocationSelectedListener {
     }
 
     private fun loadSavedIconStates() {
-        val sharedPreferences =
-            requireContext().getSharedPreferences("ProfilePrefs", Context.MODE_PRIVATE)
+        val sharedPreferences = requireContext().getSharedPreferences("ProfilePrefs", Context.MODE_PRIVATE)
         val locationState = sharedPreferences.getBoolean("location", false)
         val descriptionState = sharedPreferences.getBoolean("description", false)
         val technicState = sharedPreferences.getBoolean("technic", false)
@@ -383,9 +360,5 @@ class ProfileFragment : Fragment(), UserMapFragment.OnLocationSelectedListener {
         } else {
             updateIconToUnchecked(binding.txtTechnic)
         }
-    }
-
-    private fun saveAndUploadProfileImage(bitmap: Bitmap) {
-        viewModel.uploadImageToFirebase(bitmap, ::onUploadSuccess, ::onUploadFailure)
     }
 }
