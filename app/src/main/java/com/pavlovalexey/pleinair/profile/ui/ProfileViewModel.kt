@@ -98,6 +98,15 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         )
     }
 
+    fun loadProfileImageFromStorage(onSuccess: (Bitmap) -> Unit, onFailure: (Exception) -> Unit) {
+        val userId = auth.currentUser?.uid ?: return
+        firebaseUserManager.loadProfileImageFromStorage(
+            userId,
+            onSuccess = onSuccess,
+            onFailure = onFailure
+        )
+    }
+
     fun updateUserLocation(location: LatLng, onSuccess: () -> Unit) {
         val userId = auth.currentUser?.uid ?: return
         firebaseUserManager.updateUserLocation(

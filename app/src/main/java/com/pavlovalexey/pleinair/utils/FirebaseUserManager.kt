@@ -2,6 +2,7 @@ package com.pavlovalexey.pleinair.utils
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.util.Log
 import com.google.android.gms.maps.model.LatLng
@@ -12,6 +13,9 @@ import com.google.firebase.firestore.GeoPoint
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
 import java.util.UUID
 
 class FirebaseUserManager(private val context: Context) {
@@ -164,4 +168,61 @@ class FirebaseUserManager(private val context: Context) {
                 onFailure(e)
             }
     }
+
+    fun loadProfileImageFromStorage(
+        userId: String,
+        onSuccess: (Bitmap) -> Unit,
+        onFailure: (Exception) -> Unit
+    ) {
+        val localImage = loadImageFromLocalStorage(userId)
+        if (localImage != null) {
+            onSuccess(localImage)
+        } else {
+            val storageRef: StorageReference = storage.reference.child("profile_images/$userId/")
+            storageRef.listAll().addOnSuccessListener { listResult ->
+                if (listResult.items.isNotEmpty()) {
+                    val firstItem = listResult.items[0]
+                    firstItem.getBytes(Long.MAX_VALUE).addOnSuccessListener { bytes ->
+                        val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+                        saveImageToLocalStorage(bitmap, userId) // Сохраняем в локальное хранилище
+                        onSuccess(bitmap)
+                    }.addOnFailureListener { e ->
+                        Log.w("FirebaseUserManager", "Error downloading image from Firebase", e)
+                        onFailure(e)
+                    }
+                } else {
+                    onFailure(Exception("No profile image found"))
+                }
+            }.addOnFailureListener { e ->
+                Log.w("FirebaseUserManager", "Error getting image list from Firebase", e)
+                onFailure(e)
+            }
+        }
+    }
+
+    private fun loadImageFromLocalStorage(userId: String): Bitmap? {
+        val filename = "profile_image_$userId.jpg"
+        val file = File(context.filesDir, filename)
+        return if (file.exists()) {
+            BitmapFactory.decodeFile(file.absolutePath)
+        } else {
+            null
+        }
+    }
+
+    private fun saveImageToLocalStorage(imageBitmap: Bitmap, userId: String) {
+        val filename = "profile_image_$userId.jpg"
+        val file = File(context.filesDir, filename)
+        var fos: FileOutputStream? = null
+        try {
+            fos = FileOutputStream(file)
+            imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos)
+        } catch (e: IOException) {
+            Log.e("FirebaseUserManager", "Error saving image to local storage", e)
+        } finally {
+            fos?.flush()
+            fos?.close()
+        }
+    }
 }
+
