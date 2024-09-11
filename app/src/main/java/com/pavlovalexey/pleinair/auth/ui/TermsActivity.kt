@@ -24,6 +24,7 @@ import java.util.Locale
 import kotlin.concurrent.thread
 import android.content.SharedPreferences
 import com.pavlovalexey.pleinair.utils.AppPreferencesKeys
+import com.pavlovalexey.pleinair.utils.LoginAndOut
 
 class TermsActivity : AppCompatActivity() {
 
@@ -47,6 +48,8 @@ class TermsActivity : AppCompatActivity() {
             startActivity(Intent(this, AuthActivity::class.java))
             finish()
             return
+        } else {
+            LoginAndOut.logout(application) // если пользователь удалил и поставил заново приложень, чистим его аутентификацию
         }
 
         checkAgreement = findViewById(R.id.checkAgreement)

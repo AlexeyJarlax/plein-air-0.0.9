@@ -24,6 +24,7 @@ import com.google.firebase.storage.StorageReference
 import com.pavlovalexey.pleinair.R
 import com.pavlovalexey.pleinair.profile.model.User
 import com.pavlovalexey.pleinair.utils.AppPreferencesKeys
+import com.pavlovalexey.pleinair.utils.LoginAndOut
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
@@ -109,17 +110,8 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
             }
     }
 
-    fun logout() { // чистим префы кроме галочки на чтение соглашений
-        auth.signOut()
-        val prefs = sharedPreferences.all
-        val editor = sharedPreferences.edit()
-        for (key in prefs.keys) {
-            if (key != "all_terms_accepted") {
-                editor.remove(key)
-            }
-        }
-        editor.apply()
-        _user.value = null
+    fun logout() {
+        LoginAndOut.logout(getApplication())
     }
 
     fun uploadImageToFirebase(imageBitmap: Bitmap, onSuccess: (Uri) -> Unit, onFailure: (Exception) -> Unit) {
