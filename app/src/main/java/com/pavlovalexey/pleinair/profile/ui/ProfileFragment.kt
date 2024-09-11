@@ -1,14 +1,11 @@
 package com.pavlovalexey.pleinair.profile.ui
 
-import android.app.Activity.RESULT_OK
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.text.InputType
 import android.util.Log
 import android.view.LayoutInflater
@@ -19,7 +16,6 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -31,62 +27,32 @@ import com.pavlovalexey.pleinair.R
 import com.pavlovalexey.pleinair.databinding.FragmentProfileBinding
 import com.pavlovalexey.pleinair.profile.viewmodel.ProfileViewModel
 import com.pavlovalexey.pleinair.utils.image.CircleTransform
-import com.pavlovalexey.pleinair.utils.image.ImageUtils
+import com.pavlovalexey.pleinair.utils.image.setupImageResultLaunchers
+import com.pavlovalexey.pleinair.utils.image.showImageSelectionDialog
 import com.squareup.picasso.Picasso
-import java.io.IOException
 
 class ProfileFragment : Fragment(), UserMapFragment.OnLocationSelectedListener {
 
     private lateinit var binding: FragmentProfileBinding
     private val viewModel: ProfileViewModel by viewModels()
+    private val TAG = ProfileFragment::class.java.simpleName
     private lateinit var cameraActivityResultLauncher: ActivityResultLauncher<Intent>
     private lateinit var galleryActivityResultLauncher: ActivityResultLauncher<Intent>
-    private val TAG = ProfileFragment::class.java.simpleName
-    private var logoutListener: LogoutListener? = null
-
-    interface LogoutListener {
-        fun onLogout()
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentProfileBinding.inflate(inflater, container, false)
-        setupActivityResultLaunchers()
+        val (cameraLauncher, galleryLauncher) = setupImageResultLaunchers { processedBitmap ->
+            handleImageSelection(processedBitmap)
+        }
+        cameraActivityResultLauncher = cameraLauncher
+        galleryActivityResultLauncher = galleryLauncher
         setupObservers()
         setupListeners()
         loadSavedIconStates()
         return binding.root
-    }
-
-    private fun setupActivityResultLaunchers() {
-        cameraActivityResultLauncher = registerForActivityResult(
-            ActivityResultContracts.StartActivityForResult()
-        ) { result ->
-            if (result.resultCode == RESULT_OK) {
-                val imageBitmap = result.data?.extras?.get("data") as Bitmap
-                handleImageSelection(ImageUtils.compressAndGetCircularBitmap(imageBitmap))
-            }
-        }
-
-        galleryActivityResultLauncher = registerForActivityResult(
-            ActivityResultContracts.StartActivityForResult()
-        ) { result ->
-            if (result.resultCode == RESULT_OK) {
-                val selectedImageUri: Uri? = result.data?.data
-                selectedImageUri?.let { uri ->
-                    try {
-                        val inputStream = requireContext().contentResolver.openInputStream(uri)
-                        val imageBitmap = BitmapFactory.decodeStream(inputStream)
-                        handleImageSelection(ImageUtils.compressAndGetCircularBitmap(imageBitmap))
-                    } catch (e: IOException) {
-                        showToast("Не удалось загрузить изображение")
-                        Log.e(TAG, "Ошибка при открытии InputStream для URI", e)
-                    }
-                }
-            }
-        }
     }
 
     private fun setupObservers() {
@@ -111,7 +77,9 @@ class ProfileFragment : Fragment(), UserMapFragment.OnLocationSelectedListener {
 
     private fun setupListeners() {
         binding.logoutButton.setOnClickListener { showLogoutConfirmationDialog() }
-        binding.userAvatar.setOnClickListener { showAvatarSelectionDialog() }
+        binding.userAvatar.setOnClickListener {
+            showImageSelectionDialog(cameraActivityResultLauncher, galleryActivityResultLauncher)
+        }
         binding.userName.setOnClickListener { showEditNameDialog() }
         binding.btnChooseLocation.setOnClickListener { openMapFragment() }
         binding.editDescription.setOnClickListener { showEditDescriptionDialog() }
@@ -131,19 +99,6 @@ class ProfileFragment : Fragment(), UserMapFragment.OnLocationSelectedListener {
             onConfirm = {
                 viewModel.logout()
                 requireActivity().recreate()
-            }
-        )
-    }
-
-    private fun showAvatarSelectionDialog() {
-        showOptionsDialog(
-            title = "Выберите аватарку",
-            options = arrayOf("Сделать фото", "Выбрать из галереи"),
-            onOptionSelected = { which ->
-                when (which) {
-                    0 -> launchCamera()
-                    1 -> openGallery()
-                }
             }
         )
     }
