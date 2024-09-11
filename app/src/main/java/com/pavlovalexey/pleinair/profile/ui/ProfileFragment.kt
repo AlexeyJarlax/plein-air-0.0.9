@@ -29,8 +29,8 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.pavlovalexey.pleinair.R
 import com.pavlovalexey.pleinair.databinding.FragmentProfileBinding
 import com.pavlovalexey.pleinair.profile.viewmodel.ProfileViewModel
-import com.pavlovalexey.pleinair.utils.CircleTransform
-import com.pavlovalexey.pleinair.utils.ImageUtils
+import com.pavlovalexey.pleinair.utils.image.CircleTransform
+import com.pavlovalexey.pleinair.utils.image.ImageUtils
 import com.squareup.picasso.Picasso
 import java.io.IOException
 

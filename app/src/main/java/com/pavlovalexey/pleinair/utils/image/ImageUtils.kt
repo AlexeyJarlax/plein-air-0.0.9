@@ -1,11 +1,10 @@
-package com.pavlovalexey.pleinair.utils
+package com.pavlovalexey.pleinair.utils.image
 
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Color
-import android.graphics.Matrix
 import android.graphics.Paint
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
@@ -13,26 +12,15 @@ import android.graphics.Rect
 import android.graphics.RectF
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
-import java.io.ByteArrayOutputStream
-import java.io.IOException
 
 object ImageUtils {
 
     private const val MAX_WIDTH = 200
     private const val MAX_HEIGHT = 200
     private const val CIRCLE_DIAMETER = 200
-    /**
-     * Сжимает изображение до максимальных размеров (MAX_WIDTH и MAX_HEIGHT), сохраняя соотношение сторон.
-     *
-     * @param bitmap Исходное изображение.
-     * @return Сжатое изображение.
-     */
 
-    // Примените круглый аватар перед загрузкой на сервер
     fun compressAndGetCircularBitmap(bitmap: Bitmap): Bitmap {
-        // Сжимаем изображение
         val compressedBitmap = compressBitmap(bitmap)
-        // Преобразуем сжатое изображение в круглое
         return getCircularBitmap(compressedBitmap)
     }
 
@@ -40,7 +28,6 @@ object ImageUtils {
         val width = bitmap.width
         val height = bitmap.height
 
-        // Вычисляем масштаб для сохранения соотношения сторон
         val aspectRatio = width.toFloat() / height.toFloat()
         val newWidth: Int
         val newHeight: Int
@@ -53,7 +40,6 @@ object ImageUtils {
             newWidth = (MAX_HEIGHT * aspectRatio).toInt()
         }
 
-        // Создаем сжатое изображение
         return Bitmap.createScaledBitmap(bitmap, newWidth, newHeight, true)
     }
 
@@ -76,32 +62,17 @@ object ImageUtils {
         return output
     }
 
-    /**
-     * Декодирует изображение из URI с заданными размерами.
-     *
-     * @param imagePath Путь к изображению.
-     * @return Bitmap изображение.
-     */
     fun decodeSampledBitmapFromUri(imagePath: String): Bitmap? {
         val options = BitmapFactory.Options()
         options.inJustDecodeBounds = true
         BitmapFactory.decodeFile(imagePath, options)
 
-        // Compute inSampleSize
         options.inSampleSize = calculateInSampleSize(options, MAX_WIDTH, MAX_HEIGHT)
         options.inJustDecodeBounds = false
 
         return BitmapFactory.decodeFile(imagePath, options)
     }
 
-    /**
-     * Вычисляет значение inSampleSize для сжатия изображения.
-     *
-     * @param options BitmapFactory.Options.
-     * @param reqWidth Желаемая ширина.
-     * @param reqHeight Желаемая высота.
-     * @return inSampleSize.
-     */
     private fun calculateInSampleSize(options: BitmapFactory.Options, reqWidth: Int, reqHeight: Int): Int {
         val width = options.outWidth
         val height = options.outHeight
@@ -119,12 +90,6 @@ object ImageUtils {
         return inSampleSize
     }
 
-    /**
-     * Преобразует Drawable в Bitmap с округлыми краями.
-     *
-     * @param drawable Drawable изображение.
-     * @return Bitmap изображение.
-     */
     fun getRoundedCornerBitmap(drawable: Drawable, cornerRadius: Float): Bitmap {
         val bitmap = (drawable as BitmapDrawable).bitmap
         val output = Bitmap.createBitmap(bitmap.width, bitmap.height, Bitmap.Config.ARGB_8888)

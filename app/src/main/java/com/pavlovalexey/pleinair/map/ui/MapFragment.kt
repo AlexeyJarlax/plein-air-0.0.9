@@ -25,7 +25,7 @@ import com.pavlovalexey.pleinair.R
 import com.pavlovalexey.pleinair.calendar.model.Event
 import com.pavlovalexey.pleinair.databinding.FragmentMapBinding
 import com.pavlovalexey.pleinair.profile.model.User
-import com.pavlovalexey.pleinair.utils.CircleTransform
+import com.pavlovalexey.pleinair.utils.image.CircleTransform
 import com.squareup.picasso.Picasso
 
 class MapFragment : Fragment(), OnMapReadyCallback {

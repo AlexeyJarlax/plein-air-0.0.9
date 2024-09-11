@@ -4,10 +4,6 @@ import android.app.Application
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.Canvas
-import android.graphics.LinearGradient
-import android.graphics.Paint
-import android.graphics.Shader
 import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
@@ -21,28 +17,25 @@ import com.google.firebase.firestore.GeoPoint
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
-import com.pavlovalexey.pleinair.R
 import com.pavlovalexey.pleinair.profile.model.User
+import com.pavlovalexey.pleinair.profile.ui.RandomAvatar
 import com.pavlovalexey.pleinair.utils.AppPreferencesKeys
-import com.pavlovalexey.pleinair.utils.LoginAndOut
+import com.pavlovalexey.pleinair.utils.LoginAndUserUtils
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.util.UUID
-import kotlin.random.Random
 
 class ProfileViewModel(application: Application) : AndroidViewModel(application) {
 
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
     private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
     private val storage: FirebaseStorage = FirebaseStorage.getInstance()
+    private val loginAndUserUtils = LoginAndUserUtils(application.applicationContext)
 
-    private val sharedPreferences = application.getSharedPreferences(AppPreferencesKeys.PREFS_NAME, Context.MODE_PRIVATE)
-
-    private val animals: List<String> by lazy { loadFile(R.raw.animals) }
-    private val verbs: List<String> by lazy { loadFile(R.raw.verbs) }
-    private val nouns: List<String> by lazy { loadFile(R.raw.nouns) }
+    private val sharedPreferences =
+        application.getSharedPreferences(AppPreferencesKeys.PREFS_NAME, Context.MODE_PRIVATE)
 
     private val _user = MutableLiveData<User>()
     val user: LiveData<User> get() = _user
@@ -74,8 +67,9 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
             .get()
             .addOnSuccessListener { document ->
                 if (document != null) {
-                    val name = document.getString("name") ?: generateRandomUserName()
-                    val profileImageUrl = document.getString("profileImageUrl") ?: generateAndSaveRandomAvatar(userId)
+                    val name = document.getString("name") ?: loginAndUserUtils.generateRandomUserName()
+                    val profileImageUrl =
+                        document.getString("profileImageUrl") ?: generateAndSaveRandomAvatar(userId)
 
                     // Обновляем данные в Firestore
                     val userUpdates = hashMapOf<String, Any>(
@@ -111,12 +105,17 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     }
 
     fun logout() {
-        LoginAndOut.logout(getApplication())
+        LoginAndUserUtils.logout(getApplication())
     }
 
-    fun uploadImageToFirebase(imageBitmap: Bitmap, onSuccess: (Uri) -> Unit, onFailure: (Exception) -> Unit) {
+    fun uploadImageToFirebase(
+        imageBitmap: Bitmap,
+        onSuccess: (Uri) -> Unit,
+        onFailure: (Exception) -> Unit
+    ) {
         val userId = auth.currentUser?.uid ?: return
-        val storageRef: StorageReference = storage.reference.child("profile_images/$userId/${UUID.randomUUID()}.jpg")
+        val storageRef: StorageReference =
+            storage.reference.child("profile_images/$userId/${UUID.randomUUID()}.jpg")
         val baos = ByteArrayOutputStream()
         imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
         val data = baos.toByteArray()
@@ -127,7 +126,10 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
                     .addOnSuccessListener {
                         storageRef.downloadUrl.addOnSuccessListener { uri ->
                             val serverUrl = uri.toString()
-                            saveImageToLocalStorage(imageBitmap, userId) // Save image to local storage
+                            saveImageToLocalStorage(
+                                imageBitmap,
+                                userId
+                            ) // Save image to local storage
                             onSuccess(uri)
                             updateProfileImageUrl(serverUrl) // Save server URL to Firestore
                         }
@@ -191,7 +193,11 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
             }
     }
 
-    private fun clearProfileImageFolder(userId: String, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
+    private fun clearProfileImageFolder(
+        userId: String,
+        onSuccess: () -> Unit,
+        onFailure: (Exception) -> Unit
+    ) {
         val folderRef = storage.reference.child("profile_images/$userId/")
         folderRef.listAll()
             .addOnSuccessListener { listResult ->
@@ -246,60 +252,13 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
             }
     }
 
-    private fun generateRandomAvatar(): Bitmap {
-        val width = 200
-        val height = 200
-        val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-
-        // Генерация градиента
-        val paint = Paint()
-        val colorStart = (0xFF000000 or Random.nextInt(0xFFFFFF).toLong()).toInt()
-        val colorEnd = (0xFF000000 or Random.nextInt(0xFFFFFF).toLong()).toInt()
-        val shader = LinearGradient(0f, 0f, width.toFloat(), height.toFloat(), colorStart, colorEnd, Shader.TileMode.CLAMP)
-        paint.shader = shader
-
-        val canvas = Canvas(bitmap)
-        canvas.drawRect(0f, 0f, width.toFloat(), height.toFloat(), paint)
-
-        // Размеры для квадратов
-        val squareSize = 50
-        val centerX = width / 2
-        val centerY = height / 2
-
-        // Координаты углов квадратиков
-        val squares = listOf(
-            Pair(centerX - squareSize, centerY - squareSize), // Левый верхний
-            Pair(centerX, centerY - squareSize),              // Правый верхний
-            Pair(centerX - squareSize, centerY),              // Левый нижний
-            Pair(centerX, centerY)                            // Правый нижний
-        )
-
-        // Генерация случайных цветов для квадратиков
-        val colors = List(4) { (0xFF000000 or Random.nextInt(0xFFFFFF).toLong()).toInt() }
-
-        // Рисуем квадратики
-        for (i in squares.indices) {
-            val (startX, startY) = squares[i]
-            val color = colors[i]
-            for (x in startX until startX + squareSize) {
-                for (y in startY until startY + squareSize) {
-                    if (x < width && y < height) { // Проверка на выход за границы изображения
-                        bitmap.setPixel(x, y, color)
-                    }
-                }
-            }
-        }
-
-        return bitmap
-    }
-
     private fun generateAndSaveRandomAvatar(userId: String): String {
         val savedAvatar = loadImageFromLocalStorage(userId)
         if (savedAvatar != null) {
             return avatarBitmapToUri(savedAvatar, userId).toString()
         }
 
-        val avatarBitmap = generateRandomAvatar()
+        val avatarBitmap = RandomAvatar().generateRandomAvatar()
         saveImageToLocalStorage(avatarBitmap, userId)
         return avatarBitmapToUri(avatarBitmap, userId).toString()
     }
@@ -361,17 +320,5 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
                 onFailure(e)
             }
         }
-    }
-
-    private fun loadFile(resourceId: Int): List<String> {
-        val inputStream = getApplication<Application>().resources.openRawResource(resourceId)
-        return inputStream.bufferedReader().use { it.readLines() }
-    }
-
-    private fun generateRandomUserName(): String {
-        val animal = animals.random()
-        val verb = verbs.random()
-        val noun = nouns.random()
-        return "$animal $verb $noun"
     }
 }

@@ -16,7 +16,6 @@ import android.widget.CheckBox
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.pavlovalexey.pleinair.R
-import com.pavlovalexey.pleinair.main.ui.MainActivity
 import java.net.URL
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -24,7 +23,7 @@ import java.util.Locale
 import kotlin.concurrent.thread
 import android.content.SharedPreferences
 import com.pavlovalexey.pleinair.utils.AppPreferencesKeys
-import com.pavlovalexey.pleinair.utils.LoginAndOut
+import com.pavlovalexey.pleinair.utils.LoginAndUserUtils
 
 class TermsActivity : AppCompatActivity() {
 
@@ -49,7 +48,7 @@ class TermsActivity : AppCompatActivity() {
             finish()
             return
         } else {
-            LoginAndOut.logout(application) // если пользователь удалил и поставил заново приложень, чистим его аутентификацию
+            LoginAndUserUtils.logout(application) // если пользователь удалил и поставил заново приложень, чистим его аутентификацию
         }
 
         checkAgreement = findViewById(R.id.checkAgreement)

@@ -1,6 +1,5 @@
 package com.pavlovalexey.pleinair.calendar.ui.event
 
-import android.app.Activity.RESULT_OK
 import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
@@ -34,13 +33,11 @@ import java.util.Calendar
 import java.util.Locale
 import java.util.concurrent.TimeUnit
 import com.google.android.gms.maps.model.LatLng
-import com.google.firebase.Firebase
 import com.google.firebase.appcheck.internal.util.Logger.TAG
 import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.storage
 import com.pavlovalexey.pleinair.utils.AppPreferencesKeys
-import com.pavlovalexey.pleinair.utils.CircleTransform
-import com.pavlovalexey.pleinair.utils.ImageUtils
+import com.pavlovalexey.pleinair.utils.image.CircleTransform
+import com.pavlovalexey.pleinair.utils.image.ImageUtils
 import java.io.BufferedReader
 import java.io.ByteArrayOutputStream
 import java.io.File
