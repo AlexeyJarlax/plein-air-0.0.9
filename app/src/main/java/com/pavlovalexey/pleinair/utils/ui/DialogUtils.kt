@@ -72,7 +72,9 @@ object DialogUtils {
     ) {
         AlertDialog.Builder(context)
             .setTitle(title)
-            .setMultiChoiceItems(items, checkedItems) { _, which, isChecked -> onSelectionChanged(which, isChecked) }
+            .setMultiChoiceItems(items, checkedItems) { _, which, isChecked ->
+                onSelectionChanged(which, isChecked)
+            }
             .setPositiveButton("✔️") { _, _ -> onConfirm() }
             .setNegativeButton("❌", null)
             .show()

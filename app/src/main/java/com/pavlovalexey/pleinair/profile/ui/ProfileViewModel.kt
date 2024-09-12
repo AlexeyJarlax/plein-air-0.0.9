@@ -1,7 +1,6 @@
 package com.pavlovalexey.pleinair.profile.viewmodel
 
 import android.app.Application
-import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.net.Uri
@@ -11,17 +10,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.android.gms.maps.model.LatLng
 import com.pavlovalexey.pleinair.profile.model.User
-import com.pavlovalexey.pleinair.utils.AppPreferencesKeys
 import com.pavlovalexey.pleinair.utils.firebase.FirebaseUserManager
 import com.pavlovalexey.pleinair.utils.firebase.LoginAndUserUtils
-import dagger.Module
-import dagger.Provides
-import dagger.hilt.InstallIn
-import dagger.hilt.android.components.FragmentComponent
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
-import dagger.hilt.android.scopes.FragmentScoped
-import dagger.hilt.components.SingletonComponent
 import javax.inject.Inject
 
 @HiltViewModel
@@ -66,10 +57,7 @@ class ProfileViewModel @Inject constructor(
             onSuccess = { uri ->
                 val updatedUser = _user.value?.copy(profileImageUrl = uri.toString())
                 _user.value = updatedUser
-                with(sharedPreferences.edit()) {
-                    putString("profileImageUrl", uri.toString())
-                    apply()
-                }
+                saveProfileImageUrl(uri.toString())
                 onSuccess(uri)
             },
             onFailure = {
@@ -104,10 +92,7 @@ class ProfileViewModel @Inject constructor(
             imageUrl,
             onSuccess = {
                 _user.value = _user.value?.copy(profileImageUrl = imageUrl)
-                with(sharedPreferences.edit()) {
-                    putString("profileImageUrl", imageUrl)
-                    apply()
-                }
+                saveProfileImageUrl(imageUrl)
             },
             onFailure = { e ->
                 Log.w("ProfileViewModel", "Error updating profile image URL", e)
@@ -166,16 +151,11 @@ class ProfileViewModel @Inject constructor(
         )
     }
 
-    fun loadSelectedStyles() {
-        val userId = auth.currentUser?.uid ?: return
-        firebaseUserManager.loadSelectedStyles(
-            userId,
-            onSuccess = { styles ->
-                _selectedArtStyles.value = styles
-            },
-            onFailure = { e ->
-                Log.w("ProfileViewModel", "Error loading art styles", e)
-            }
-        )
+
+    private fun saveProfileImageUrl(url: String) {
+        with(sharedPreferences.edit()) {
+            putString("profileImageUrl", url)
+            apply()
+        }
     }
 }

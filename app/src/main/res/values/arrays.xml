@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="art_styles">
+        <item>Abstract</item>
+        <item>Impressionism</item>
+        <item>Realism</item>
+        <item>Expressionism</item>
+        <item>Surrealism</item>
+        <item>Cubism</item>
+        <item>Fauvism</item>
+        <item>Pop Art</item>
+        <item>Minimalism</item>
+        <item>Modernism</item>
+        <item>Baroque</item>
+        <item>Renaissance</item>
+        <item>Gothic</item>
+    </string-array>
+</resources>

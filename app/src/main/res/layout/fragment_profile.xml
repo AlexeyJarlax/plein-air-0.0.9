@@ -110,13 +110,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:background="#40FFFFFF"
         android:text="✒️"
         android:textSize="50sp"
-        android:background="#40FFFFFF"
         app:layout_constraintBottom_toBottomOf="@+id/btn_choose_location"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.512"
         app:layout_constraintStart_toEndOf="@+id/btn_choose_location"
-        app:layout_constraintTop_toTopOf="@+id/btn_choose_location" />
+        app:layout_constraintTop_toTopOf="@+id/btn_choose_location"
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/txt_editDescription"
