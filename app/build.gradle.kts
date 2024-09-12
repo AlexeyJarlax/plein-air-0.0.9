@@ -54,11 +54,11 @@ android {
         dataBinding = true
     }
 
-//    packagingOptions {
-//        resources {
-//            excludes += "META-INF/DEPENDENCIES"
-//        }
-//    }
+    packagingOptions {
+        resources {
+            excludes += "META-INF/DEPENDENCIES"
+        }
+    }
 
 //    hilt {
 //        enableAggregatingTask = true
@@ -111,6 +111,10 @@ dependencies {
 
     // Библиотека для создания функций отправки в Intents с помощью mailto: URI
     implementation(libs.email.intent.builder)
+
+    // glide для пикч
+    implementation("com.github.bumptech.glide:glide:4.16.0")
+    kapt("com.github.bumptech.glide:compiler:4.16.0")
 
 // ТЕСТИРОВАНИЕ
 
