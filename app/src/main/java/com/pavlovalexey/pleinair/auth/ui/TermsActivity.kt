@@ -23,7 +23,7 @@ import java.util.Locale
 import kotlin.concurrent.thread
 import android.content.SharedPreferences
 import com.pavlovalexey.pleinair.utils.AppPreferencesKeys
-import com.pavlovalexey.pleinair.utils.LoginAndUserUtils
+import com.pavlovalexey.pleinair.utils.firebase.LoginAndUserUtils
 
 class TermsActivity : AppCompatActivity() {
 

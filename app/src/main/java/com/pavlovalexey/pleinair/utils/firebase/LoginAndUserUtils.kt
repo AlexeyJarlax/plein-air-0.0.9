@@ -1,9 +1,10 @@
-package com.pavlovalexey.pleinair.utils
+package com.pavlovalexey.pleinair.utils.firebase
 
 import android.app.Application
 import android.content.Context
 import com.google.firebase.auth.FirebaseAuth
 import com.pavlovalexey.pleinair.R
+import com.pavlovalexey.pleinair.utils.AppPreferencesKeys
 
 class LoginAndUserUtils(private val context: Context) {
 

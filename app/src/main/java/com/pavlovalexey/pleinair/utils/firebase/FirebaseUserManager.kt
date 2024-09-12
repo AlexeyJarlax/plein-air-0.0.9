@@ -1,4 +1,4 @@
-package com.pavlovalexey.pleinair.utils
+package com.pavlovalexey.pleinair.utils.firebase
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -12,6 +12,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.GeoPoint
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
+import com.pavlovalexey.pleinair.utils.AppPreferencesKeys
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
@@ -110,6 +111,7 @@ class FirebaseUserManager(private val context: Context) {
                 onFailure(it)
             }
         )
+        saveImageToLocalStorage(imageBitmap, userId)
     }
 
     private fun clearProfileImageFolder(

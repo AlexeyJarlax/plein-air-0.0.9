@@ -11,8 +11,8 @@ import androidx.lifecycle.MutableLiveData
 import com.google.android.gms.maps.model.LatLng
 import com.pavlovalexey.pleinair.profile.model.User
 import com.pavlovalexey.pleinair.utils.AppPreferencesKeys
-import com.pavlovalexey.pleinair.utils.FirebaseUserManager
-import com.pavlovalexey.pleinair.utils.LoginAndUserUtils
+import com.pavlovalexey.pleinair.utils.firebase.FirebaseUserManager
+import com.pavlovalexey.pleinair.utils.firebase.LoginAndUserUtils
 
 class ProfileViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -52,17 +52,12 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
             userId,
             imageBitmap,
             onSuccess = { uri ->
-                // Обновляем объект User с новым URL
                 val updatedUser = _user.value?.copy(profileImageUrl = uri.toString())
                 _user.value = updatedUser
-
-                // Сохраняем новый URL в SharedPreferences (если нужно)
                 with(sharedPreferences.edit()) {
                     putString("profileImageUrl", uri.toString())
                     apply()
                 }
-
-                // Вызываем success callback
                 onSuccess(uri)
             },
             onFailure = {
