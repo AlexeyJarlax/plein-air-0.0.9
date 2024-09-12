@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.commonizer.OptimisticNumberCommonizationEnabledKey.alias
-
 plugins {
     id("com.android.application")
     id ("com.google.dagger.hilt.android")
@@ -56,11 +54,11 @@ android {
         dataBinding = true
     }
 
-    packagingOptions {
-        resources {
-            excludes += "META-INF/DEPENDENCIES"
-        }
-    }
+//    packagingOptions {
+//        resources {
+//            excludes += "META-INF/DEPENDENCIES"
+//        }
+//    }
 
 //    hilt {
 //        enableAggregatingTask = true
@@ -91,14 +89,13 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
 
     // Библиотеки для работы с изображениями и их кэширования.
-    alias(libs.plugins.kotlinAndroidKsp)
-    alias(libs.plugins.hiltAndroid)
-    implementation(libs.glide)
-    implementation(libs.androidx.navigation.fragment.ktx)
-    implementation(libs.androidx.navigation.ui.ktx)
-    ksp(libs.compiler)
-    implementation(libs.hilt.android)
-    ksp(libs.hilt.compiler)
+    implementation("com.google.dagger:hilt-android:2.52")
+    implementation("androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03")
+    implementation(libs.navigation.fragment.ktx)
+    implementation(libs.navigation.ui.ktx)
+    ksp("com.google.dagger:hilt-compiler:2.52")
+    implementation (libs.androidx.hilt.lifecycle.viewmodel)
+
 //ДАННЫЕ
 
     // Библиотека для сериализации и десериализации JSON.

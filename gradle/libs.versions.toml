@@ -1,16 +1,17 @@
 [versions]
-activityCompose = "1.9.2"
+activityCompose = "1.9.1"
 activityComposeVersion = "1.7.0"
 agp = "8.5.0"
 androidxActivityCompose = "1.7.2"
 androidxJunit = "1.1.5"
-androidxMaterial = "1.7.1"
+androidxMaterial = "1.6.8"
 androidxMaterialVersion = "1.5.0"
 appcompatVersion = "1.6.1"
-compiler = "4.16.0"
+compiler = "4.15.0"
 constraintlayout = "2.1.4"
-converterGson = "2.11.0"
+converterGson = "2.9.0"
 coreKtxVersion = "1.10.1"
+daggerCompiler = "2.52"
 emailIntentBuilder = "2.0.0"
 espressoCoreVersion = "3.5.1"
 firebaseAuth = "23.6.0"
@@ -24,18 +25,32 @@ firebaseDatabase = "21.0.0"
 firebaseFirestore = "25.1.0"
 firebaseFirestoreVersion = "24.4.2"
 firebaseStorage = "21.0.0"
-flogger = "0.8"
-floggerLog4j2Backend = "0.8"
-floggerSystemBackend = "0.8"
-fragmentKtx = "1.8.3"
+flogger = "0.7.4"
+floggerLog4j2Backend = "0.7.4"
+floggerSystemBackend = "0.7.4"
+fragmentKtx = "1.8.2"
 fragmentKtxVersion = "1.8.1"
 glide = "4.16.0"
 googleFirebaseBom = "32.3.1"
+googleHiltAndroid = "2.52"
+googleHiltAndroidCompiler = "2.52"
+googleHiltAndroidGradlePlugin = "2.52"
+googleHiltAndroidGradlePluginVersion = "2.52"
 googlePlayServicesMaps = "18.0.2"
 googleServices = "4.4.2"
 googleServicesVersion = "4.3.15"
 gradle = "8.2.2"
-gson = "2.11.0"
+gson = "2.10.1"
+hiltAndroid = "1.2.0"
+hiltAndroidCompilerVersion = "1.2.0"
+hiltAndroidGradlePlugin = "1.2.0"
+hiltAndroidGradlePluginVersion = "1.2.0"
+hiltAndroidTesting = "1.2.0"
+hiltAndroidVersion = "1.2.0"
+hiltCompiler = "1.2.0"
+hiltLifecycleViewmodel = "1.0.0-alpha03"
+hiltNavigationCompose = "1.2.0"
+hiltNavigationComposeVersion = "1.2.0"
 koinAndroid = "3.3.0"
 kotlin = "1.9.0"
 coreKtx = "1.13.1"
@@ -46,21 +61,21 @@ appcompat = "1.7.0"
 kotlinGradlePlugin = "1.9.0"
 kotlinGradlePluginVersion = "1.8.10"
 kotlinxCoroutinesAndroid = "1.7.3"
-kotlinxCoroutinesAndroidVersion = "1.8.1"
+kotlinxCoroutinesAndroidVersion = "1.8.0"
 kotlinxCoroutinesCore = "1.7.2"
 kotlinxCoroutinesCoreVersion = "1.7.3"
-kotlinxSerializationJson = "1.7.2"
+kotlinxSerializationJson = "1.6.2"
 legacySupportV4 = "1.0.0"
 lifecycleLivedataKtx = "2.8.3"
-lifecycleRuntimeKtx = "2.8.5"
+lifecycleRuntimeKtx = "2.8.4"
 lifecycleRuntimeKtxVersion = "2.6.1"
 material = "1.12.0"
 materialVersion = "1.9.0"
 navigationCompose = "2.7.7"
 navigationComposeVersion = "2.7.1"
-navigationFragmentKtx = "2.8.0"
-navigationUiKtx = "2.8.0"
-okhttp = "4.12.0"
+navigationFragmentKtx = "2.7.7"
+navigationUiKtx = "2.7.7"
+okhttp = "4.10.0"
 peko = "3.0.5"
 picasso = "2.71828"
 picassoVersion = "2.8"
@@ -69,7 +84,7 @@ playServicesLocation = "21.3.0"
 playServicesLocationVersion = "21.0.1"
 playServicesMaps = "19.0.0"
 playServicesMapsVersion = "18.0.0"
-retrofit = "2.11.0"
+retrofit = "2.9.0"
 roomCompiler = "2.5.2"
 roomKtx = "2.5.2"
 roomRuntime = "2.6.1"
@@ -82,8 +97,9 @@ uiToolingPreview = "1.5.0"
 uiVersion = "1.5.0"
 viewpager2 = "1.1.0"
 firebaseStorageKtx = "21.0.0"
-daggerHilt = "2.52"
-hiltCompiler = "2.52"
+navigationFragmentKtxVersion = "2.8.0"
+navigationUiKtxVersion = "2.8.0"
+
 
 [libraries]
 androidx-activity = { module = "androidx.activity:activity", version.ref = "activityCompose" }
@@ -98,6 +114,10 @@ androidx-core-ktx-v1101 = { module = "androidx.core:core-ktx", version.ref = "co
 androidx-espresso-core-v351 = { module = "androidx.test.espresso:espresso-core", version.ref = "espressoCoreVersion" }
 androidx-fragment-ktx = { module = "androidx.fragment:fragment-ktx", version.ref = "fragmentKtx" }
 androidx-fragment-ktx-v181 = { module = "androidx.fragment:fragment-ktx", version.ref = "fragmentKtxVersion" }
+androidx-hilt-compiler = { module = "androidx.hilt:hilt-compiler", version.ref = "hiltNavigationCompose" }
+androidx-hilt-lifecycle-viewmodel = { module = "androidx.hilt:hilt-lifecycle-viewmodel", version.ref = "hiltLifecycleViewmodel" }
+androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
+androidx-hilt-navigation-compose-v100 = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationComposeVersion" }
 androidx-junit-v115 = { module = "androidx.test.ext:junit", version.ref = "androidxJunit" }
 androidx-legacy-support-v4 = { module = "androidx.legacy:legacy-support-v4", version.ref = "legacySupportV4" }
 androidx-lifecycle-livedata-ktx = { module = "androidx.lifecycle:lifecycle-livedata-ktx", version.ref = "lifecycleRuntimeKtx" }
@@ -130,6 +150,9 @@ com-google-firebase-firebase-auth = { module = "com.google.firebase:firebase-aut
 com-google-firebase-firebase-auth2 = { module = "com.google.firebase:firebase-auth" }
 compiler = { module = "com.github.bumptech.glide:ksp", version.ref = "compiler" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
+dagger-compiler = { module = "com.google.dagger:dagger-compiler", version.ref = "daggerCompiler" }
+dagger-hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroidCompilerVersion" }
+dagger-hilt-android-compiler-v249 = { module = "com.google.dagger:hilt-android-compiler", version.ref = "googleHiltAndroidCompiler" }
 email-intent-builder = { module = "de.cketti.mailto:email-intent-builder", version.ref = "emailIntentBuilder" }
 firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 firebase-appcheck-playintegrity = { module = "com.google.firebase:firebase-appcheck-playintegrity" }
@@ -152,10 +175,22 @@ glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
 google-firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 google-firebase-auth = { module = "com.google.firebase:firebase-auth", version.ref = "firebaseAuth" }
 google-firebase-storage = { module = "com.google.firebase:firebase-storage", version.ref = "firebaseStorage" }
+google-hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hiltAndroidGradlePlugin" }
 google-services = { module = "com.google.gms:google-services", version.ref = "googleServices" }
 google-services-v4315 = { module = "com.google.gms:google-services", version.ref = "googleServicesVersion" }
 gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
+hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroidGradlePlugin" }
+hilt-android-gradle-plugin = { module = "com.google.dagger:hilt-android-gradle-plugin", version.ref = "hiltAndroidGradlePlugin" }
+hilt-android-gradle-plugin-v244 = { module = "com.google.dagger:hilt-android-gradle-plugin", version.ref = "hiltAndroidGradlePluginVersion" }
+hilt-android-gradle-plugin-v248 = { module = "com.google.dagger:hilt-android-gradle-plugin", version.ref = "googleHiltAndroidGradlePlugin" }
+hilt-android-gradle-plugin-v249 = { module = "com.google.dagger:hilt-android-gradle-plugin", version.ref = "googleHiltAndroidGradlePluginVersion" }
+hilt-android-testing = { module = "com.google.dagger:hilt-android-testing", version.ref = "hiltAndroidGradlePlugin" }
+hilt-android-testing-v249 = { module = "com.google.dagger:hilt-android-testing", version.ref = "hiltAndroidTesting" }
+hilt-android-v244 = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
+hilt-android-v249 = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroidVersion" }
+hilt-android-v2xx = { module = "com.google.dagger:hilt-android", version.ref = "googleHiltAndroid" }
+hilt-compiler-v2xx = { module = "com.google.dagger:hilt-compiler", version.ref = "hiltCompiler" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
@@ -185,14 +220,17 @@ play-services-maps-v1800 = { module = "com.google.android.gms:play-services-maps
 play-services-maps-v1802 = { module = "com.google.android.gms:play-services-maps", version.ref = "googlePlayServicesMaps" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 firebase-storage-ktx = { group = "com.google.firebase", name = "firebase-storage-ktx", version.ref = "firebaseStorageKtx" }
-dagger-hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "daggerHilt" }
-dagger-hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hiltCompiler"}
-hilt-android = { group = "com.google.dagger", name = "hilt-android" , version.ref = "hiltCompiler"}
-hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler" , version.ref = "hiltCompiler"}
+dagger-hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
+dagger-hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hiltAndroid"}
+hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler" , version.ref = "hiltAndroid"}
+navigation-fragment-ktx = { group = "androidx.navigation", name = "navigation-fragment-ktx", version.ref = "navigationFragmentKtxVersion" }
+navigation-ui-ktx = { group = "androidx.navigation", name = "navigation-ui-ktx", version.ref = "navigationUiKtxVersion" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-hilt-plugin = { id = "dagger.hilt.android.plugin", version.ref = "daggerHilt" }
-kotlinAndroidKsp = { id = "com.google.devtools.ksp", version.ref = "kspVersion" }
-hiltAndroid = { id = "com.google.dagger.hilt.android", version.ref = "hiltCompiler" }
+hilt-plugin = { id = "dagger.hilt.android.plugin", version.ref = "hiltAndroid" }
+kotlinAndroidKsp = { id = "com.google.devtools.ksp", version.ref = "compiler" }
+hiltAndroid = { id = "com.google.dagger.hilt.android", version.ref = "hiltAndroid" }
+
+
