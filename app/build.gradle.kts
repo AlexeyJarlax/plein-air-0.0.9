@@ -60,13 +60,13 @@ android {
         }
     }
 
-//    hilt {
-//        enableAggregatingTask = true
-//    }
+    hilt {
+        enableAggregatingTask = true
+    }
 
-//    kapt {
-//        correctErrorTypes = true
-//    }
+    kapt {
+        correctErrorTypes = true
+    }
 }
 
 dependencies {
@@ -93,6 +93,7 @@ dependencies {
     implementation("androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03")
     implementation(libs.navigation.fragment.ktx)
     implementation(libs.navigation.ui.ktx)
+    kapt("com.google.dagger:hilt-compiler:2.52")
     ksp("com.google.dagger:hilt-compiler:2.52")
     implementation (libs.androidx.hilt.lifecycle.viewmodel)
 
