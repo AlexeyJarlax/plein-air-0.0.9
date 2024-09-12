@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="art_styles">
+        <item>Watercolor</item>
+        <item>Aerography</item>
+        <item>Gouache</item>
+        <item>Pencil</item>
+        <item>Oil</item>
+        <item>Markers</item>
+        <item>Pastel</item>
+        <item>Tempera</item>
+        <item>Ink</item>
+        <item>Charcoal</item>
+        <item>Other</item>
+    </string-array>
+</resources>

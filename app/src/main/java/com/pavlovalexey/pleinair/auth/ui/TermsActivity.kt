@@ -31,7 +31,9 @@ import javax.inject.Inject
 class TermsActivity : AppCompatActivity() {
 
     @Inject
-    lateinit var sharedPreferencesFS: SharedPreferences
+    lateinit var loginAndUserUtils: LoginAndUserUtils
+    @Inject
+    lateinit var sharedPreferences: SharedPreferences
     private lateinit var checkAgreement: CheckBox
     private lateinit var checkPrivacyPolicy: CheckBox
     private lateinit var btnContinue: Button
@@ -44,7 +46,7 @@ class TermsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_terms)
 
-        sharedPreferencesFS = getSharedPreferences(AppPreferencesKeys.PREFS_NAME, MODE_PRIVATE)
+        sharedPreferences = getSharedPreferences(AppPreferencesKeys.PREFS_NAME, MODE_PRIVATE)
 
         // Проверяем состояние согласия
         if (isTermsAccepted()) {
@@ -52,7 +54,7 @@ class TermsActivity : AppCompatActivity() {
             finish()
             return
         } else {
-            LoginAndUserUtils.logout(application) // если пользователь удалил и поставил заново приложень, чистим его аутентификацию
+            loginAndUserUtils.logout() // если пользователь удалил и поставил заново приложень, чистим его аутентификацию
         }
 
         checkAgreement = findViewById(R.id.checkAgreement)
@@ -122,13 +124,13 @@ class TermsActivity : AppCompatActivity() {
 
     private fun saveTermsAccepted(accepted: Boolean) {
         Log.d("TermsActivity", "Saving terms accepted: $accepted")
-        with(sharedPreferencesFS.edit()) {
+        with(sharedPreferences.edit()) {
             putBoolean("all_terms_accepted", accepted)
             apply()
         }
     }
 
     private fun isTermsAccepted(): Boolean {
-        return sharedPreferencesFS.getBoolean("all_terms_accepted", false)
+        return sharedPreferences.getBoolean("all_terms_accepted", false)
     }
 }

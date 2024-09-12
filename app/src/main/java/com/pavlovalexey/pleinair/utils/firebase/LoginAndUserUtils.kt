@@ -1,28 +1,28 @@
 package com.pavlovalexey.pleinair.utils.firebase
 
-import android.app.Application
 import android.content.Context
+import android.content.SharedPreferences
+import android.util.Log
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.pavlovalexey.pleinair.R
-import com.pavlovalexey.pleinair.utils.AppPreferencesKeys
 import javax.inject.Inject
 
-class LoginAndUserUtils(private val context: Context) {
+class LoginAndUserUtils @Inject constructor(
+    private val context: Context,
+    private val auth: FirebaseAuth,
+    private val firestore: FirebaseFirestore,
+    private val sharedPreferences: SharedPreferences
+) {
 
-    @Inject
-    lateinit var auth: FirebaseAuth
-    @Inject
-    lateinit var firestore: FirebaseFirestore
     @Inject
     lateinit var googleSignInClient: GoogleSignInClient
     @Inject
     lateinit var loginAndUserUtils: LoginAndUserUtils
 
     private val defaultLocation = LatLng(59.9500019, 30.3166718)
-    private val sharedPreferences = context.getSharedPreferences(AppPreferencesKeys.PREFS_NAME, Context.MODE_PRIVATE)
     private val animals: List<String> by lazy { loadFile(R.raw.animals) }
     private val verbs: List<String> by lazy { loadFile(R.raw.verbs) }
     private val nouns: List<String> by lazy { loadFile(R.raw.nouns) }
@@ -68,11 +68,13 @@ class LoginAndUserUtils(private val context: Context) {
                     )
                 )
                 userDocRef.set(userProfile).addOnSuccessListener {
+                    updateUserNameOnFirebase(userName)
                     saveUserNameLocally(userName)
                     onProfileSet(userName)
                 }
             } else {
                 val userName = document.getString("userName") ?: generateRandomUserName()
+                updateUserNameOnFirebase(userName)
                 saveUserNameLocally(userName)
                 onProfileSet(userName)
             }
@@ -85,10 +87,15 @@ class LoginAndUserUtils(private val context: Context) {
         editor.apply()
     }
 
-    companion object {
-        fun logout(application: Application) {
-            val loginAndUserUtils = LoginAndUserUtils(application.applicationContext)
-            loginAndUserUtils.logout()
-        }
+    fun updateUserNameOnFirebase(newName: String) {
+        val userId = auth.currentUser?.uid ?: return
+        firestore.collection("users").document(userId)
+            .update("userName", newName)
+            .addOnSuccessListener {
+                Log.d("FirebaseUserManager", "User name updated")
+            }
+            .addOnFailureListener { e ->
+                Log.w("FirebaseUserManager", "Error updating user name", e)
+            }
     }
 }

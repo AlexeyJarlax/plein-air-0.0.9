@@ -1,6 +1,7 @@
 package com.pavlovalexey.pleinair.utils.firebase
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
@@ -18,14 +19,15 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.util.UUID
+import javax.inject.Inject
 
-class FirebaseUserManager(private val context: Context) {
-
-    val auth: FirebaseAuth = FirebaseAuth.getInstance()
-    private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
-    private val storage: FirebaseStorage = FirebaseStorage.getInstance()
-    private val sharedPreferences =
-        context.getSharedPreferences(AppPreferencesKeys.PREFS_NAME, Context.MODE_PRIVATE)
+class FirebaseUserManager @Inject constructor(
+    private val context: Context,
+    private val auth: FirebaseAuth,
+    private val firestore: FirebaseFirestore,
+    private val storage: FirebaseStorage,
+    private val sharedPreferences: SharedPreferences
+) {
 
     fun fetchUserFromServer(
         userId: String,
@@ -59,18 +61,18 @@ class FirebaseUserManager(private val context: Context) {
             }
     }
 
-    fun updateUserName(userId: String, newName: String, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
-        firestore.collection("users").document(userId)
-            .update("name", newName)
-            .addOnSuccessListener {
-                Log.d("FirebaseUserManager", "User name updated")
-                onSuccess()
-            }
-            .addOnFailureListener { e ->
-                Log.w("FirebaseUserManager", "Error updating user name", e)
-                onFailure(e)
-            }
-    }
+//    fun updateUserName(userId: String, newName: String, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
+//        firestore.collection("users").document(userId)
+//            .update("name", newName)
+//            .addOnSuccessListener {
+//                Log.d("FirebaseUserManager", "User name updated")
+//                onSuccess()
+//            }
+//            .addOnFailureListener { e ->
+//                Log.w("FirebaseUserManager", "Error updating user name", e)
+//                onFailure(e)
+//            }
+//    }
 
     fun updateUserLocation(userId: String, location: LatLng, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
         firestore.collection("users").document(userId)

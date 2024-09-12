@@ -8,6 +8,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 import com.pavlovalexey.pleinair.calendar.adapter.EventAdapter
 import com.pavlovalexey.pleinair.calendar.data.EventRepository
 import com.pavlovalexey.pleinair.calendar.ui.calendar.CalendarViewModel
@@ -18,6 +19,7 @@ import com.pavlovalexey.pleinair.settings.domain.SettingsInteractorImpl
 import com.pavlovalexey.pleinair.settings.domain.SettingsRepository
 import com.pavlovalexey.pleinair.utils.AppPreferencesKeys
 import com.pavlovalexey.pleinair.utils.firebase.FirebaseUserManager
+import com.pavlovalexey.pleinair.utils.firebase.LoginAndUserUtils
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -30,13 +32,18 @@ import javax.inject.Singleton
 object AppModule {
 
     @Provides
-    fun provideFirebaseUserManager(@ApplicationContext appContext: Context): FirebaseUserManager {
-        return FirebaseUserManager(appContext)
-    }
-
-    @Provides
+    @Singleton
     fun provideSharedPreferences(@ApplicationContext appContext: Context): SharedPreferences {
         return appContext.getSharedPreferences(AppPreferencesKeys.PREFS_NAME, Context.MODE_PRIVATE)
+    }
+
+////////// Firebase
+
+
+    @Provides
+    @Singleton
+    fun provideFirebaseAuth(): FirebaseAuth {
+        return FirebaseAuth.getInstance()
     }
 
     @Provides
@@ -47,8 +54,8 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideFirebaseAuth(): FirebaseAuth {
-        return FirebaseAuth.getInstance()
+    fun provideFirebaseStorage(): FirebaseStorage {
+        return FirebaseStorage.getInstance()
     }
 
     @Provides
@@ -61,15 +68,7 @@ object AppModule {
         return GoogleSignIn.getClient(context, googleSignInOptions)
     }
 
-    @Provides
-    @Singleton
-    fun provideProfileViewModel(
-        application: Application,
-        firebaseUserManager: FirebaseUserManager,
-        sharedPreferences: SharedPreferences
-    ): ProfileViewModel {
-        return ProfileViewModel(application, firebaseUserManager, sharedPreferences)
-    }
+    ////////// ДОМЕЙН И ДАТА
 
     @Provides
     @Singleton
@@ -98,6 +97,19 @@ object AppModule {
         return EventRepository(context as Application)
     }
 
+    ////////// ВЬЮ МОДЕЛИ
+
+    @Provides
+    @Singleton
+    fun provideProfileViewModel(
+        application: Application,
+        firebaseUserManager: FirebaseUserManager,
+        auth: FirebaseAuth,
+        sharedPreferences: SharedPreferences
+    ): ProfileViewModel {
+        return ProfileViewModel(application, firebaseUserManager, auth, sharedPreferences)
+    }
+
     @Provides
     @Singleton
     fun provideCalendarViewModel(
@@ -105,5 +117,30 @@ object AppModule {
         firebaseFirestore: FirebaseFirestore
     ): CalendarViewModel {
         return CalendarViewModel(firebaseAuth, firebaseFirestore)
+    }
+
+////////// УТИЛИТЫ
+
+    @Provides
+    @Singleton
+    fun provideLoginAndUserUtils(
+        @ApplicationContext context: Context,
+        firebaseAuth: FirebaseAuth,
+        firebaseFirestore: FirebaseFirestore,
+        sharedPreferences: SharedPreferences
+    ): LoginAndUserUtils {
+        return LoginAndUserUtils(context, firebaseAuth, firebaseFirestore, sharedPreferences)
+    }
+
+    @Provides
+    @Singleton
+    fun provideFirebaseUserManager(
+        @ApplicationContext appContext: Context,
+        auth: FirebaseAuth,
+        firestore: FirebaseFirestore,
+        storage: FirebaseStorage,
+        sharedPreferences: SharedPreferences
+    ): FirebaseUserManager {
+        return FirebaseUserManager(appContext, auth, firestore, storage, sharedPreferences)
     }
 }

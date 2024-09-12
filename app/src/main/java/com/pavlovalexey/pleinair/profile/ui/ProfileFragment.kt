@@ -15,6 +15,8 @@ import com.google.android.gms.maps.model.LatLng
 import com.pavlovalexey.pleinair.R
 import com.pavlovalexey.pleinair.databinding.FragmentProfileBinding
 import com.pavlovalexey.pleinair.profile.viewmodel.ProfileViewModel
+import com.pavlovalexey.pleinair.utils.firebase.FirebaseUserManager
+import com.pavlovalexey.pleinair.utils.firebase.LoginAndUserUtils
 import com.pavlovalexey.pleinair.utils.image.CircleTransform
 import com.pavlovalexey.pleinair.utils.image.setupImageResultLaunchers
 import com.pavlovalexey.pleinair.utils.image.showImageSelectionDialog
@@ -23,9 +25,13 @@ import com.pavlovalexey.pleinair.utils.ui.IconStateUtils
 import com.pavlovalexey.pleinair.utils.ui.showSnackbar
 import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class ProfileFragment : Fragment(), UserMapFragment.OnLocationSelectedListener {
+
+    @Inject
+    lateinit var loginAndUserUtils: LoginAndUserUtils
 
     private lateinit var binding: FragmentProfileBinding
     private val viewModel: ProfileViewModel by viewModels()
@@ -50,6 +56,14 @@ class ProfileFragment : Fragment(), UserMapFragment.OnLocationSelectedListener {
         return binding.root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        loginAndUserUtils.setupUserProfile { name: String ->
+            binding.userName.text = name
+        }
+    }
+
     private fun setupObservers() {
         viewModel.user.observe(viewLifecycleOwner, Observer { user ->
             binding.userName.text = user?.name ?: getString(R.string.default_user_name)
@@ -61,7 +75,6 @@ class ProfileFragment : Fragment(), UserMapFragment.OnLocationSelectedListener {
             } else {
                 binding.userAvatar.setImageResource(R.drawable.account_circle_50dp)
             }
-//            binding.txtChooseLocation.text = user?.locationName ?: getString(R.string.location)
         })
 
         viewModel.selectedArtStyles.observe(viewLifecycleOwner, Observer { selectedStyles ->
@@ -98,7 +111,7 @@ class ProfileFragment : Fragment(), UserMapFragment.OnLocationSelectedListener {
             title = "Log out",
             message = "Разлогинить пользователя?",
             onConfirm = {
-                viewModel.logout()
+                loginAndUserUtils.logout()
                 requireActivity().recreate()
             }
         )
@@ -111,7 +124,7 @@ class ProfileFragment : Fragment(), UserMapFragment.OnLocationSelectedListener {
             title = "Изменить имя",
             initialText = currentName,
             onConfirm = { newName ->
-                viewModel.updateUserName(newName)
+                loginAndUserUtils.updateUserNameOnFirebase(newName)
                 showSnackbar("Имя обновлено!")
             }
         )

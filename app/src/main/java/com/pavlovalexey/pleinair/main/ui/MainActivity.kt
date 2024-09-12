@@ -11,6 +11,7 @@ package com.pavlovalexey.pleinair.main.ui
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.Toast
@@ -101,10 +102,6 @@ class MainActivity : AppCompatActivity(), UserMapFragment.OnLocationSelectedList
             }
         }
 
-        loginAndUserUtils.setupUserProfile { name ->
-            Toast.makeText(this, "Добро пожаловать, $name!", Toast.LENGTH_SHORT).show()
-        }
-
         setupOnlineStatusListener()
     }
 
@@ -140,13 +137,24 @@ class MainActivity : AppCompatActivity(), UserMapFragment.OnLocationSelectedList
 
     override fun onLocationSelected(location: LatLng) {
         selectedLocation = location
-        loginAndUserUtils.updateUserLocation(location) { isSuccess ->
-            if (isSuccess) {
+        val user = auth.currentUser ?: return
+        val userId = user.uid
+        val userDocRef = firestore.collection("users").document(userId)
+
+        val updatedLocation = hashMapOf(
+            "latitude" to location.latitude,
+            "longitude" to location.longitude
+        )
+
+        userDocRef.update("location", updatedLocation)
+            .addOnSuccessListener {
+                Log.d(TAG, "User location updated to: $location")
                 Toast.makeText(this, "Координаты обновлены!", Toast.LENGTH_SHORT).show()
-            } else {
+            }
+            .addOnFailureListener { e ->
+                Log.w(TAG, "Error updating user location", e)
                 Toast.makeText(this, "Ошибка координат!", Toast.LENGTH_SHORT).show()
             }
-        }
     }
 
     override fun onMapReady(googleMap: GoogleMap) {

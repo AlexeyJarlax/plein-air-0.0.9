@@ -9,6 +9,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.android.gms.maps.model.LatLng
+import com.google.firebase.auth.FirebaseAuth
 import com.pavlovalexey.pleinair.profile.model.User
 import com.pavlovalexey.pleinair.utils.firebase.FirebaseUserManager
 import com.pavlovalexey.pleinair.utils.firebase.LoginAndUserUtils
@@ -19,10 +20,10 @@ import javax.inject.Inject
 class ProfileViewModel @Inject constructor(
     application: Application,
     private val firebaseUserManager: FirebaseUserManager,
+    private val auth: FirebaseAuth,
     private val sharedPreferences: SharedPreferences
 ) : AndroidViewModel(application) {
 
-    private val auth = firebaseUserManager.auth
     private val _user = MutableLiveData<User?>()
     val user: MutableLiveData<User?> get() = _user
     private val _selectedArtStyles = MutableLiveData<Set<String>>(emptySet())
@@ -67,23 +68,6 @@ class ProfileViewModel @Inject constructor(
         )
     }
 
-    fun updateUserName(newName: String) {
-        val userId = auth.currentUser?.uid ?: return
-        firebaseUserManager.updateUserName(
-            userId,
-            newName,
-            onSuccess = {
-                _user.value = _user.value?.copy(name = newName)
-            },
-            onFailure = {
-                Log.w("ProfileViewModel", "Error updating user name", it)
-            }
-        )
-    }
-
-    fun logout() {
-        LoginAndUserUtils.logout(getApplication())
-    }
 
     fun updateProfileImageUrl(imageUrl: String) {
         val userId = auth.currentUser?.uid ?: return
