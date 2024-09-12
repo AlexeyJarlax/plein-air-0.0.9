@@ -1,4 +1,4 @@
-package com.pavlovalexey.pleinair.utils.ui
+package com.pavlovalexey.pleinair.utils.old
 
 import android.view.View
 import com.pavlovalexey.pleinair.utils.AppPreferencesKeys

@@ -1,4 +1,4 @@
-package com.pavlovalexey.pleinair.utils.ui
+package com.pavlovalexey.pleinair.utils.old
 
 //****************************************** объекты заглушки на ошибки или остутствии результата поиска
 //INTERNET_EMPTY = проблемы с интернетом при поиске по АПИ

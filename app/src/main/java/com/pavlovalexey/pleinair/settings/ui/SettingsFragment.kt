@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.pavlovalexey.pleinair.databinding.FragmentSettingsBinding
-import com.pavlovalexey.pleinair.utils.ui.setDebouncedClickListener
+import com.pavlovalexey.pleinair.utils.old.setDebouncedClickListener
 import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
 

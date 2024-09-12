@@ -26,9 +26,12 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.pavlovalexey.pleinair.R
 import com.pavlovalexey.pleinair.databinding.FragmentProfileBinding
 import com.pavlovalexey.pleinair.profile.viewmodel.ProfileViewModel
+import com.pavlovalexey.pleinair.utils.AppPreferencesKeys.PREFS_NAME
 import com.pavlovalexey.pleinair.utils.image.CircleTransform
 import com.pavlovalexey.pleinair.utils.image.setupImageResultLaunchers
 import com.pavlovalexey.pleinair.utils.image.showImageSelectionDialog
+import com.pavlovalexey.pleinair.utils.ui.DialogUtils
+import com.pavlovalexey.pleinair.utils.ui.showSnackbar
 import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -84,7 +87,7 @@ class ProfileFragment : Fragment(), UserMapFragment.OnLocationSelectedListener {
             showImageSelectionDialog(cameraActivityResultLauncher, galleryActivityResultLauncher)
         }
         binding.userName.setOnClickListener { showEditNameDialog() }
-        binding.btnChooseLocation.setOnClickListener { openMapFragment() }
+        binding.btnChooseLocation.setOnClickListener { openUserMapFragment() }
         binding.editDescription.setOnClickListener { showEditDescriptionDialog() }
         binding.exitButton.setOnClickListener { showExitConfirmationDialog() }
         binding.btnTechnic.setOnClickListener { showTechnicDialog() }
@@ -94,17 +97,16 @@ class ProfileFragment : Fragment(), UserMapFragment.OnLocationSelectedListener {
         binding.userAvatar.setImageBitmap(processedBitmap)
         viewModel.uploadImageToFirebase(processedBitmap,
             onSuccess = { uri ->
-                // Обновляем аватар с использованием нового URL
                 Picasso.get().load(uri).transform(CircleTransform()).into(binding.userAvatar)
             },
             onFailure = {
-                // Обработка ошибок
             }
         )
     }
 
     private fun showLogoutConfirmationDialog() {
-        showConfirmationDialog(
+        DialogUtils.showConfirmationDialog(
+            context = requireContext(),
             title = "Log out",
             message = "Разлогинить пользователя?",
             onConfirm = {
@@ -116,24 +118,25 @@ class ProfileFragment : Fragment(), UserMapFragment.OnLocationSelectedListener {
 
     private fun showEditNameDialog() {
         val currentName = binding.userName.text.toString()
-        showInputDialog(
+        DialogUtils.showInputDialog(
+            context = requireContext(),
             title = "Изменить имя",
             initialText = currentName,
             onConfirm = { newName ->
                 viewModel.updateUserName(newName)
-                showToast("Имя обновлено!")
+                showSnackbar("Имя обновлено!")
             }
         )
     }
 
     private fun showEditDescriptionDialog() {
         val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
-
         FirebaseFirestore.getInstance().collection("users").document(userId)
             .get()
             .addOnSuccessListener { documentSnapshot ->
                 val currentDescription = documentSnapshot.getString("description") ?: ""
-                showInputDialog(
+                DialogUtils.showInputDialog(
+                    context = requireContext(),
                     title = "Изменить описание",
                     initialText = currentDescription,
                     inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE,
@@ -141,13 +144,13 @@ class ProfileFragment : Fragment(), UserMapFragment.OnLocationSelectedListener {
                         viewModel.updateUserDescription(newDescription) {
                             updateIconToChecked(binding.txtEditDescription)
                             saveIconState("description", true)
-                            showToast("Описание обновлено!")
+                            showSnackbar("Описание обновлено!")
                         }
                     }
                 )
             }
             .addOnFailureListener { e ->
-                showToast("Ошибка загрузки описания")
+                showSnackbar("Ошибка загрузки описания")
                 Log.w(TAG, "Ошибка при получении описания пользователя", e)
             }
     }
@@ -164,7 +167,8 @@ class ProfileFragment : Fragment(), UserMapFragment.OnLocationSelectedListener {
             selectedStyles.contains(artStyles[index])
         }
 
-        showMultiChoiceDialog(
+        DialogUtils.showMultiChoiceDialog(
+            context = requireContext(),
             title = "Выберите технику",
             items = artStyles,
             checkedItems = checkedItems,
@@ -180,21 +184,22 @@ class ProfileFragment : Fragment(), UserMapFragment.OnLocationSelectedListener {
                     binding.txtTechnic.text = selectedStyles.joinToString(", ")
                     updateIconToChecked(binding.txtTechnic)
                     saveIconState("technic", true)
-                    showToast("Техники сохранены!")
+                    showSnackbar("Техники сохранены!")
                 }
             }
         )
     }
 
     private fun showExitConfirmationDialog() {
-        showConfirmationDialog(
+        DialogUtils.showConfirmationDialog(
+            context = requireContext(),
             title = "Exit",
             message = "Закрыть приложение?",
             onConfirm = { activity?.finishAffinity() }
         )
     }
 
-    private fun openMapFragment() {
+    private fun openUserMapFragment() {
         val userMapFragment = UserMapFragment()
         userMapFragment.setOnLocationSelectedListener(this)
         findNavController().navigate(R.id.action_profileFragment_to_UserMapFragment)
@@ -204,73 +209,9 @@ class ProfileFragment : Fragment(), UserMapFragment.OnLocationSelectedListener {
         viewModel.updateUserLocation(location) {
             updateIconToChecked(binding.txtChooseLocation)
             saveIconState("location", true)
-            showToast("Местоположение сохранено!")
+            showSnackbar("Местоположение сохранено!")
             parentFragmentManager.popBackStack()
         }
-    }
-
-    private fun onUploadSuccess(uri: Uri) {
-        if (isAdded) {
-            showToast("Аватарка успешно загружена!")
-            viewModel.updateProfileImageUrl(uri.toString())
-        } else {
-            Log.w(TAG, "Фрагмент не был присоединён, не удалось показать Toast")
-        }
-    }
-
-    private fun onUploadFailure(exception: Exception) {
-        showToast("Ошибка загрузки аватарки: ${exception.message}")
-    }
-
-    private fun showToast(message: String) {
-        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
-    }
-
-    private fun showConfirmationDialog(title: String, message: String, onConfirm: () -> Unit) {
-        AlertDialog.Builder(requireContext())
-            .setTitle(title)
-            .setMessage(message)
-            .setPositiveButton("✔️") { _, _ -> onConfirm() }
-            .setNegativeButton("❌", null)
-            .show()
-    }
-
-    private fun showInputDialog(title: String, initialText: String, inputType: Int = InputType.TYPE_CLASS_TEXT, onConfirm: (String) -> Unit) {
-        val editText = EditText(requireContext()).apply {
-            setText(initialText)
-            this.inputType = inputType
-            minLines = 5
-            maxLines = 10
-            layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            ).apply {
-                height = (resources.displayMetrics.density * 300).toInt()
-            }
-        }
-
-        AlertDialog.Builder(requireContext())
-            .setTitle(title)
-            .setView(editText)
-            .setPositiveButton("✔️") { _, _ -> onConfirm(editText.text.toString()) }
-            .setNegativeButton("❌", null)
-            .show()
-    }
-
-    private fun showOptionsDialog(title: String, options: Array<String>, onOptionSelected: (Int) -> Unit) {
-        AlertDialog.Builder(requireContext())
-            .setTitle(title)
-            .setItems(options) { _, which -> onOptionSelected(which) }
-            .show()
-    }
-
-    private fun showMultiChoiceDialog(title: String, items: Array<String>, checkedItems: BooleanArray, onSelectionChanged: (Int, Boolean) -> Unit, onConfirm: () -> Unit) {
-        AlertDialog.Builder(requireContext())
-            .setTitle(title)
-            .setMultiChoiceItems(items, checkedItems) { _, which, isChecked -> onSelectionChanged(which, isChecked) }
-            .setPositiveButton("✔️") { _, _ -> onConfirm() }
-            .setNegativeButton("❌", null)
-            .show()
     }
 
     private fun updateIconIfLocationExists(locationName: String?) {
@@ -296,7 +237,7 @@ class ProfileFragment : Fragment(), UserMapFragment.OnLocationSelectedListener {
     }
 
     private fun saveIconState(key: String, state: Boolean) {
-        val sharedPreferences = requireContext().getSharedPreferences("ProfilePrefs", Context.MODE_PRIVATE)
+        val sharedPreferences = requireContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         with(sharedPreferences.edit()) {
             putBoolean(key, state)
             apply()
@@ -304,7 +245,7 @@ class ProfileFragment : Fragment(), UserMapFragment.OnLocationSelectedListener {
     }
 
     private fun loadSavedIconStates() {
-        val sharedPreferences = requireContext().getSharedPreferences("ProfilePrefs", Context.MODE_PRIVATE)
+        val sharedPreferences = requireContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         val locationState = sharedPreferences.getBoolean("location", false)
         val descriptionState = sharedPreferences.getBoolean("description", false)
         val technicState = sharedPreferences.getBoolean("technic", false)
