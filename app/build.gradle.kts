@@ -1,10 +1,12 @@
+import org.jetbrains.kotlin.commonizer.OptimisticNumberCommonizationEnabledKey.alias
+
 plugins {
     id("com.android.application")
+    id ("com.google.dagger.hilt.android")
     id("org.jetbrains.kotlin.android")
     kotlin("plugin.serialization") version "2.0.0"
     id("kotlin-kapt") // плагин kotlin-kapt для работы зависимостей kapt("
     id("com.google.devtools.ksp")
-    id("dagger.hilt.android.plugin")
     id("com.google.gms.google-services")
 }
 
@@ -59,6 +61,14 @@ android {
             excludes += "META-INF/DEPENDENCIES"
         }
     }
+
+//    hilt {
+//        enableAggregatingTask = true
+//    }
+
+//    kapt {
+//        correctErrorTypes = true
+//    }
 }
 
 dependencies {
@@ -81,11 +91,14 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
 
     // Библиотеки для работы с изображениями и их кэширования.
+    alias(libs.plugins.kotlinAndroidKsp)
+    alias(libs.plugins.hiltAndroid)
     implementation(libs.glide)
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
     ksp(libs.compiler)
-
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
 //ДАННЫЕ
 
     // Библиотека для сериализации и десериализации JSON.
@@ -114,16 +127,14 @@ dependencies {
 // ПРОДВИНУТЫЕ
 
     // Библиотека для управления зависимостями koin и Dagger Hilt
-//    implementation(libs.koin.android)
-    implementation ("androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03")
-    implementation(libs.hilt.android)
-    kapt (libs.hilt.compiler.v2xx)
-    implementation (libs.androidx.hilt.lifecycle.viewmodel)
-    kapt (libs.androidx.hilt.compiler)
+    implementation (libs.hilt.android)
+    ksp (libs.google.hilt.compiler)
+    implementation(libs.androidx.hilt.lifecycle.viewmodel)
+    ksp(libs.androidx.hilt.compiler)
 
     // Расширения Kotlin для работы с жизненным циклом компонентов.
     implementation(libs.lifecycle.viewmodel.ktx)
-    implementation(libs.androidx.lifecycle.livedata.ktx.v283)
+    implementation(libs.androidx.lifecycle.livedata.ktx)
 
     // Расширения Kotlin для фрагментов
     implementation(libs.androidx.fragment.ktx)
@@ -135,6 +146,7 @@ dependencies {
 //    implementation(libs.androidx.navigation.fragment.ktx)
 //    implementation(libs.androidx.navigation.ui.ktx)
 //    implementation(libs.androidx.fragment.ktx.v181)
+//    implementation(libs.androidx.hilt.navigation.compose)
 
     // корутин
     implementation(libs.kotlinx.coroutines.android.v180)
@@ -149,16 +161,6 @@ dependencies {
 
     // поддержка легаси для ярлычков (надо или нет я хз)
     implementation(libs.androidx.legacy.support.v4)
-
-    // Hilt для внедрения зависимостей
-    implementation(libs.hilt.android)
-    kapt(libs.google.hilt.compiler)
-    implementation(libs.hilt.android.v244)
-    kapt(libs.dagger.hilt.android.compiler)
-    kapt(libs.dagger.compiler)
-
-    // Jetpack Compose Hilt Integration
-//    implementation(libs.androidx.hilt.navigation.compose)
 
     // Firebase
     implementation(platform(libs.firebase.bom))
@@ -184,10 +186,5 @@ dependencies {
     implementation(libs.flogger)
     implementation(libs.flogger.system.backend) // System backend
     implementation(libs.flogger.log4j2.backend) // Log4j2 backend (опционально)
-//    implementation(libs.play.services.maps.v1800)
-//    implementation(libs.play.services.location.v2101)
-//    implementation (libs.play.services.maps.v1802)
-//    implementation (libs.firebase.firestore.v2442)
-//    implementation (libs.google.firebase.storage)
-//    implementation (libs.picasso.v28)
+
 }

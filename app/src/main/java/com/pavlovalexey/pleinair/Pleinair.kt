@@ -15,7 +15,12 @@ class Pleinair : Application() {
     override fun onCreate() {
         super.onCreate()
         FirebaseApp.initializeApp(this)
-        applyDayNightTheme()
+        // Убедитесь, что SettingsInteractor инициализирован
+        if (::settings.isInitialized) {
+            applyDayNightTheme()
+        } else {
+            // Обработайте случай, если SettingsInteractor не инициализирован
+        }
     }
 
     private fun applyDayNightTheme() {
