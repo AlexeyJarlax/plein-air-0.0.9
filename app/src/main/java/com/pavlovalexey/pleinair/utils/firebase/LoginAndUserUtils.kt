@@ -61,7 +61,7 @@ class LoginAndUserUtils @Inject constructor(
                 val userName = generateRandomUserName()
                 val userProfile = hashMapOf(
                     "profileImageUrl" to "",
-                    "userName" to userName,
+                    "name" to userName,
                     "location" to hashMapOf(
                         "latitude" to defaultLocation.latitude,
                         "longitude" to defaultLocation.longitude
@@ -73,7 +73,7 @@ class LoginAndUserUtils @Inject constructor(
                     onProfileSet(userName)
                 }
             } else {
-                val userName = document.getString("userName") ?: generateRandomUserName()
+                val userName = document.getString("name") ?: generateRandomUserName()
                 updateUserNameOnFirebase(userName)
                 saveUserNameLocally(userName)
                 onProfileSet(userName)
@@ -83,14 +83,14 @@ class LoginAndUserUtils @Inject constructor(
 
     private fun saveUserNameLocally(userName: String) {
         val editor = sharedPreferences.edit()
-        editor.putString("userName", userName)
+        editor.putString("name", userName)
         editor.apply()
     }
 
     fun updateUserNameOnFirebase(newName: String) {
         val userId = auth.currentUser?.uid ?: return
         firestore.collection("users").document(userId)
-            .update("userName", newName)
+            .update("name", newName)
             .addOnSuccessListener {
                 Log.d("FirebaseUserManager", "User name updated")
             }

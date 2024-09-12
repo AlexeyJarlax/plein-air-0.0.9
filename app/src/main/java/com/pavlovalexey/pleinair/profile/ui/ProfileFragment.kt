@@ -125,6 +125,7 @@ class ProfileFragment : Fragment(), UserMapFragment.OnLocationSelectedListener {
             initialText = currentName,
             onConfirm = { newName ->
                 loginAndUserUtils.updateUserNameOnFirebase(newName)
+                binding.userName.text = newName
                 showSnackbar("Имя обновлено!")
             }
         )
