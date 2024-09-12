@@ -62,7 +62,7 @@ android {
 
     hilt {
         enableAggregatingTask = true
-        enableExperimentalClasspathAggregation = true
+//        enableExperimentalClasspathAggregation = true для ускорения много модульных проектов
     }
 
     kapt {
@@ -71,7 +71,8 @@ android {
 }
 
 dependencies {
-// БАЗОВЫЕ
+
+////////// БАЗОВЫЕ
 
     // Расширения Kotlin для работы с Activity.
     implementation(libs.androidx.activity)
@@ -94,7 +95,7 @@ dependencies {
     implementation(libs.navigation.ui.ktx)
 
 
-//ДАННЫЕ
+////////// ДАННЫЕ
 
     // Библиотека для сериализации и десериализации JSON.
     implementation(libs.gson)
@@ -114,7 +115,7 @@ dependencies {
     implementation(libs.glide)
     ksp(libs.compiler)
 
-// ТЕСТИРОВАНИЕ
+////////// ТЕСТИРОВАНИЕ
 
     // Фреймворк для написания и запуска тестов в Java.
     testImplementation(libs.junit)
@@ -123,13 +124,12 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
-// ПРОДВИНУТЫЕ
+////////// ПРОДВИНУТЫЕ
 
-    // Библиотека для управления зависимостями koin и Dagger Hilt
+    // Библиотека для управления зависимостями koin и Dagger Hilt  //  implementation("androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03") больше не поддерживается, не добавлять!
     implementation(libs.hilt.android)
     kapt(libs.dagger.hilt.compiler)
     implementation(libs.hilt.android)
-    //    implementation("androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03") больше не поддерживается, не добавлять!
 
     // Расширения Kotlin для работы с жизненным циклом компонентов.
     implementation(libs.lifecycle.viewmodel.ktx)

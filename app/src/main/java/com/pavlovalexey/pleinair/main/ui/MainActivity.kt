@@ -24,6 +24,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -47,17 +48,18 @@ import com.pavlovalexey.pleinair.databinding.ActivityMainBinding
 import com.pavlovalexey.pleinair.profile.ui.UserMapFragment
 import com.pavlovalexey.pleinair.utils.AppPreferencesKeys
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity(), UserMapFragment.OnLocationSelectedListener {
+class MainActivity : AppCompatActivity(), UserMapFragment.OnLocationSelectedListener, OnMapReadyCallback {
 
+    @Inject lateinit var auth: FirebaseAuth
+    @Inject lateinit var firestore: FirebaseFirestore
+    @Inject lateinit var googleSignInClient: GoogleSignInClient
     private lateinit var binding: ActivityMainBinding
-    private lateinit var db: FirebaseFirestore
-    private lateinit var auth: FirebaseAuth
     private lateinit var storage: FirebaseStorage
     private lateinit var mMap: GoogleMap
     private lateinit var progressBar: ProgressBar
-    private lateinit var googleSignInClient: GoogleSignInClient
 
     private var selectedLocation: LatLng? = null
     private val defaultLocation = LatLng(59.9500019, 30.3166718)    // Координаты Петропавловской крепости
@@ -66,7 +68,7 @@ class MainActivity : AppCompatActivity(), UserMapFragment.OnLocationSelectedList
         super.onCreate(savedInstanceState)
 
         com.google.firebase.Firebase.initialize(this)
-        db = com.google.firebase.Firebase.firestore
+        firestore = com.google.firebase.Firebase.firestore
         auth = FirebaseAuth.getInstance()
         storage = com.google.firebase.Firebase.storage
         Firebase.appCheck.installAppCheckProviderFactory(
@@ -152,7 +154,7 @@ class MainActivity : AppCompatActivity(), UserMapFragment.OnLocationSelectedList
         editor.putString("userId", userId)
         editor.apply()
 
-        val userDocRef = db.collection("users").document(userId)
+        val userDocRef = firestore.collection("users").document(userId)
         val defaultAvatar = ""
         val userProfile = hashMapOf(
             "profileImageUrl" to defaultAvatar, // Используем пустую строку как дефолтное значение
@@ -206,7 +208,7 @@ class MainActivity : AppCompatActivity(), UserMapFragment.OnLocationSelectedList
         // Обновление местоположения пользователя в Firestore
         val user = auth.currentUser ?: return
         val userId = user.uid
-        val userDocRef = db.collection("users").document(userId)
+        val userDocRef = firestore.collection("users").document(userId)
 
         val updatedLocation = hashMapOf(
             "latitude" to location.latitude,
@@ -224,7 +226,7 @@ class MainActivity : AppCompatActivity(), UserMapFragment.OnLocationSelectedList
             }
     }
 
-    fun onMapReady(googleMap: GoogleMap) {
+    override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
 
         mMap.setOnMapClickListener { latLng ->

@@ -3,6 +3,14 @@ package com.pavlovalexey.pleinair
 import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.pavlovalexey.pleinair.calendar.adapter.EventAdapter
+import com.pavlovalexey.pleinair.calendar.data.EventRepository
+import com.pavlovalexey.pleinair.calendar.ui.calendar.CalendarViewModel
 import com.pavlovalexey.pleinair.profile.viewmodel.ProfileViewModel
 import com.pavlovalexey.pleinair.settings.data.SettingsRepositoryImpl
 import com.pavlovalexey.pleinair.settings.domain.SettingsInteractor
@@ -33,6 +41,28 @@ object AppModule {
 
     @Provides
     @Singleton
+    fun provideFirebaseFirestore(): FirebaseFirestore {
+        return FirebaseFirestore.getInstance()
+    }
+
+    @Provides
+    @Singleton
+    fun provideFirebaseAuth(): FirebaseAuth {
+        return FirebaseAuth.getInstance()
+    }
+
+    @Provides
+    @Singleton
+    fun provideGoogleSignInClient(@ApplicationContext context: Context): GoogleSignInClient {
+        val googleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(context.getString(R.string.default_web_client_id))
+            .requestEmail()
+            .build()
+        return GoogleSignIn.getClient(context, googleSignInOptions)
+    }
+
+    @Provides
+    @Singleton
     fun provideProfileViewModel(
         application: Application,
         firebaseUserManager: FirebaseUserManager,
@@ -54,5 +84,26 @@ object AppModule {
     @Singleton
     fun provideSettingsInteractor(settingsRepository: SettingsRepository): SettingsInteractor {
         return SettingsInteractorImpl(settingsRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideEventAdapter(): EventAdapter {
+        return EventAdapter()
+    }
+
+    @Provides
+    @Singleton
+    fun provideEventRepository(@ApplicationContext context: Context): EventRepository {
+        return EventRepository(context as Application)
+    }
+
+    @Provides
+    @Singleton
+    fun provideCalendarViewModel(
+        firebaseAuth: FirebaseAuth,
+        firebaseFirestore: FirebaseFirestore
+    ): CalendarViewModel {
+        return CalendarViewModel(firebaseAuth, firebaseFirestore)
     }
 }

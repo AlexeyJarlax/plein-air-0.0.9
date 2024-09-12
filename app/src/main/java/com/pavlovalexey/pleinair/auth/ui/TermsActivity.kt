@@ -1,11 +1,11 @@
 package com.pavlovalexey.pleinair.auth.ui
 
 /** Приложение построено как синглактивити на фрагментах с отправной точкой MainActivity
- * TermsActivity и AuthActivity выделены как отдельные активити чтобы безопасно изолировать
+ * TermsActivity и AuthActivity выделены как отдельные активности чтобы изолировать
  * от основной структуры фрагментов.
  * 1 Этап - подписание соглашений в TermsActivity
  * 2 Этап - авторизация в AuthActivity
- * 3 Этап - MainActivity и фрагменты по всему функционалу приложения с с навигацией через НавГраф
+ * 3 Этап - MainActivity и фрагменты по всему функционалу приложения с навигацией через НавГраф
  */
 
 import android.content.Intent
@@ -24,9 +24,14 @@ import kotlin.concurrent.thread
 import android.content.SharedPreferences
 import com.pavlovalexey.pleinair.utils.AppPreferencesKeys
 import com.pavlovalexey.pleinair.utils.firebase.LoginAndUserUtils
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class TermsActivity : AppCompatActivity() {
 
+    @Inject
+    lateinit var sharedPreferencesFS: SharedPreferences
     private lateinit var checkAgreement: CheckBox
     private lateinit var checkPrivacyPolicy: CheckBox
     private lateinit var btnContinue: Button
@@ -34,7 +39,6 @@ class TermsActivity : AppCompatActivity() {
     private lateinit var tvAgreement: TextView
     private lateinit var tvBeforePolicy: TextView
     private lateinit var tvPrivacyPolicy: TextView
-    private lateinit var sharedPreferencesFS: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
