@@ -7,7 +7,7 @@ androidxJunit = "1.1.5"
 androidxMaterial = "1.6.8"
 androidxMaterialVersion = "1.5.0"
 appcompatVersion = "1.6.1"
-compiler = "4.15.0"
+compiler = "4.16.0"
 constraintlayout = "2.1.4"
 converterGson = "2.9.0"
 coreKtxVersion = "1.10.1"
@@ -36,18 +36,20 @@ googleHiltAndroid = "2.52"
 googleHiltAndroidCompiler = "2.52"
 googleHiltAndroidGradlePlugin = "2.52"
 googleHiltAndroidGradlePluginVersion = "2.52"
+googleHiltCompiler = "2.52"
 googlePlayServicesMaps = "18.0.2"
 googleServices = "4.4.2"
 googleServicesVersion = "4.3.15"
 gradle = "8.2.2"
 gson = "2.10.1"
-hiltAndroid = "1.2.0"
-hiltAndroidCompilerVersion = "1.2.0"
-hiltAndroidGradlePlugin = "1.2.0"
-hiltAndroidGradlePluginVersion = "1.2.0"
-hiltAndroidTesting = "1.2.0"
-hiltAndroidVersion = "1.2.0"
-hiltCompiler = "1.2.0"
+hiltAndroid = "2.52"
+hiltAndroidCompilerVersion = "2.52"
+hiltAndroidGradlePlugin = "2.52"
+hiltAndroidGradlePluginVersion = "2.52"
+hiltAndroidTesting = "2.52"
+hiltAndroidVersion = "2.52"
+hiltCompiler = "2.52"
+hiltCompilerVersion = "1.2.0"
 hiltLifecycleViewmodel = "1.0.0-alpha03"
 hiltNavigationCompose = "1.2.0"
 hiltNavigationComposeVersion = "1.2.0"
@@ -102,6 +104,7 @@ navigationUiKtxVersion = "2.8.0"
 
 
 [libraries]
+android-hilt-compiler = { module = "android.dagger:hilt-compiler", version.ref = "hiltCompilerVersion" }
 androidx-activity = { module = "androidx.activity:activity", version.ref = "activityCompose" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
 androidx-activity-compose-v170 = { module = "androidx.activity:activity-compose", version.ref = "activityComposeVersion" }
@@ -153,6 +156,7 @@ converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref
 dagger-compiler = { module = "com.google.dagger:dagger-compiler", version.ref = "daggerCompiler" }
 dagger-hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroidCompilerVersion" }
 dagger-hilt-android-compiler-v249 = { module = "com.google.dagger:hilt-android-compiler", version.ref = "googleHiltAndroidCompiler" }
+dagger-hilt-compiler-v252 = { module = "com.google.dagger:hilt-compiler", version.ref = "googleHiltCompiler" }
 email-intent-builder = { module = "de.cketti.mailto:email-intent-builder", version.ref = "emailIntentBuilder" }
 firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 firebase-appcheck-playintegrity = { module = "com.google.firebase:firebase-appcheck-playintegrity" }

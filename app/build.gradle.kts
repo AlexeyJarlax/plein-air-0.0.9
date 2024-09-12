@@ -1,6 +1,6 @@
 plugins {
     id("com.android.application")
-    id ("com.google.dagger.hilt.android")
+    id("com.google.dagger.hilt.android")
     id("org.jetbrains.kotlin.android")
     kotlin("plugin.serialization") version "2.0.0"
     id("kotlin-kapt") // плагин kotlin-kapt для работы зависимостей kapt("
@@ -62,6 +62,7 @@ android {
 
     hilt {
         enableAggregatingTask = true
+        enableExperimentalClasspathAggregation = true
     }
 
     kapt {
@@ -89,13 +90,9 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
 
     // Библиотеки для работы с изображениями и их кэширования.
-    implementation("com.google.dagger:hilt-android:2.52")
-    implementation("androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03")
     implementation(libs.navigation.fragment.ktx)
     implementation(libs.navigation.ui.ktx)
-    kapt("com.google.dagger:hilt-compiler:2.52")
-    ksp("com.google.dagger:hilt-compiler:2.52")
-    implementation (libs.androidx.hilt.lifecycle.viewmodel)
+
 
 //ДАННЫЕ
 
@@ -129,10 +126,10 @@ dependencies {
 // ПРОДВИНУТЫЕ
 
     // Библиотека для управления зависимостями koin и Dagger Hilt
-    implementation (libs.hilt.android)
-    ksp (libs.google.hilt.compiler)
-    implementation(libs.androidx.hilt.lifecycle.viewmodel)
-    ksp(libs.androidx.hilt.compiler)
+    implementation("com.google.dagger:hilt-android:2.52")
+    kapt("com.google.dagger:hilt-compiler:2.52")
+    implementation(libs.hilt.android)
+    //    implementation("androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03") больше не поддерживается, не добавлять!
 
     // Расширения Kotlin для работы с жизненным циклом компонентов.
     implementation(libs.lifecycle.viewmodel.ktx)
@@ -173,8 +170,8 @@ dependencies {
     implementation(libs.com.google.firebase.firebase.analytics2)
     implementation(libs.firebase.storage)
     implementation(libs.firebase.appcheck.playintegrity)
-    implementation (libs.firebase.database)
-    implementation (libs.firebase.core)
+    implementation(libs.firebase.database)
+    implementation(libs.firebase.core)
 
     // Jetpack Compose
     implementation(libs.androidx.material)
