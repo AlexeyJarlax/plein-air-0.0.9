@@ -32,6 +32,7 @@ fragmentKtx = "1.8.2"
 fragmentKtxVersion = "1.8.1"
 glide = "4.16.0"
 googleFirebaseBom = "32.3.1"
+googleHiltAndroid = "2.x.x"
 googleHiltAndroidCompiler = "2.49"
 googleHiltAndroidGradlePlugin = "2.48"
 googleHiltAndroidGradlePluginVersion = "2.49"
@@ -46,6 +47,8 @@ hiltAndroidGradlePlugin = "2.46.1"
 hiltAndroidGradlePluginVersion = "2.44"
 hiltAndroidTesting = "2.49"
 hiltAndroidVersion = "2.49"
+hiltCompiler = "2.x.x"
+hiltLifecycleViewmodel = "1.x.x"
 hiltNavigationCompose = "1.2.0"
 hiltNavigationComposeVersion = "1.0.0"
 koinAndroid = "3.3.0"
@@ -108,6 +111,8 @@ androidx-core-ktx-v1101 = { module = "androidx.core:core-ktx", version.ref = "co
 androidx-espresso-core-v351 = { module = "androidx.test.espresso:espresso-core", version.ref = "espressoCoreVersion" }
 androidx-fragment-ktx = { module = "androidx.fragment:fragment-ktx", version.ref = "fragmentKtx" }
 androidx-fragment-ktx-v181 = { module = "androidx.fragment:fragment-ktx", version.ref = "fragmentKtxVersion" }
+androidx-hilt-compiler = { module = "androidx.hilt:hilt-compiler", version.ref = "hiltNavigationCompose" }
+androidx-hilt-lifecycle-viewmodel = { module = "androidx.hilt:hilt-lifecycle-viewmodel", version.ref = "hiltLifecycleViewmodel" }
 androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
 androidx-hilt-navigation-compose-v100 = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationComposeVersion" }
 androidx-junit-v115 = { module = "androidx.test.ext:junit", version.ref = "androidxJunit" }
@@ -181,6 +186,8 @@ hilt-android-testing = { module = "com.google.dagger:hilt-android-testing", vers
 hilt-android-testing-v249 = { module = "com.google.dagger:hilt-android-testing", version.ref = "hiltAndroidTesting" }
 hilt-android-v244 = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
 hilt-android-v249 = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroidVersion" }
+hilt-android-v2xx = { module = "com.google.dagger:hilt-android", version.ref = "googleHiltAndroid" }
+hilt-compiler-v2xx = { module = "com.google.dagger:hilt-compiler", version.ref = "hiltCompiler" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }

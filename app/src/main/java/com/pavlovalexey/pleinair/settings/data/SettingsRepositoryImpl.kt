@@ -1,6 +1,5 @@
 package com.pavlovalexey.pleinair.settings.data
 
-import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -13,12 +12,14 @@ import com.google.firebase.storage.FirebaseStorage
 import com.pavlovalexey.pleinair.R
 import com.pavlovalexey.pleinair.settings.domain.SettingsRepository
 import com.pavlovalexey.pleinair.utils.AppPreferencesKeys.KEY_NIGHT_MODE
-import dagger.hilt.android.internal.Contexts.getApplication
 import de.cketti.mailto.EmailIntentBuilder
 import java.io.File
+import javax.inject.Inject
 
-class SettingsRepositoryImpl(private val context: Context, private val sharedPreferences: SharedPreferences) :
-    SettingsRepository {
+class SettingsRepositoryImpl @Inject constructor(
+    private val context: Context,
+    private val sharedPreferences: SharedPreferences
+) : SettingsRepository {
 
     override fun loadNightMode(): Boolean {
         return sharedPreferences.getBoolean(KEY_NIGHT_MODE, false)

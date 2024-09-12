@@ -4,7 +4,7 @@ plugins {
     kotlin("plugin.serialization") version "2.0.0"
     id("kotlin-kapt") // плагин kotlin-kapt для работы зависимостей kapt("
     id("com.google.devtools.ksp")
-    id("dagger.hilt.android.plugin") // Плагин Hilt для внедрения зависимостей.
+    id("dagger.hilt.android.plugin")
     id("com.google.gms.google-services")
 }
 
@@ -113,8 +113,13 @@ dependencies {
 
 // ПРОДВИНУТЫЕ
 
-    // Библиотека для управления зависимостями.
-    implementation(libs.koin.android)
+    // Библиотека для управления зависимостями koin и Dagger Hilt
+//    implementation(libs.koin.android)
+    implementation ("androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03")
+    implementation(libs.hilt.android)
+    kapt (libs.hilt.compiler.v2xx)
+    implementation (libs.androidx.hilt.lifecycle.viewmodel)
+    kapt (libs.androidx.hilt.compiler)
 
     // Расширения Kotlin для работы с жизненным циклом компонентов.
     implementation(libs.lifecycle.viewmodel.ktx)

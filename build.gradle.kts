@@ -13,8 +13,16 @@ buildscript {
         google()
         mavenCentral()
     }
+
+//    ext {
+//        hilt_version = "2.44" // Убедитесь, что версия актуальна
+//    }
+//    dependencies {
+//        classpath "com.google.dagger:hilt-android-gradle-plugin:$hilt_version"
+//    }
     dependencies {
         classpath("com.android.tools.build:gradle:8.0.2")
         classpath("com.google.gms:google-services:4.3.15")
+        classpath ("com.google.dagger:hilt-android-gradle-plugin:2.44")
     }
 }

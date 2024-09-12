@@ -30,11 +30,14 @@ import com.pavlovalexey.pleinair.utils.image.CircleTransform
 import com.pavlovalexey.pleinair.utils.image.setupImageResultLaunchers
 import com.pavlovalexey.pleinair.utils.image.showImageSelectionDialog
 import com.squareup.picasso.Picasso
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class ProfileFragment : Fragment(), UserMapFragment.OnLocationSelectedListener {
 
     private lateinit var binding: FragmentProfileBinding
     private val viewModel: ProfileViewModel by viewModels()
+
     private val TAG = ProfileFragment::class.java.simpleName
     private lateinit var cameraActivityResultLauncher: ActivityResultLauncher<Intent>
     private lateinit var galleryActivityResultLauncher: ActivityResultLauncher<Intent>

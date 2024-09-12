@@ -1,8 +1,10 @@
 package com.pavlovalexey.pleinair.settings.domain
 
-class SettingsInteractorImpl(private val settingsRepository: SettingsRepository) :
+import javax.inject.Inject
 
-    SettingsInteractor {
+class SettingsInteractorImpl @Inject constructor(
+    private val settingsRepository: SettingsRepository
+) : SettingsInteractor {
 
     override fun loadNightMode(): Boolean {
         return settingsRepository.loadNightMode()

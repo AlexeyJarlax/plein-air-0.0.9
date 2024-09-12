@@ -2,6 +2,7 @@ package com.pavlovalexey.pleinair.profile.viewmodel
 
 import android.app.Application
 import android.content.Context
+import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.net.Uri
 import android.util.Log
@@ -13,17 +14,26 @@ import com.pavlovalexey.pleinair.profile.model.User
 import com.pavlovalexey.pleinair.utils.AppPreferencesKeys
 import com.pavlovalexey.pleinair.utils.firebase.FirebaseUserManager
 import com.pavlovalexey.pleinair.utils.firebase.LoginAndUserUtils
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.components.SingletonComponent
+import javax.inject.Inject
 
-class ProfileViewModel(application: Application) : AndroidViewModel(application) {
+@HiltViewModel
+class ProfileViewModel @Inject constructor(
+    application: Application,
+    private val firebaseUserManager: FirebaseUserManager,
+    private val sharedPreferences: SharedPreferences
+) : AndroidViewModel(application) {
 
-    private val firebaseUserManager = FirebaseUserManager(application.applicationContext)
     private val auth = firebaseUserManager.auth
     private val _user = MutableLiveData<User?>()
     val user: MutableLiveData<User?> get() = _user
     private val _selectedArtStyles = MutableLiveData<Set<String>>(emptySet())
     val selectedArtStyles: LiveData<Set<String>> get() = _selectedArtStyles
-    private val sharedPreferences =
-        application.getSharedPreferences(AppPreferencesKeys.PREFS_NAME, Context.MODE_PRIVATE)
 
     init {
         loadUser()
