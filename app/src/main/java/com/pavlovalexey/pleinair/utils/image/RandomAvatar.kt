@@ -1,4 +1,4 @@
-package com.pavlovalexey.pleinair.profile.ui
+package com.pavlovalexey.pleinair.utils.image
 
 import android.graphics.Bitmap
 import android.graphics.Canvas

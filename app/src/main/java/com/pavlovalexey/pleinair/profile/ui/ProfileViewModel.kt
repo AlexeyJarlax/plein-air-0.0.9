@@ -59,6 +59,7 @@ class ProfileViewModel @Inject constructor(
                 val updatedUser = _user.value?.copy(profileImageUrl = uri.toString())
                 _user.value = updatedUser
                 saveProfileImageUrl(uri.toString())
+                updateProfileImageUrl(uri.toString())
                 onSuccess(uri)
             },
             onFailure = {
@@ -69,7 +70,7 @@ class ProfileViewModel @Inject constructor(
     }
 
 
-    fun updateProfileImageUrl(imageUrl: String) {
+    private fun updateProfileImageUrl(imageUrl: String) {
         val userId = auth.currentUser?.uid ?: return
         firebaseUserManager.updateProfileImageUrl(
             userId,

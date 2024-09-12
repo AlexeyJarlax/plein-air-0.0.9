@@ -86,6 +86,7 @@ class ProfileFragment : Fragment(), UserMapFragment.OnLocationSelectedListener {
         binding.logoutButton.setOnClickListener { showLogoutConfirmationDialog() }
         binding.userAvatar.setOnClickListener {
             showImageSelectionDialog(cameraActivityResultLauncher, galleryActivityResultLauncher)
+
         }
         binding.userName.setOnClickListener { showEditNameDialog() }
         binding.btnChooseLocation.setOnClickListener { openUserMapFragment() }
