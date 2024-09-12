@@ -13,6 +13,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.pavlovalexey.pleinair.profile.model.User
 import com.pavlovalexey.pleinair.utils.firebase.FirebaseUserManager
 import com.pavlovalexey.pleinair.utils.firebase.LoginAndUserUtils
+import com.pavlovalexey.pleinair.utils.image.ImageUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -44,6 +45,26 @@ class ProfileViewModel @Inject constructor(
                 Log.w("ProfileViewModel", "Error fetching user data", it)
             }
         )
+    }
+
+    fun checkAndGenerateAvatar(onSuccess: () -> Unit) {
+        val currentUser = _user.value ?: return
+
+        if (currentUser.profileImageUrl.isEmpty()) {
+            val generatedAvatar = ImageUtils.generateRandomAvatar()
+            uploadImageToFirebase(
+                imageBitmap = generatedAvatar,
+                onSuccess = { uri ->
+                    updateProfileImageUrl(uri.toString()) // Обновляем URL аватара в Firestore
+                    onSuccess()
+                },
+                onFailure = {
+                    Log.w("ProfileViewModel", "Error uploading generated avatar", it)
+                }
+            )
+        } else {
+            onSuccess()
+        }
     }
 
     fun uploadImageToFirebase(

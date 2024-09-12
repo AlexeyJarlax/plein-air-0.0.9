@@ -22,7 +22,6 @@ import java.util.Date
 import java.util.Locale
 import kotlin.concurrent.thread
 import android.content.SharedPreferences
-import com.pavlovalexey.pleinair.utils.AppPreferencesKeys
 import com.pavlovalexey.pleinair.utils.firebase.LoginAndUserUtils
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -34,6 +33,7 @@ class TermsActivity : AppCompatActivity() {
     lateinit var loginAndUserUtils: LoginAndUserUtils
     @Inject
     lateinit var sharedPreferences: SharedPreferences
+
     private lateinit var checkAgreement: CheckBox
     private lateinit var checkPrivacyPolicy: CheckBox
     private lateinit var btnContinue: Button
@@ -45,8 +45,6 @@ class TermsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_terms)
-
-        sharedPreferences = getSharedPreferences(AppPreferencesKeys.PREFS_NAME, MODE_PRIVATE)
 
         // Проверяем состояние согласия
         if (isTermsAccepted()) {

@@ -33,6 +33,9 @@ class ProfileFragment : Fragment(), UserMapFragment.OnLocationSelectedListener {
     @Inject
     lateinit var loginAndUserUtils: LoginAndUserUtils
 
+    @Inject
+    lateinit var iconStateUtils: IconStateUtils
+
     private lateinit var binding: FragmentProfileBinding
     private val viewModel: ProfileViewModel by viewModels()
 
@@ -52,7 +55,7 @@ class ProfileFragment : Fragment(), UserMapFragment.OnLocationSelectedListener {
         galleryActivityResultLauncher = galleryLauncher
         setupObservers()
         setupListeners()
-        IconStateUtils.loadSavedIconStates(requireContext(), binding)
+        iconStateUtils.loadSavedIconStates(requireContext(), binding)
         return binding.root
     }
 
@@ -66,20 +69,25 @@ class ProfileFragment : Fragment(), UserMapFragment.OnLocationSelectedListener {
 
     private fun setupObservers() {
         viewModel.user.observe(viewLifecycleOwner, Observer { user ->
-            binding.userName.text = user?.name ?: getString(R.string.default_user_name)
-            if (!user?.profileImageUrl.isNullOrEmpty()) {
-                viewModel.loadProfileImageFromStorage(
-                    { bitmap -> binding.userAvatar.setImageBitmap(bitmap) },
-                    { Picasso.get().load(user?.profileImageUrl).transform(CircleTransform()).into(binding.userAvatar) }
-                )
-            } else {
-                binding.userAvatar.setImageResource(R.drawable.account_circle_50dp)
+//            binding.userName.text = user?.name ?: getString(R.string.default_user_name)
+            viewModel.checkAndGenerateAvatar {
+                if (!user?.profileImageUrl.isNullOrEmpty()) {
+                    viewModel.loadProfileImageFromStorage(
+                        { bitmap -> binding.userAvatar.setImageBitmap(bitmap) },
+                        {
+                            Picasso.get().load(user?.profileImageUrl).transform(CircleTransform())
+                                .into(binding.userAvatar)
+                        }
+                    )
+                } else {
+                    binding.userAvatar.setImageResource(R.drawable.account_circle_50dp)
+                }
             }
         })
 
-        viewModel.selectedArtStyles.observe(viewLifecycleOwner, Observer { selectedStyles ->
-
-        })
+//        viewModel.selectedArtStyles.observe(viewLifecycleOwner, Observer { selectedStyles ->
+//
+//        })
     }
 
     private fun setupListeners() {
@@ -139,7 +147,7 @@ class ProfileFragment : Fragment(), UserMapFragment.OnLocationSelectedListener {
             initialText = "",
             onConfirm = { newDescription ->
                 viewModel.updateUserDescription(newDescription) {
-                    IconStateUtils.updateIconToChecked(binding.txtEditDescription)
+                    iconStateUtils.updateIconToChecked(binding.txtEditDescription)
                 }
             }
         )
@@ -164,7 +172,7 @@ class ProfileFragment : Fragment(), UserMapFragment.OnLocationSelectedListener {
                 val selectedItems = artStyles.filterIndexed { index, _ -> checkedItems[index] }
                 viewModel.updateSelectedStyles(selectedItems.toSet()) {
                     binding.txtTechnic.text = selectedItems.joinToString(", ")
-                    IconStateUtils.updateIconToChecked(binding.txtTechnic)
+                    iconStateUtils.updateIconToChecked(binding.txtTechnic)
                 }
             }
         )
@@ -189,8 +197,8 @@ class ProfileFragment : Fragment(), UserMapFragment.OnLocationSelectedListener {
         viewModel.updateUserLocation(location) {
             showSnackbar("Местоположение сохранено!")
             parentFragmentManager.popBackStack()
-            IconStateUtils.saveIconState(requireContext(), "location", true)
-            IconStateUtils.updateIconToChecked(binding.txtChooseLocation)
+            iconStateUtils.saveIconState(requireContext(), "location", true)
+            iconStateUtils.updateIconToChecked(binding.txtChooseLocation)
         }
     }
 }

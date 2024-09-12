@@ -11,10 +11,7 @@ import android.util.Log
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
-import com.google.firebase.storage.StorageReference
-import java.io.ByteArrayOutputStream
 import java.io.IOException
-import java.util.UUID
 
 private const val TAG = "FragmentExtensions"
 
