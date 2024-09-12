@@ -46,7 +46,9 @@ import com.pavlovalexey.pleinair.auth.ui.AuthActivity
 import com.pavlovalexey.pleinair.databinding.ActivityMainBinding
 import com.pavlovalexey.pleinair.profile.ui.UserMapFragment
 import com.pavlovalexey.pleinair.utils.AppPreferencesKeys
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity(), UserMapFragment.OnLocationSelectedListener {
 
     private lateinit var binding: ActivityMainBinding

@@ -111,8 +111,8 @@ dependencies {
     implementation(libs.email.intent.builder)
 
     // glide для пикч
-    implementation("com.github.bumptech.glide:glide:4.16.0")
-    kapt("com.github.bumptech.glide:compiler:4.16.0")
+    implementation(libs.glide)
+    ksp(libs.compiler)
 
 // ТЕСТИРОВАНИЕ
 
@@ -126,8 +126,8 @@ dependencies {
 // ПРОДВИНУТЫЕ
 
     // Библиотека для управления зависимостями koin и Dagger Hilt
-    implementation("com.google.dagger:hilt-android:2.52")
-    kapt("com.google.dagger:hilt-compiler:2.52")
+    implementation(libs.hilt.android)
+    kapt(libs.dagger.hilt.compiler)
     implementation(libs.hilt.android)
     //    implementation("androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03") больше не поддерживается, не добавлять!
 
