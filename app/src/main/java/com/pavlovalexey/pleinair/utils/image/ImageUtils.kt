@@ -5,13 +5,16 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.LinearGradient
 import android.graphics.Paint
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
 import android.graphics.Rect
 import android.graphics.RectF
+import android.graphics.Shader
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
+import kotlin.random.Random
 
 object ImageUtils {
 
@@ -62,15 +65,51 @@ object ImageUtils {
         return output
     }
 
-    fun decodeSampledBitmapFromUri(imagePath: String): Bitmap? {
-        val options = BitmapFactory.Options()
-        options.inJustDecodeBounds = true
-        BitmapFactory.decodeFile(imagePath, options)
+    fun generateRandomAvatar(): Bitmap {
+        val width = 200
+        val height = 200
+        val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
 
-        options.inSampleSize = calculateInSampleSize(options, MAX_WIDTH, MAX_HEIGHT)
-        options.inJustDecodeBounds = false
+        // Генерация градиента
+        val paint = Paint()
+        val colorStart = (0xFF000000 or Random.nextInt(0xFFFFFF).toLong()).toInt()
+        val colorEnd = (0xFF000000 or Random.nextInt(0xFFFFFF).toLong()).toInt()
+        val shader = LinearGradient(0f, 0f, width.toFloat(), height.toFloat(), colorStart, colorEnd, Shader.TileMode.CLAMP)
+        paint.shader = shader
 
-        return BitmapFactory.decodeFile(imagePath, options)
+        val canvas = Canvas(bitmap)
+        canvas.drawRect(0f, 0f, width.toFloat(), height.toFloat(), paint)
+
+        // Размеры для квадратов
+        val squareSize = 50
+        val centerX = width / 2
+        val centerY = height / 2
+
+        // Координаты углов квадратиков
+        val squares = listOf(
+            Pair(centerX - squareSize, centerY - squareSize), // Левый верхний
+            Pair(centerX, centerY - squareSize),              // Правый верхний
+            Pair(centerX - squareSize, centerY),              // Левый нижний
+            Pair(centerX, centerY)                            // Правый нижний
+        )
+
+        // Генерация случайных цветов для квадратиков
+        val colors = List(4) { (0xFF000000 or Random.nextInt(0xFFFFFF).toLong()).toInt() }
+
+        // Рисуем квадратики
+        for (i in squares.indices) {
+            val (startX, startY) = squares[i]
+            val color = colors[i]
+            for (x in startX until startX + squareSize) {
+                for (y in startY until startY + squareSize) {
+                    if (x < width && y < height) { // Проверка на выход за границы изображения
+                        bitmap.setPixel(x, y, color)
+                    }
+                }
+            }
+        }
+
+        return bitmap
     }
 
     private fun calculateInSampleSize(options: BitmapFactory.Options, reqWidth: Int, reqHeight: Int): Int {
@@ -106,5 +145,16 @@ object ImageUtils {
         canvas.drawBitmap(bitmap, rect, rect, paint)
 
         return output
+    }
+
+    fun decodeSampledBitmapFromUri(imagePath: String): Bitmap? {
+        val options = BitmapFactory.Options()
+        options.inJustDecodeBounds = true
+        BitmapFactory.decodeFile(imagePath, options)
+
+        options.inSampleSize = calculateInSampleSize(options, MAX_WIDTH, MAX_HEIGHT)
+        options.inJustDecodeBounds = false
+
+        return BitmapFactory.decodeFile(imagePath, options)
     }
 }

@@ -1,6 +1,5 @@
 package com.pavlovalexey.pleinair.calendar.adapter
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,11 +9,8 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.google.firebase.firestore.FirebaseFirestore
 import com.pavlovalexey.pleinair.R
-import com.pavlovalexey.pleinair.databinding.UtilItemCalendarBinding
 import com.pavlovalexey.pleinair.calendar.model.Event
-import com.squareup.picasso.Picasso
 
 class EventAdapter : ListAdapter<Event, EventAdapter.EventViewHolder>(DiffCallback()) {
 

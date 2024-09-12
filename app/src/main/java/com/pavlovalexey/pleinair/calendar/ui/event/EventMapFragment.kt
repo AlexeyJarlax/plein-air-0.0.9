@@ -14,7 +14,9 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.pavlovalexey.pleinair.R
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class EventMapFragment : Fragment(), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap

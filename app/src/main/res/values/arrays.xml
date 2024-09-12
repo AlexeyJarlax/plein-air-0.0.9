@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="art_styles">
+        <item>Акварель</item>
+        <item>Аэрография</item>
+        <item>Гуашь</item>
+        <item>Карандаш</item>
+        <item>Масло</item>
+        <item>Маркеры</item>
+        <item>Пастель</item>
+        <item>Темпера</item>
+        <item>Тушь</item>
+        <item>Уголь</item>
+        <item>Другое</item>
+    </string-array>
+</resources>

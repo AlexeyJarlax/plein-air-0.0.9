@@ -1,6 +1,7 @@
-package com.pavlovalexey.pleinair.utils
+package com.pavlovalexey.pleinair.utils.old
 
 import android.view.View
+import com.pavlovalexey.pleinair.utils.AppPreferencesKeys
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job

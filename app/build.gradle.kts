@@ -1,10 +1,10 @@
 plugins {
     id("com.android.application")
+    id("com.google.dagger.hilt.android")
     id("org.jetbrains.kotlin.android")
     kotlin("plugin.serialization") version "2.0.0"
     id("kotlin-kapt") // плагин kotlin-kapt для работы зависимостей kapt("
     id("com.google.devtools.ksp")
-    id("dagger.hilt.android.plugin") // Плагин Hilt для внедрения зависимостей.
     id("com.google.gms.google-services")
 }
 
@@ -59,10 +59,20 @@ android {
             excludes += "META-INF/DEPENDENCIES"
         }
     }
+
+    hilt {
+        enableAggregatingTask = true
+//        enableExperimentalClasspathAggregation = true для ускорения много модульных проектов
+    }
+
+    kapt {
+        correctErrorTypes = true
+    }
 }
 
 dependencies {
-// БАЗОВЫЕ
+
+////////// БАЗОВЫЕ
 
     // Расширения Kotlin для работы с Activity.
     implementation(libs.androidx.activity)
@@ -81,12 +91,11 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
 
     // Библиотеки для работы с изображениями и их кэширования.
-    implementation(libs.glide)
-    implementation(libs.androidx.navigation.fragment.ktx)
-    implementation(libs.androidx.navigation.ui.ktx)
-    ksp(libs.compiler)
+    implementation(libs.navigation.fragment.ktx)
+    implementation(libs.navigation.ui.ktx)
 
-//ДАННЫЕ
+
+////////// ДАННЫЕ
 
     // Библиотека для сериализации и десериализации JSON.
     implementation(libs.gson)
@@ -102,7 +111,11 @@ dependencies {
     // Библиотека для создания функций отправки в Intents с помощью mailto: URI
     implementation(libs.email.intent.builder)
 
-// ТЕСТИРОВАНИЕ
+    // glide для пикч
+    implementation(libs.glide)
+    ksp(libs.compiler)
+
+////////// ТЕСТИРОВАНИЕ
 
     // Фреймворк для написания и запуска тестов в Java.
     testImplementation(libs.junit)
@@ -111,14 +124,16 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
-// ПРОДВИНУТЫЕ
+////////// ПРОДВИНУТЫЕ
 
-    // Библиотека для управления зависимостями.
-    implementation(libs.koin.android)
+    // Библиотека для управления зависимостями koin и Dagger Hilt  //  implementation("androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03") больше не поддерживается, не добавлять!
+    implementation(libs.hilt.android)
+    kapt(libs.dagger.hilt.compiler)
+    implementation(libs.hilt.android)
 
     // Расширения Kotlin для работы с жизненным циклом компонентов.
     implementation(libs.lifecycle.viewmodel.ktx)
-    implementation(libs.androidx.lifecycle.livedata.ktx.v283)
+    implementation(libs.androidx.lifecycle.livedata.ktx)
 
     // Расширения Kotlin для фрагментов
     implementation(libs.androidx.fragment.ktx)
@@ -130,6 +145,7 @@ dependencies {
 //    implementation(libs.androidx.navigation.fragment.ktx)
 //    implementation(libs.androidx.navigation.ui.ktx)
 //    implementation(libs.androidx.fragment.ktx.v181)
+//    implementation(libs.androidx.hilt.navigation.compose)
 
     // корутин
     implementation(libs.kotlinx.coroutines.android.v180)
@@ -145,16 +161,6 @@ dependencies {
     // поддержка легаси для ярлычков (надо или нет я хз)
     implementation(libs.androidx.legacy.support.v4)
 
-    // Hilt для внедрения зависимостей
-    implementation(libs.hilt.android)
-    kapt(libs.google.hilt.compiler)
-    implementation(libs.hilt.android.v244)
-    kapt(libs.dagger.hilt.android.compiler)
-    kapt(libs.dagger.compiler)
-
-    // Jetpack Compose Hilt Integration
-//    implementation(libs.androidx.hilt.navigation.compose)
-
     // Firebase
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.auth)
@@ -164,8 +170,8 @@ dependencies {
     implementation(libs.com.google.firebase.firebase.analytics2)
     implementation(libs.firebase.storage)
     implementation(libs.firebase.appcheck.playintegrity)
-    implementation (libs.firebase.database)
-    implementation (libs.firebase.core)
+    implementation(libs.firebase.database)
+    implementation(libs.firebase.core)
 
     // Jetpack Compose
     implementation(libs.androidx.material)
@@ -179,10 +185,5 @@ dependencies {
     implementation(libs.flogger)
     implementation(libs.flogger.system.backend) // System backend
     implementation(libs.flogger.log4j2.backend) // Log4j2 backend (опционально)
-//    implementation(libs.play.services.maps.v1800)
-//    implementation(libs.play.services.location.v2101)
-//    implementation (libs.play.services.maps.v1802)
-//    implementation (libs.firebase.firestore.v2442)
-//    implementation (libs.google.firebase.storage)
-//    implementation (libs.picasso.v28)
+
 }

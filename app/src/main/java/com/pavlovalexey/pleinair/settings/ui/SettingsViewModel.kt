@@ -5,8 +5,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.pavlovalexey.pleinair.settings.domain.SettingsInteractor
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class SettingsViewModel(private val settingsInteractor: SettingsInteractor) : ViewModel() {
+@HiltViewModel
+class SettingsViewModel @Inject constructor(
+    private val settingsInteractor: SettingsInteractor
+) : ViewModel() {
 
     private val _isNightMode = MutableLiveData(false)
     val isNightMode: LiveData<Boolean> = _isNightMode

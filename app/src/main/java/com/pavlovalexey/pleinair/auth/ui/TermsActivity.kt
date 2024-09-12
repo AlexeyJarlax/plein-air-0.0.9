@@ -1,11 +1,11 @@
 package com.pavlovalexey.pleinair.auth.ui
 
 /** Приложение построено как синглактивити на фрагментах с отправной точкой MainActivity
- * TermsActivity и AuthActivity выделены как отдельные активити чтобы безопасно изолировать
+ * TermsActivity и AuthActivity выделены как отдельные активности чтобы изолировать
  * от основной структуры фрагментов.
  * 1 Этап - подписание соглашений в TermsActivity
  * 2 Этап - авторизация в AuthActivity
- * 3 Этап - MainActivity и фрагменты по всему функционалу приложения с с навигацией через НавГраф
+ * 3 Этап - MainActivity и фрагменты по всему функционалу приложения с навигацией через НавГраф
  */
 
 import android.content.Intent
@@ -22,10 +22,17 @@ import java.util.Date
 import java.util.Locale
 import kotlin.concurrent.thread
 import android.content.SharedPreferences
-import com.pavlovalexey.pleinair.utils.AppPreferencesKeys
-import com.pavlovalexey.pleinair.utils.LoginAndUserUtils
+import com.pavlovalexey.pleinair.utils.firebase.LoginAndUserUtils
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class TermsActivity : AppCompatActivity() {
+
+    @Inject
+    lateinit var loginAndUserUtils: LoginAndUserUtils
+    @Inject
+    lateinit var sharedPreferences: SharedPreferences
 
     private lateinit var checkAgreement: CheckBox
     private lateinit var checkPrivacyPolicy: CheckBox
@@ -34,13 +41,10 @@ class TermsActivity : AppCompatActivity() {
     private lateinit var tvAgreement: TextView
     private lateinit var tvBeforePolicy: TextView
     private lateinit var tvPrivacyPolicy: TextView
-    private lateinit var sharedPreferencesFS: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_terms)
-
-        sharedPreferencesFS = getSharedPreferences(AppPreferencesKeys.PREFS_NAME, MODE_PRIVATE)
 
         // Проверяем состояние согласия
         if (isTermsAccepted()) {
@@ -48,7 +52,7 @@ class TermsActivity : AppCompatActivity() {
             finish()
             return
         } else {
-            LoginAndUserUtils.logout(application) // если пользователь удалил и поставил заново приложень, чистим его аутентификацию
+            loginAndUserUtils.logout() // если пользователь удалил и поставил заново приложень, чистим его аутентификацию
         }
 
         checkAgreement = findViewById(R.id.checkAgreement)
@@ -118,13 +122,13 @@ class TermsActivity : AppCompatActivity() {
 
     private fun saveTermsAccepted(accepted: Boolean) {
         Log.d("TermsActivity", "Saving terms accepted: $accepted")
-        with(sharedPreferencesFS.edit()) {
+        with(sharedPreferences.edit()) {
             putBoolean("all_terms_accepted", accepted)
             apply()
         }
     }
 
     private fun isTermsAccepted(): Boolean {
-        return sharedPreferencesFS.getBoolean("all_terms_accepted", false)
+        return sharedPreferences.getBoolean("all_terms_accepted", false)
     }
 }

@@ -23,11 +23,14 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.pavlovalexey.pleinair.R
 import com.pavlovalexey.pleinair.databinding.ActivityAuthBinding
 import com.pavlovalexey.pleinair.main.ui.MainActivity
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class AuthActivity : AppCompatActivity() {
 
-    private lateinit var auth: FirebaseAuth
-    private lateinit var googleSignInClient: GoogleSignInClient
+    @Inject lateinit var auth: FirebaseAuth
+    @Inject lateinit var googleSignInClient: GoogleSignInClient
     private lateinit var binding: ActivityAuthBinding
     private lateinit var authStateListener: FirebaseAuth.AuthStateListener
 
@@ -39,11 +42,8 @@ class AuthActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityAuthBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         hideSystemUI()
-
         auth = FirebaseAuth.getInstance()
-
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.default_web_client_id))
             .requestEmail()

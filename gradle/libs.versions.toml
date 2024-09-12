@@ -7,11 +7,11 @@ androidxJunit = "1.1.5"
 androidxMaterial = "1.6.8"
 androidxMaterialVersion = "1.5.0"
 appcompatVersion = "1.6.1"
-compiler = "4.15.0"
+compiler = "4.16.0"
 constraintlayout = "2.1.4"
 converterGson = "2.9.0"
 coreKtxVersion = "1.10.1"
-daggerCompiler = "2.49"
+daggerCompiler = "2.52"
 emailIntentBuilder = "2.0.0"
 espressoCoreVersion = "3.5.1"
 firebaseAuth = "23.6.0"
@@ -32,22 +32,27 @@ fragmentKtx = "1.8.2"
 fragmentKtxVersion = "1.8.1"
 glide = "4.16.0"
 googleFirebaseBom = "32.3.1"
-googleHiltAndroidCompiler = "2.49"
-googleHiltAndroidGradlePlugin = "2.48"
-googleHiltAndroidGradlePluginVersion = "2.49"
+googleHiltAndroid = "2.52"
+googleHiltAndroidCompiler = "2.52"
+googleHiltAndroidGradlePlugin = "2.52"
+googleHiltAndroidGradlePluginVersion = "2.52"
+googleHiltCompiler = "2.52"
 googlePlayServicesMaps = "18.0.2"
 googleServices = "4.4.2"
 googleServicesVersion = "4.3.15"
 gradle = "8.2.2"
 gson = "2.10.1"
-hiltAndroid = "2.44"
-hiltAndroidCompilerVersion = "2.44"
-hiltAndroidGradlePlugin = "2.46.1"
-hiltAndroidGradlePluginVersion = "2.44"
-hiltAndroidTesting = "2.49"
-hiltAndroidVersion = "2.49"
+hiltAndroid = "2.52"
+hiltAndroidCompilerVersion = "2.52"
+hiltAndroidGradlePlugin = "2.52"
+hiltAndroidGradlePluginVersion = "2.52"
+hiltAndroidTesting = "2.52"
+hiltAndroidVersion = "2.52"
+hiltCompiler = "2.52"
+hiltCompilerVersion = "1.2.0"
+hiltLifecycleViewmodel = "1.0.0-alpha03"
 hiltNavigationCompose = "1.2.0"
-hiltNavigationComposeVersion = "1.0.0"
+hiltNavigationComposeVersion = "1.2.0"
 koinAndroid = "3.3.0"
 kotlin = "1.9.0"
 coreKtx = "1.13.1"
@@ -94,8 +99,12 @@ uiToolingPreview = "1.5.0"
 uiVersion = "1.5.0"
 viewpager2 = "1.1.0"
 firebaseStorageKtx = "21.0.0"
+navigationFragmentKtxVersion = "2.8.0"
+navigationUiKtxVersion = "2.8.0"
+
 
 [libraries]
+android-hilt-compiler = { module = "android.dagger:hilt-compiler", version.ref = "hiltCompilerVersion" }
 androidx-activity = { module = "androidx.activity:activity", version.ref = "activityCompose" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
 androidx-activity-compose-v170 = { module = "androidx.activity:activity-compose", version.ref = "activityComposeVersion" }
@@ -108,6 +117,8 @@ androidx-core-ktx-v1101 = { module = "androidx.core:core-ktx", version.ref = "co
 androidx-espresso-core-v351 = { module = "androidx.test.espresso:espresso-core", version.ref = "espressoCoreVersion" }
 androidx-fragment-ktx = { module = "androidx.fragment:fragment-ktx", version.ref = "fragmentKtx" }
 androidx-fragment-ktx-v181 = { module = "androidx.fragment:fragment-ktx", version.ref = "fragmentKtxVersion" }
+androidx-hilt-compiler = { module = "androidx.hilt:hilt-compiler", version.ref = "hiltNavigationCompose" }
+androidx-hilt-lifecycle-viewmodel = { module = "androidx.hilt:hilt-lifecycle-viewmodel", version.ref = "hiltLifecycleViewmodel" }
 androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
 androidx-hilt-navigation-compose-v100 = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationComposeVersion" }
 androidx-junit-v115 = { module = "androidx.test.ext:junit", version.ref = "androidxJunit" }
@@ -145,6 +156,7 @@ converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref
 dagger-compiler = { module = "com.google.dagger:dagger-compiler", version.ref = "daggerCompiler" }
 dagger-hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroidCompilerVersion" }
 dagger-hilt-android-compiler-v249 = { module = "com.google.dagger:hilt-android-compiler", version.ref = "googleHiltAndroidCompiler" }
+dagger-hilt-compiler-v252 = { module = "com.google.dagger:hilt-compiler", version.ref = "googleHiltCompiler" }
 email-intent-builder = { module = "de.cketti.mailto:email-intent-builder", version.ref = "emailIntentBuilder" }
 firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 firebase-appcheck-playintegrity = { module = "com.google.firebase:firebase-appcheck-playintegrity" }
@@ -181,6 +193,8 @@ hilt-android-testing = { module = "com.google.dagger:hilt-android-testing", vers
 hilt-android-testing-v249 = { module = "com.google.dagger:hilt-android-testing", version.ref = "hiltAndroidTesting" }
 hilt-android-v244 = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
 hilt-android-v249 = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroidVersion" }
+hilt-android-v2xx = { module = "com.google.dagger:hilt-android", version.ref = "googleHiltAndroid" }
+hilt-compiler-v2xx = { module = "com.google.dagger:hilt-compiler", version.ref = "hiltCompiler" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
@@ -210,8 +224,17 @@ play-services-maps-v1800 = { module = "com.google.android.gms:play-services-maps
 play-services-maps-v1802 = { module = "com.google.android.gms:play-services-maps", version.ref = "googlePlayServicesMaps" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 firebase-storage-ktx = { group = "com.google.firebase", name = "firebase-storage-ktx", version.ref = "firebaseStorageKtx" }
+dagger-hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
+dagger-hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hiltAndroid"}
+hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler" , version.ref = "hiltAndroid"}
+navigation-fragment-ktx = { group = "androidx.navigation", name = "navigation-fragment-ktx", version.ref = "navigationFragmentKtxVersion" }
+navigation-ui-ktx = { group = "androidx.navigation", name = "navigation-ui-ktx", version.ref = "navigationUiKtxVersion" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+hilt-plugin = { id = "dagger.hilt.android.plugin", version.ref = "hiltAndroid" }
+kotlinAndroidKsp = { id = "com.google.devtools.ksp", version.ref = "compiler" }
+hiltAndroid = { id = "com.google.dagger.hilt.android", version.ref = "hiltAndroid" }
+
 

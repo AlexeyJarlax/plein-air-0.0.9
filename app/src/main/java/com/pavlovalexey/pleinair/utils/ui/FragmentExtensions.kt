@@ -1,8 +1,7 @@
-package com.pavlovalexey.pleinair.utils
+package com.pavlovalexey.pleinair.utils.ui
 
 import android.view.View
 import android.widget.ProgressBar
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 import com.pavlovalexey.pleinair.R

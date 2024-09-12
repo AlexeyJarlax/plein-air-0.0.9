@@ -1,22 +1,25 @@
 package com.pavlovalexey.pleinair.calendar.ui.calendar
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.pavlovalexey.pleinair.calendar.model.Event
 
-class CalendarViewModel : ViewModel() {
+import javax.inject.Inject
 
-    private val db = FirebaseFirestore.getInstance()
+class CalendarViewModel @Inject constructor(
+    private val firebaseAuth: FirebaseAuth,
+    private val firebaseFirestore: FirebaseFirestore
+) : ViewModel() {
+
     private val _events = MutableLiveData<List<Event>?>()
-    val events: MutableLiveData<List<Event>?> get() = _events
+    val events: LiveData<List<Event>?> get() = _events
     private val _errorMessage = MutableLiveData<String>()
     val errorMessage: LiveData<String> get() = _errorMessage
-
     fun loadEvents() {
-        db.collection("events")
+        firebaseFirestore.collection("events")
             .get()
             .addOnSuccessListener { result ->
                 val eventList = result.mapNotNull { it.toObject(Event::class.java) }
@@ -35,7 +38,7 @@ class CalendarViewModel : ViewModel() {
     }
 
     fun checkUserEvent(userId: String, callback: (Boolean) -> Unit) {
-        db.collection("events")
+        firebaseFirestore.collection("events")
             .whereEqualTo("userId", userId)
             .get()
             .addOnSuccessListener { result ->
