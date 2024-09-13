@@ -31,11 +31,11 @@ class NewEventViewModel @Inject constructor(
     private val _isFormValid = MutableLiveData<Boolean>()
     val isFormValid: LiveData<Boolean> get() = _isFormValid
 
-    private val _user = MutableLiveData<User?>()
-    val user: MutableLiveData<User?> get() = _user
-
     private val _event = MutableLiveData<Event?>()
     val event: MutableLiveData<Event?> get() = _event
+
+    private val _user = MutableLiveData<User?>()
+    val user: MutableLiveData<User?> get() = _user
 
     private val _creationStatus = MutableLiveData<CreationStatus>()
     val creationStatus: LiveData<CreationStatus> get() = _creationStatus
@@ -52,20 +52,19 @@ class NewEventViewModel @Inject constructor(
         return city.isNotEmpty() && place.isNotEmpty() && date.isNotEmpty() && time.isNotEmpty() && description.isNotEmpty()
     }
 
-    fun checkAndGenerateAvatar(onSuccess: () -> Unit) {
-        val currentUser = _user.value ?: return
+    fun checkAndGenerateEventAvatar(onSuccess: () -> Unit) {
         val currentEvent = _event.value ?: return
 
         if (currentEvent.profileImageUrl.isEmpty()) {
             val generatedAvatar = ImageUtils.generateRandomAvatar()
-            uploadImageToFirebase(
+            uploadEventImageToFirebase(
                 imageBitmap = generatedAvatar,
                 onSuccess = { uri ->
-                    updateProfileImageUrl(uri.toString()) // Обновляем URL аватара в Firestore
+                    updateEventProfileImageUrl(uri.toString())
                     onSuccess()
                 },
                 onFailure = {
-                    Log.w("ProfileViewModel", "Error uploading generated avatar", it)
+                    Log.w("NewEventViewModel", "Error uploading generated avatar", it)
                 }
             )
         } else {
@@ -73,54 +72,53 @@ class NewEventViewModel @Inject constructor(
         }
     }
 
-    fun uploadImageToFirebase( //заменить на Event: val id: String = "", val profileImageUrl: String = ""
+    fun uploadEventImageToFirebase(
         imageBitmap: Bitmap,
         onSuccess: (Uri) -> Unit,
         onFailure: (Exception) -> Unit
     ) {
-        val id = auth.currentUser?.uid ?: return
+        val eventId = _event.value?.id ?: return
         firebaseUserManager.uploadImageToFirebase(
-            userId,
+            eventId,
             imageBitmap,
             onSuccess = { uri ->
-                val updatedUser = _user.value?.copy(profileImageUrl = uri.toString())
-                _user.value = updatedUser
-                saveProfileImageUrl(uri.toString())
-                updateProfileImageUrl(uri.toString())
+                val updatedEvent = _event.value?.copy(profileImageUrl = uri.toString())
+                _event.value = updatedEvent
+                saveEventProfileImageUrl(uri.toString())
                 onSuccess(uri)
             },
             onFailure = {
-                Log.w("ProfileViewModel", "Error uploading image", it)
+                Log.w("NewEventViewModel", "Error uploading image", it)
                 onFailure(it)
             }
         )
     }
 
-    private fun updateProfileImageUrl(imageUrl: String) { //заменить на Event: val id: String = "", val profileImageUrl: String = ""
-        val userId = auth.currentUser?.uid ?: return
+    private fun updateEventProfileImageUrl(imageUrl: String) {
+        val eventId = _event.value?.id ?: return
         firebaseUserManager.updateProfileImageUrl(
-            userId,
+            eventId,
             imageUrl,
             onSuccess = {
-                _user.value = _user.value?.copy(profileImageUrl = imageUrl)
-                saveProfileImageUrl(imageUrl)
+                _event.value = _event.value?.copy(profileImageUrl = imageUrl)
+                saveEventProfileImageUrl(imageUrl)
             },
             onFailure = { e ->
-                Log.w("ProfileViewModel", "Error updating profile image URL", e)
+                Log.w("NewEventViewModel", "Error updating event image URL", e)
             }
         )
     }
 
-    fun loadProfileImageFromStorage(onSuccess: (Bitmap) -> Unit, onFailure: (Exception) -> Unit) {
-        val userId = auth.currentUser?.uid ?: return
+    fun loadEventImageFromStorage(onSuccess: (Bitmap) -> Unit, onFailure: (Exception) -> Unit) {
+        val eventId = _event.value?.id ?: return
         firebaseUserManager.loadProfileImageFromStorage(
-            userId,
+            eventId,
             onSuccess = onSuccess,
             onFailure = onFailure
         )
     }
 
-    private fun saveProfileImageUrl(url: String) { //заменить на Event: val profileImageUrl: String = ""
+    private fun saveEventProfileImageUrl(url: String) {
         with(sharedPreferences.edit()) {
             putString("profileEventImageUrl", url)
             apply()

@@ -61,18 +61,6 @@ class FirebaseUserManager @Inject constructor(
             }
     }
 
-//    fun updateUserName(userId: String, newName: String, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
-//        firestore.collection("users").document(userId)
-//            .update("name", newName)
-//            .addOnSuccessListener {
-//                Log.d("FirebaseUserManager", "User name updated")
-//                onSuccess()
-//            }
-//            .addOnFailureListener { e ->
-//                Log.w("FirebaseUserManager", "Error updating user name", e)
-//                onFailure(e)
-//            }
-//    }
 
     fun updateUserLocation(userId: String, location: LatLng, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
         firestore.collection("users").document(userId)

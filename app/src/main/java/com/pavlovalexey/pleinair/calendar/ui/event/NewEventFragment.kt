@@ -77,9 +77,9 @@ class NewEventFragment : Fragment() {
 
     private fun setupObservers() {
         viewModel.event.observe(viewLifecycleOwner, Observer { user ->
-            viewModel.checkAndGenerateAvatar {
+            viewModel.checkAndGenerateEventAvatar {
                 if (!user?.profileImageUrl.isNullOrEmpty()) {
-                    viewModel.loadProfileImageFromStorage(
+                    viewModel.loadEventImageFromStorage(
                         { bitmap -> binding.userAvatar.setImageBitmap(bitmap) },
                         {
                             Picasso.get().load(user?.profileImageUrl).transform(CircleTransform())
@@ -140,7 +140,7 @@ class NewEventFragment : Fragment() {
 
     private fun handleImageSelection(processedBitmap: Bitmap) {
         binding.userAvatar.setImageBitmap(processedBitmap)
-        viewModel.uploadImageToFirebase(processedBitmap,
+        viewModel.uploadEventImageToFirebase(processedBitmap,
             onSuccess = { uri ->
                 Picasso.get().load(uri).transform(CircleTransform()).into(binding.userAvatar)
             },
