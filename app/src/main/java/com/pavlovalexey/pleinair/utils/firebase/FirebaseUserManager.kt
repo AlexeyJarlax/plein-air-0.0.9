@@ -13,7 +13,6 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.GeoPoint
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
-import com.pavlovalexey.pleinair.utils.AppPreferencesKeys
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
@@ -48,22 +47,22 @@ class FirebaseUserManager @Inject constructor(
             }
     }
 
-    fun updateProfileImageUrl(userId: String, imageUrl: String, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
-        firestore.collection("users").document(userId)
+    fun updateImageUrl(id: String, imageUrl: String, collectionName: String, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) { // работает на User и Event
+        firestore.collection(collectionName).document(id)
             .update("profileImageUrl", imageUrl)
             .addOnSuccessListener {
-                Log.d("FirebaseUserManager", "Profile image URL updated")
+                Log.d("=== FirebaseUserManager", "updateImageUrl = V")
                 onSuccess()
             }
             .addOnFailureListener { e ->
-                Log.w("FirebaseUserManager", "Error updating profile image URL", e)
+                Log.w("=== FirebaseUserManager", "updateImageUrl = X", e)
                 onFailure(e)
             }
     }
 
 
-    fun updateUserLocation(userId: String, location: LatLng, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
-        firestore.collection("users").document(userId)
+    fun updateUserLocation(userId: String, location: LatLng, collectionName: String, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {  // работает на User и Event
+        firestore.collection(collectionName).document(userId)
             .update("location", GeoPoint(location.latitude, location.longitude))
             .addOnSuccessListener {
                 onSuccess()
@@ -74,19 +73,20 @@ class FirebaseUserManager @Inject constructor(
             }
     }
 
-    fun uploadImageToFirebase(
-        userId: String,
+    fun uploadImageToFirebase(  // работает на User и Event
+        id: String,
         imageBitmap: Bitmap,
+        bitmapStorage: String,
         onSuccess: (Uri) -> Unit,
         onFailure: (Exception) -> Unit
     ) {
         val storageRef: StorageReference =
-            storage.reference.child("profile_images/$userId/${UUID.randomUUID()}.jpg")
+            storage.reference.child("$bitmapStorage/$id/${UUID.randomUUID()}.jpg")
         val baos = ByteArrayOutputStream()
         imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
         val data = baos.toByteArray()
 
-        clearProfileImageFolder(userId,
+        clearProfileImageFolder(id, bitmapStorage,
             onSuccess = {
                 storageRef.putBytes(data)
                     .addOnSuccessListener {
@@ -97,19 +97,19 @@ class FirebaseUserManager @Inject constructor(
                     .addOnFailureListener { onFailure(it) }
             },
             onFailure = {
-                Log.w("FirebaseUserManager", "Error clearing profile image folder", it)
                 onFailure(it)
             }
         )
-        saveImageToLocalStorage(imageBitmap, userId)
+        saveImageToLocalStorage(imageBitmap, id, bitmapStorage)
     }
 
-    private fun clearProfileImageFolder(
-        userId: String,
+    private fun clearProfileImageFolder(  // работает на User и Event
+        id: String,
+        bitmapStorage: String,
         onSuccess: () -> Unit,
         onFailure: (Exception) -> Unit
     ) {
-        val folderRef = storage.reference.child("profile_images/$userId/")
+        val folderRef = storage.reference.child("$bitmapStorage/$id/")
         folderRef.listAll()
             .addOnSuccessListener { listResult ->
                 val deleteTasks = listResult.items.map { it.delete() }
@@ -124,11 +124,9 @@ class FirebaseUserManager @Inject constructor(
         firestore.collection("users").document(userId)
             .update("description", newDescription)
             .addOnSuccessListener {
-                Log.d("FirebaseUserManager", "User description updated")
                 onSuccess()
             }
             .addOnFailureListener { e ->
-                Log.w("FirebaseUserManager", "Error updating user description", e)
                 onFailure(e)
             }
     }
@@ -137,11 +135,9 @@ class FirebaseUserManager @Inject constructor(
         firestore.collection("users").document(userId)
             .update("artStyles", styles.toList())
             .addOnSuccessListener {
-                Log.d("FirebaseUserManager", "Art styles updated")
                 onSuccess()
             }
             .addOnFailureListener { e ->
-                Log.w("FirebaseUserManager", "Error updating art styles", e)
                 onFailure(e)
             }
     }
@@ -156,44 +152,42 @@ class FirebaseUserManager @Inject constructor(
                 }
             }
             .addOnFailureListener { e ->
-                Log.w("FirebaseUserManager", "Error loading art styles", e)
                 onFailure(e)
             }
     }
 
-    fun loadProfileImageFromStorage(
-        userId: String,
+    fun loadProfileImageFromStorage(   // работает на User и Event
+        id: String,
+        bitmapStorage: String,
         onSuccess: (Bitmap) -> Unit,
         onFailure: (Exception) -> Unit
     ) {
-        val localImage = loadImageFromLocalStorage(userId)
+        val localImage = loadImageFromLocalStorage(id, bitmapStorage)
         if (localImage != null) {
             onSuccess(localImage)
         } else {
-            val storageRef: StorageReference = storage.reference.child("profile_images/$userId/")
+            val storageRef: StorageReference = storage.reference.child("$bitmapStorage/$id/")
             storageRef.listAll().addOnSuccessListener { listResult ->
                 if (listResult.items.isNotEmpty()) {
                     val firstItem = listResult.items[0]
                     firstItem.getBytes(Long.MAX_VALUE).addOnSuccessListener { bytes ->
                         val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
-                        saveImageToLocalStorage(bitmap, userId) // Сохраняем в локальное хранилище
+                        saveImageToLocalStorage(bitmap, id, bitmapStorage)
                         onSuccess(bitmap)
                     }.addOnFailureListener { e ->
-                        Log.w("FirebaseUserManager", "Error downloading image from Firebase", e)
                         onFailure(e)
                     }
                 } else {
                     onFailure(Exception("No profile image found"))
                 }
             }.addOnFailureListener { e ->
-                Log.w("FirebaseUserManager", "Error getting image list from Firebase", e)
                 onFailure(e)
             }
         }
     }
 
-    private fun loadImageFromLocalStorage(userId: String): Bitmap? {
-        val filename = "profile_image_$userId.jpg"
+    private fun loadImageFromLocalStorage(id: String, bitmapStorage: String): Bitmap? {   // работает на User и Event
+        val filename = bitmapStorage + "_" + "$id.jpg"
         val file = File(context.filesDir, filename)
         return if (file.exists()) {
             BitmapFactory.decodeFile(file.absolutePath)
@@ -202,15 +196,14 @@ class FirebaseUserManager @Inject constructor(
         }
     }
 
-    private fun saveImageToLocalStorage(imageBitmap: Bitmap, userId: String) {
-        val filename = "profile_image_$userId.jpg"
+    private fun saveImageToLocalStorage(imageBitmap: Bitmap, id: String, bitmapStorage: String) {   // работает на User и Event
+        val filename = bitmapStorage + "_" + "$id.jpg"
         val file = File(context.filesDir, filename)
         var fos: FileOutputStream? = null
         try {
             fos = FileOutputStream(file)
             imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos)
         } catch (e: IOException) {
-            Log.e("FirebaseUserManager", "Error saving image to local storage", e)
         } finally {
             fos?.flush()
             fos?.close()

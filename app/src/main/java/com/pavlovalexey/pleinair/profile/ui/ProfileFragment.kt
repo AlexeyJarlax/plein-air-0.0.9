@@ -99,7 +99,7 @@ class ProfileFragment : Fragment(), UserMapFragment.OnLocationSelectedListener {
 
     private fun handleImageSelection(processedBitmap: Bitmap) {
         binding.userAvatar.setImageBitmap(processedBitmap)
-        viewModel.uploadImageToFirebase(processedBitmap,
+        viewModel.uploadAvatarImageToFirebase(processedBitmap,
             onSuccess = { uri ->
                 Picasso.get().load(uri).transform(CircleTransform()).into(binding.userAvatar)
             },

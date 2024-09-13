@@ -9,6 +9,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.auth.FirebaseAuth
 import com.pavlovalexey.pleinair.calendar.data.EventRepository
 import com.pavlovalexey.pleinair.calendar.model.Event
@@ -64,7 +65,6 @@ class NewEventViewModel @Inject constructor(
                     onSuccess()
                 },
                 onFailure = {
-                    Log.w("NewEventViewModel", "Error uploading generated avatar", it)
                 }
             )
         } else {
@@ -81,6 +81,7 @@ class NewEventViewModel @Inject constructor(
         firebaseUserManager.uploadImageToFirebase(
             eventId,
             imageBitmap,
+            "event_images",
             onSuccess = { uri ->
                 val updatedEvent = _event.value?.copy(profileImageUrl = uri.toString())
                 _event.value = updatedEvent
@@ -88,7 +89,6 @@ class NewEventViewModel @Inject constructor(
                 onSuccess(uri)
             },
             onFailure = {
-                Log.w("NewEventViewModel", "Error uploading image", it)
                 onFailure(it)
             }
         )
@@ -96,15 +96,27 @@ class NewEventViewModel @Inject constructor(
 
     private fun updateEventProfileImageUrl(imageUrl: String) {
         val eventId = _event.value?.id ?: return
-        firebaseUserManager.updateProfileImageUrl(
+        firebaseUserManager.updateImageUrl(
             eventId,
             imageUrl,
+            "events",
             onSuccess = {
                 _event.value = _event.value?.copy(profileImageUrl = imageUrl)
                 saveEventProfileImageUrl(imageUrl)
             },
             onFailure = { e ->
-                Log.w("NewEventViewModel", "Error updating event image URL", e)
+            }
+        )
+    }
+
+    fun updateUserLocation(location: LatLng, onSuccess: () -> Unit) { // разобраться с широтой долготой
+        val eventId = _event.value?.id ?: return
+        firebaseUserManager.updateUserLocation(
+            eventId,
+            location,
+            "events",
+            onSuccess = onSuccess,
+            onFailure = { e ->
             }
         )
     }
@@ -113,6 +125,7 @@ class NewEventViewModel @Inject constructor(
         val eventId = _event.value?.id ?: return
         firebaseUserManager.loadProfileImageFromStorage(
             eventId,
+            "event_images",
             onSuccess = onSuccess,
             onFailure = onFailure
         )
