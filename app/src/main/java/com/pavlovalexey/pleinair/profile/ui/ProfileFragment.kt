@@ -15,7 +15,6 @@ import com.google.android.gms.maps.model.LatLng
 import com.pavlovalexey.pleinair.R
 import com.pavlovalexey.pleinair.databinding.FragmentProfileBinding
 import com.pavlovalexey.pleinair.profile.viewmodel.ProfileViewModel
-import com.pavlovalexey.pleinair.utils.firebase.FirebaseUserManager
 import com.pavlovalexey.pleinair.utils.firebase.LoginAndUserUtils
 import com.pavlovalexey.pleinair.utils.image.CircleTransform
 import com.pavlovalexey.pleinair.utils.image.setupImageResultLaunchers
@@ -69,7 +68,6 @@ class ProfileFragment : Fragment(), UserMapFragment.OnLocationSelectedListener {
 
     private fun setupObservers() {
         viewModel.user.observe(viewLifecycleOwner, Observer { user ->
-//            binding.userName.text = user?.name ?: getString(R.string.default_user_name)
             viewModel.checkAndGenerateAvatar {
                 if (!user?.profileImageUrl.isNullOrEmpty()) {
                     viewModel.loadProfileImageFromStorage(
@@ -84,10 +82,6 @@ class ProfileFragment : Fragment(), UserMapFragment.OnLocationSelectedListener {
                 }
             }
         })
-
-//        viewModel.selectedArtStyles.observe(viewLifecycleOwner, Observer { selectedStyles ->
-//
-//        })
     }
 
     private fun setupListeners() {

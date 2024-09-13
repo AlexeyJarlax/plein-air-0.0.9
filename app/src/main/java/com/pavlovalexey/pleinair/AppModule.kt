@@ -39,26 +39,21 @@ object AppModule {
     }
 
 ////////// Firebase
-
-
     @Provides
     @Singleton
     fun provideFirebaseAuth(): FirebaseAuth {
         return FirebaseAuth.getInstance()
     }
-
     @Provides
     @Singleton
     fun provideFirebaseFirestore(): FirebaseFirestore {
         return FirebaseFirestore.getInstance()
     }
-
     @Provides
     @Singleton
     fun provideFirebaseStorage(): FirebaseStorage {
         return FirebaseStorage.getInstance()
     }
-
     @Provides
     @Singleton
     fun provideGoogleSignInClient(@ApplicationContext context: Context): GoogleSignInClient {
@@ -69,8 +64,7 @@ object AppModule {
         return GoogleSignIn.getClient(context, googleSignInOptions)
     }
 
-    ////////// ДОМЕЙН И ДАТА
-
+    ////////// Repository
     @Provides
     @Singleton
     fun provideSettingsRepository(
@@ -79,27 +73,26 @@ object AppModule {
     ): SettingsRepository {
         return SettingsRepositoryImpl(context, sharedPreferences)
     }
+    @Provides
+    fun provideEventRepository(firebase: FirebaseFirestore): EventRepository {
+        return EventRepository(firebase)
+    }
 
+    ////////// Interactor
     @Provides
     @Singleton
     fun provideSettingsInteractor(settingsRepository: SettingsRepository): SettingsInteractor {
         return SettingsInteractorImpl(settingsRepository)
     }
 
+    ////////// Adapter
     @Provides
     @Singleton
     fun provideEventAdapter(): EventAdapter {
         return EventAdapter()
     }
 
-    @Provides
-    @Singleton
-    fun provideEventRepository(@ApplicationContext context: Context): EventRepository {
-        return EventRepository(context as Application)
-    }
-
-    ////////// ВЬЮ МОДЕЛИ
-
+    ////////// ViewModel
     @Provides
     @Singleton
     fun provideProfileViewModel(
@@ -110,7 +103,6 @@ object AppModule {
     ): ProfileViewModel {
         return ProfileViewModel(application, firebaseUserManager, auth, sharedPreferences)
     }
-
     @Provides
     @Singleton
     fun provideCalendarViewModel(
@@ -120,8 +112,7 @@ object AppModule {
         return CalendarViewModel(firebaseAuth, firebaseFirestore)
     }
 
-////////// УТИЛИТЫ
-
+////////// Utils
     @Provides
     @Singleton
     fun provideLoginAndUserUtils(
@@ -132,7 +123,6 @@ object AppModule {
     ): LoginAndUserUtils {
         return LoginAndUserUtils(context, firebaseAuth, firebaseFirestore, sharedPreferences)
     }
-
     @Provides
     @Singleton
     fun provideFirebaseUserManager(
@@ -144,7 +134,6 @@ object AppModule {
     ): FirebaseUserManager {
         return FirebaseUserManager(appContext, auth, firestore, storage, sharedPreferences)
     }
-
     @Provides
     @Singleton
     fun provideIconStateUtils(sharedPreferences: SharedPreferences): IconStateUtils {

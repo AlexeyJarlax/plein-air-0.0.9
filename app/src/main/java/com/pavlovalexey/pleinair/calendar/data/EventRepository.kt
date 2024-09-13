@@ -1,30 +1,28 @@
 package com.pavlovalexey.pleinair.calendar.data
 
-import android.app.Application
 import com.google.firebase.firestore.FirebaseFirestore
 import com.pavlovalexey.pleinair.calendar.model.Event
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
-import kotlinx.coroutines.withContext
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class EventRepository(private val application: Application) {
-
-    private val db = FirebaseFirestore.getInstance()
+@Singleton
+class EventRepository @Inject constructor(
+    private val firebase: FirebaseFirestore
+) {
 
     suspend fun addEvent(event: Event) {
         try {
-            db.collection("events")
+            firebase.collection("events")
                 .add(event)
-                .await()  // Используйте coroutines для ожидания завершения операции
+                .await()
         } catch (e: Exception) {
             throw e
         }
     }
 
-    // Метод для обновления URL изображения события
     suspend fun updateEventImageUrl(eventId: String, imageUrl: String) {
-        val eventRef = db.collection("events").document(eventId)
-        eventRef.update("imageUrl", imageUrl)
-            .await() // Используйте Kotlin Coroutines для ожидания завершения операции
+        val eventRef = firebase.collection("events").document(eventId)
+        eventRef.update("imageUrl", imageUrl).await()
     }
 }
