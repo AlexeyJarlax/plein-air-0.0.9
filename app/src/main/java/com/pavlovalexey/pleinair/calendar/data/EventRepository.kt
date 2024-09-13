@@ -11,11 +11,12 @@ class EventRepository @Inject constructor(
     private val firebase: FirebaseFirestore
 ) {
 
-    suspend fun addEvent(event: Event) {
-        try {
-            firebase.collection("events")
+    suspend fun addEvent(event: Event): String {
+        return try {
+            val documentRef = firebase.collection("events")
                 .add(event)
                 .await()
+            documentRef.id // возвращаем ID нового события
         } catch (e: Exception) {
             throw e
         }
@@ -23,6 +24,6 @@ class EventRepository @Inject constructor(
 
     suspend fun updateEventImageUrl(eventId: String, imageUrl: String) {
         val eventRef = firebase.collection("events").document(eventId)
-        eventRef.update("imageUrl", imageUrl).await()
+        eventRef.update("profileImageUrl", imageUrl).await()
     }
 }

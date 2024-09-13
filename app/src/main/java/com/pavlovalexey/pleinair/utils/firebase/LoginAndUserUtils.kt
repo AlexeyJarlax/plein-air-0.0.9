@@ -19,8 +19,7 @@ class LoginAndUserUtils @Inject constructor(
 
     @Inject
     lateinit var googleSignInClient: GoogleSignInClient
-    @Inject
-    lateinit var loginAndUserUtils: LoginAndUserUtils
+
 
     private val defaultLocation = LatLng(59.9500019, 30.3166718)
     private val animals: List<String> by lazy { loadFile(R.raw.animals) }
@@ -97,5 +96,10 @@ class LoginAndUserUtils @Inject constructor(
             .addOnFailureListener { e ->
                 Log.w("FirebaseUserManager", "Error updating user name", e)
             }
+    }
+
+    fun getUserID () : String {
+        val userId = auth.currentUser?.uid
+        return userId?: ""
     }
 }
