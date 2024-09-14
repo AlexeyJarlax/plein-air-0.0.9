@@ -59,23 +59,9 @@ class NewEventViewModel @Inject constructor(
         return city.isNotEmpty() && place.isNotEmpty() && date.isNotEmpty() && time.isNotEmpty() && description.isNotEmpty()
     }
 
-    fun checkAndGenerateEventAvatar(onSuccess: () -> Unit) {
+    fun checkAndGenerateEventAvatar() {
         val currentEvent = _event.value ?: return
-
-        if (currentEvent.profileImageUrl.isEmpty()) {
-            val generatedAvatar = ImageUtils.generateRandomAvatar()
-            uploadEventImageToFirebase(
-                imageBitmap = generatedAvatar,
-                onSuccess = { uri ->
-                    updateEventProfileImageUrl(uri.toString())
-                    onSuccess()
-                },
-                onFailure = {
-                }
-            )
-        } else {
-            onSuccess()
-        }
+        firebaseUserManager.setDefaultAvatarIfEmpty(currentEvent.id)
     }
 
     fun uploadEventImageToFirebase(
@@ -92,6 +78,7 @@ class NewEventViewModel @Inject constructor(
                 val updatedEvent = _event.value?.copy(profileImageUrl = uri.toString())
                 _event.value = updatedEvent
                 saveEventProfileImageUrl(uri.toString())
+                updateEventProfileImageUrl(uri.toString())
                 onSuccess(uri)
             },
             onFailure = {
@@ -110,18 +97,6 @@ class NewEventViewModel @Inject constructor(
                 _event.value = _event.value?.copy(profileImageUrl = imageUrl)
                 saveEventProfileImageUrl(imageUrl)
             },
-            onFailure = { e ->
-            }
-        )
-    }
-
-    fun updateUserLocation(location: LatLng, onSuccess: () -> Unit) { // разобраться с широтой долготой
-        val eventId = _event.value?.id ?: return
-        firebaseUserManager.updateUserLocation(
-            eventId,
-            location,
-            "events",
-            onSuccess = onSuccess,
             onFailure = { e ->
             }
         )

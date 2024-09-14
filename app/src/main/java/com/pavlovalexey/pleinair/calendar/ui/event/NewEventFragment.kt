@@ -32,7 +32,6 @@ import com.pavlovalexey.pleinair.utils.timeAndData.openDatePickerDialog
 import com.pavlovalexey.pleinair.utils.timeAndData.openTimePickerDialog
 import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
-import java.io.BufferedReader
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -68,20 +67,8 @@ class NewEventFragment : Fragment() {
     }
 
     private fun setupObservers() {
-        viewModel.event.observe(viewLifecycleOwner) { user ->
-            viewModel.checkAndGenerateEventAvatar {
-                if (!user?.profileImageUrl.isNullOrEmpty()) {
-                    viewModel.loadEventImageFromStorage(
-                        { bitmap -> binding.userAvatar.setImageBitmap(bitmap) },
-                        {
-                            Picasso.get().load(user?.profileImageUrl).transform(CircleTransform())
-                                .into(binding.userAvatar)
-                        }
-                    )
-                } else {
-                    binding.userAvatar.setImageResource(R.drawable.account_circle_50dp)
-                }
-            }
+        viewModel.event.observe(viewLifecycleOwner) {
+                    viewModel.checkAndGenerateEventAvatar()
         }
 
         viewModel.creationStatus.observe(viewLifecycleOwner) { status ->
@@ -328,8 +315,8 @@ class NewEventFragment : Fragment() {
             AppPreferencesKeys.PREFS_NAME,
             Context.MODE_PRIVATE
         )
-        val userId = sharedPreferences.getString("userId", "") ?: ""
-        val profileImageUrl = viewModel.user.value?.profileImageUrl ?: "User Avatar URL"
+        val userId = viewModel.user.value?.userId ?: "неизвестный пользователь"
+        val profileImageUrl = viewModel.event.value?.profileImageUrl ?: "не получил URL"
         val latitude = selectedLocation?.latitude ?: 0.0
         val longitude = selectedLocation?.longitude ?: 0.0
 

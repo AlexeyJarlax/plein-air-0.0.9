@@ -13,6 +13,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.GeoPoint
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
+import com.pavlovalexey.pleinair.utils.image.ImageUtils
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
@@ -184,6 +185,29 @@ class FirebaseUserManager @Inject constructor(
                 onFailure(e)
             }
         }
+    }
+
+    fun setDefaultAvatarIfEmpty(eventId: String) {
+        loadProfileImageFromStorage(eventId, "events",
+            onSuccess = { bitmap ->
+                saveImageToLocalStorage(bitmap, eventId, "events")
+            },
+            onFailure = {
+                // Если аватар не найден, установить аватар по умолчанию
+                val defaultAvatar = ImageUtils.generateRandomAvatar()
+                uploadImageToFirebase(eventId, defaultAvatar, "events",
+                    onSuccess = { uri ->
+                        // Успешное обновление
+                        updateImageUrl(eventId, uri.toString(), "events",
+                            onSuccess = {},
+                            onFailure = { error -> Log.e("Avatar", "Ошибка обновления аватара", error) }
+                        )
+
+                    },
+                    onFailure = { error -> Log.e("Avatar", "Ошибка загрузки аватара", error) }
+                )
+            }
+        )
     }
 
     private fun loadImageFromLocalStorage(id: String, bitmapStorage: String): Bitmap? {   // работает на User и Event
