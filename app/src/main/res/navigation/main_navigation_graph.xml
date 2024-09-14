@@ -49,17 +49,9 @@
         android:label="New Event Fragment"
         tools:layout="@layout/fragment_new_event">
         <action
-            android:id="@+id/action_newEventFragment_to_citySelectionFragment"
-            app:destination="@id/citySelectionFragment" />
-        <action
             android:id="@+id/action_newEventFragment_to_eventMapFragment"
             app:destination="@id/eventMapFragment" />
-        <action
-            android:id="@+id/action_newEventFragment_to_dateSelectionFragment"
-            app:destination="@id/dateSelectionFragment" />
-        <action
-            android:id="@+id/action_newEventFragment_to_timeSelectionFragment"
-            app:destination="@id/timeSelectionFragment" />
+
     </fragment>
 
     <fragment
@@ -67,18 +59,4 @@
         android:name="com.pavlovalexey.pleinair.calendar.ui.event.EventMapFragment"
         android:label="Event Map Fragment"
         tools:layout="@layout/fragment_event_map" />
-
-    <fragment
-        android:id="@+id/citySelectionFragment"
-        android:name="com.pavlovalexey.pleinair.calendar.ui.city.CitySelectionFragment"
-        tools:layout="@layout/fragment_city_selection" />
-
-    <fragment
-        android:id="@+id/dateSelectionFragment"
-        android:name="com.pavlovalexey.pleinair.calendar.ui.date.DateSelectionFragment"
-        tools:layout="@layout/fragment_date_selection" />
-    <fragment
-        android:id="@+id/timeSelectionFragment"
-        android:name="com.pavlovalexey.pleinair.calendar.ui.time.TimeSelectionFragment"
-        tools:layout="@layout/fragment_time_selection" />
 </navigation>
