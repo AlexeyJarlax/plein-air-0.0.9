@@ -59,14 +59,21 @@ class EventMapFragment : Fragment(), OnMapReadyCallback {
         val latitude = arguments?.getDouble("latitude")
         val longitude = arguments?.getDouble("longitude")
 
-        if (latitude != null && longitude != null) {
-            val initialPosition = LatLng(latitude, longitude)
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(initialPosition, 15f))
+        val defaultLatitude = 55.75
+        val defaultLongitude = 37.61
+        val initialPosition = if (latitude != null && longitude != null) {
+            LatLng(latitude, longitude)
+        } else {
+            LatLng(defaultLatitude, defaultLongitude)
         }
+
+        // Устанавливаем начальную позицию и уровень зума
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(initialPosition, 12f))
 
         mMap.setOnMapClickListener { latLng ->
             mMap.clear()
             mMap.addMarker(MarkerOptions().position(latLng).title("Выбрано местоположение"))
             selectedLocation = latLng
         }
-}}
+    }
+}

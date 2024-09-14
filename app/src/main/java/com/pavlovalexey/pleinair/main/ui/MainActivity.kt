@@ -165,7 +165,7 @@ class MainActivity : AppCompatActivity(), UserMapFragment.OnLocationSelectedList
             selectedLocation = latLng
         }
         val initialPosition = selectedLocation ?: defaultLocation
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(initialPosition, 15f))
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(initialPosition, 12f))
     }
 
     fun logoutAndRevokeAccess() {
