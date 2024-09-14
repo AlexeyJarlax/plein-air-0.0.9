@@ -10,6 +10,8 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
@@ -90,6 +92,7 @@ class NewEventFragment : Fragment() {
                     eventId = status.eventId
                     findNavController().navigateUp()
                 }
+
                 is CreationStatus.Error -> {
                     showLoading(false)
                     Toast.makeText(context, status.message, Toast.LENGTH_LONG).show()
@@ -99,6 +102,9 @@ class NewEventFragment : Fragment() {
     }
 
     private fun setupListeners() {
+        setupEditorActionListeners()
+        setupAfterTextChangedListener()
+
         binding.btnBack.setOnClickListener {
             if (currentStep > 1) {
                 currentStep--
@@ -115,22 +121,10 @@ class NewEventFragment : Fragment() {
             }
         }
 
-        val afterTextChangedListener = object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-            override fun afterTextChanged(s: Editable?) {
-                viewModel.onFieldChanged(
-                    city = binding.inputCity.text.toString(),
-                    place = binding.pointLocation.text.toString(),
-                    date = binding.inputDay.text.toString(),
-                    time = binding.inputTime.text.toString(),
-                    description = binding.inputDetails.text.toString()
-                )
-            }
-        }
+
 
         loadCityListWithCoordinates()
-        binding.inputCity.addTextChangedListener(afterTextChangedListener)
+        binding.inputCity.addTextChangedListener(setupAfterTextChangedListener())
 
         binding.btnChooseLocation.setOnClickListener {
             val selectedCity = binding.inputCity.text.toString()
@@ -140,7 +134,10 @@ class NewEventFragment : Fragment() {
                     putDouble("latitude", cityCoordinates.latitude)
                     putDouble("longitude", cityCoordinates.longitude)
                 }
-                findNavController().navigate(R.id.action_newEventFragment_to_eventMapFragment, bundle)
+                findNavController().navigate(
+                    R.id.action_newEventFragment_to_eventMapFragment,
+                    bundle
+                )
             } else {
                 Toast.makeText(requireContext(), "Выберите город", Toast.LENGTH_SHORT).show()
             }
@@ -165,6 +162,29 @@ class NewEventFragment : Fragment() {
             if (hasFocus) openTimePickerDialog(binding)
         }
 
+        binding.inputDetails.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                if (validateStep()) {
+                    // Скрываем клавиатуру
+                    val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.hideSoftInputFromWindow(binding.inputDetails.windowToken, 0)
+
+                    // Если текущий шаг равен 5, не увеличиваем шаг, а показываем кнопки
+                    if (currentStep == 5) {
+                        binding.createEvent.isEnabled = true // Активируем кнопку создания ивента
+                        binding.createEvent.visibility = View.VISIBLE
+                        binding.cancelEvent.visibility = View.VISIBLE
+                    } else {
+                        currentStep++
+                        updateStepView()
+                    }
+                }
+                true
+            } else {
+                false
+            }
+        }
+
         binding.cancelEvent.setOnClickListener {
             findNavController().navigateUp()
         }
@@ -179,6 +199,45 @@ class NewEventFragment : Fragment() {
                 return@setOnClickListener
             }
             createEvent()
+        }
+    }
+
+    private fun setupEditorActionListeners() {
+        val fields = listOf(
+            binding.inputCity,
+            binding.inputDay,
+            binding.inputTime
+        )
+
+        fields.forEach { field ->
+            field.setOnEditorActionListener { _, actionId, _ ->
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    if (validateStep()) {
+                        currentStep++
+                        updateStepView()
+                    }
+                    true
+                } else {
+                    false
+                }
+            }
+        }
+    }
+
+    private fun setupAfterTextChangedListener(): TextWatcher {
+        return object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                viewModel.onFieldChanged(
+                    city = binding.inputCity.text.toString(),
+                    place = binding.pointLocation.text.toString(),
+                    date = binding.inputDay.text.toString(),
+                    time = binding.inputTime.text.toString(),
+                    description = binding.inputDetails.text.toString(),
+                    currentStep
+                )
+            }
         }
     }
 
@@ -225,24 +284,29 @@ class NewEventFragment : Fragment() {
                     false
                 } else true
             }
+
             2 -> {
                 if (selectedLocation == null) {
-                    Toast.makeText(context, "Выберите местоположение на карте", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Выберите местоположение на карте", Toast.LENGTH_SHORT)
+                        .show()
                     false
                 } else true
             }
+
             3 -> {
                 if (binding.inputDay.text.isNullOrEmpty()) {
                     binding.inputDay.error = "Выберите дату"
                     false
                 } else true
             }
+
             4 -> {
                 if (binding.inputTime.text.isNullOrEmpty()) {
                     binding.inputTime.error = "Выберите время"
                     false
                 } else true
             }
+
             5 -> true
             else -> true
         }
