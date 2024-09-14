@@ -165,11 +165,8 @@ class NewEventFragment : Fragment() {
         binding.inputDetails.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 if (validateStep()) {
-                    // Скрываем клавиатуру
                     val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                     imm.hideSoftInputFromWindow(binding.inputDetails.windowToken, 0)
-
-                    // Если текущий шаг равен 5, не увеличиваем шаг, а показываем кнопки
                     if (currentStep == 5) {
                         binding.createEvent.isEnabled = true // Активируем кнопку создания ивента
                         binding.createEvent.visibility = View.VISIBLE
@@ -314,7 +311,6 @@ class NewEventFragment : Fragment() {
 
     private fun updateStepView() {
         binding.stepDescription.text = "Новый ивент\nэтап $currentStep из 5"
-//        binding.btnBack.visibility = if (currentStep > 1) View.VISIBLE else View.GONE
         binding.btnNext.visibility = if (currentStep < 5) View.VISIBLE else View.GONE
         binding.createEvent.visibility = if (currentStep == 5) View.VISIBLE else View.GONE
         binding.cancelEvent.visibility = if (currentStep == 5) View.VISIBLE else View.GONE

@@ -17,10 +17,7 @@ import com.pavlovalexey.pleinair.utils.firebase.FirebaseUserManager
 import com.pavlovalexey.pleinair.utils.image.ImageUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import java.util.UUID
 import javax.inject.Inject
-
-
 
 @HiltViewModel
 class NewEventViewModel @Inject constructor(
@@ -59,7 +56,7 @@ class NewEventViewModel @Inject constructor(
     }
 
     private fun validateForm(city: String, place: String, date: String, time: String, description: String): Boolean {
-        return city.isNotEmpty() && place.isNotEmpty() && date.isNotEmpty() && time.isNotEmpty()
+        return city.isNotEmpty() && place.isNotEmpty() && date.isNotEmpty() && time.isNotEmpty() && description.isNotEmpty()
     }
 
     fun checkAndGenerateEventAvatar(onSuccess: () -> Unit) {
@@ -118,7 +115,7 @@ class NewEventViewModel @Inject constructor(
         )
     }
 
-    fun updateUserLocation(location: LatLng, onSuccess: () -> Unit) {
+    fun updateUserLocation(location: LatLng, onSuccess: () -> Unit) { // разобраться с широтой долготой
         val eventId = _event.value?.id ?: return
         firebaseUserManager.updateUserLocation(
             eventId,
@@ -147,7 +144,7 @@ class NewEventViewModel @Inject constructor(
         }
     }
 
-    suspend fun createEvent(
+    fun createEvent(
         userId: String,
         profileImageUrl: String,
         city: String,
@@ -160,8 +157,7 @@ class NewEventViewModel @Inject constructor(
     ) {
         _creationStatus.value = CreationStatus.Loading
 
-        val newEvent = Event(
-            id = UUID.randomUUID().toString(),
+        val event = Event(
             userId = userId,
             profileImageUrl = profileImageUrl,
             city = city,
@@ -170,12 +166,17 @@ class NewEventViewModel @Inject constructor(
             time = time,
             description = description,
             latitude = latitude,
-            longitude = longitude
+            longitude = longitude,
+            timestamp = System.currentTimeMillis()
         )
-        newEvent.id = eventRepository.addEvent(newEvent)
-    }
 
-    fun clearUserData() {
-        _user.value = null
+        viewModelScope.launch {
+            try {
+                val eventId = eventRepository.addEvent(event)
+                _creationStatus.value = CreationStatus.Success(eventId.toString())
+            } catch (e: Exception) {
+                _creationStatus.value = CreationStatus.Error(e.localizedMessage ?: "Unknown error")
+            }
+        }
     }
 }
