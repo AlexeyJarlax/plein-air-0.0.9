@@ -47,6 +47,7 @@ class NewEventFragment : Fragment() {
     private lateinit var galleryActivityResultLauncher: ActivityResultLauncher<Intent>
 
     private var currentStep: Int = 1
+    private val cityCoordinatesMap = mutableMapOf<String, LatLng>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -80,6 +81,7 @@ class NewEventFragment : Fragment() {
                 }
             }
         }
+
         viewModel.creationStatus.observe(viewLifecycleOwner) { status ->
             when (status) {
                 is CreationStatus.Loading -> showLoading(true)
@@ -127,12 +129,21 @@ class NewEventFragment : Fragment() {
             }
         }
 
-        cityList()
+        loadCityListWithCoordinates()
         binding.inputCity.addTextChangedListener(afterTextChangedListener)
 
-        latitudeAndLongitude()
         binding.btnChooseLocation.setOnClickListener {
-            findNavController().navigate(R.id.action_newEventFragment_to_eventMapFragment)
+            val selectedCity = binding.inputCity.text.toString()
+            val cityCoordinates = cityCoordinatesMap[selectedCity]
+            if (cityCoordinates != null) {
+                val bundle = Bundle().apply {
+                    putDouble("latitude", cityCoordinates.latitude)
+                    putDouble("longitude", cityCoordinates.longitude)
+                }
+                findNavController().navigate(R.id.action_newEventFragment_to_eventMapFragment, bundle)
+            } else {
+                Toast.makeText(requireContext(), "Выберите город", Toast.LENGTH_SHORT).show()
+            }
         }
 
         binding.userAvatar.setOnClickListener {
@@ -171,11 +182,27 @@ class NewEventFragment : Fragment() {
         }
     }
 
-    private fun cityList() {
+    private fun loadCityListWithCoordinates() {
         val inputStream = resources.openRawResource(R.raw.cities)
-        val cities = inputStream.bufferedReader().use(BufferedReader::readLines)
-        val adapter =
-            ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, cities)
+        inputStream.bufferedReader().useLines { lines ->
+            lines.forEach { line ->
+                val parts = line.split(",")
+                if (parts.size == 3) {
+                    val cityName = parts[0]
+                    val latitude = parts[1].toDoubleOrNull()
+                    val longitude = parts[2].toDoubleOrNull()
+                    if (latitude != null && longitude != null) {
+                        cityCoordinatesMap[cityName] = LatLng(latitude, longitude)
+                    }
+                }
+            }
+        }
+
+        val adapter = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_dropdown_item_1line,
+            cityCoordinatesMap.keys.toList()
+        )
         binding.inputCity.setAdapter(adapter)
         binding.inputCity.threshold = 1
     }
