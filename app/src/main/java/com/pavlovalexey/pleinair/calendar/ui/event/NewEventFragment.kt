@@ -65,6 +65,21 @@ class NewEventFragment : Fragment() {
     }
 
     private fun setupObservers() {
+        viewModel.event.observe(viewLifecycleOwner) { user ->
+            viewModel.checkAndGenerateEventAvatar {
+                if (!user?.profileImageUrl.isNullOrEmpty()) {
+                    viewModel.loadEventImageFromStorage(
+                        { bitmap -> binding.userAvatar.setImageBitmap(bitmap) },
+                        {
+                            Picasso.get().load(user?.profileImageUrl).transform(CircleTransform())
+                                .into(binding.userAvatar)
+                        }
+                    )
+                } else {
+                    binding.userAvatar.setImageResource(R.drawable.account_circle_50dp)
+                }
+            }
+        }
         viewModel.creationStatus.observe(viewLifecycleOwner) { status ->
             when (status) {
                 is CreationStatus.Loading -> showLoading(true)
@@ -86,6 +101,8 @@ class NewEventFragment : Fragment() {
             if (currentStep > 1) {
                 currentStep--
                 updateStepView()
+            } else {
+                findNavController().navigateUp()
             }
         }
 
@@ -96,20 +113,26 @@ class NewEventFragment : Fragment() {
             }
         }
 
-        binding.createEvent.setOnClickListener {
-            if (selectedLocation == null) {
-                Toast.makeText(
-                    requireContext(),
-                    "Пожалуйста, выберите местоположение",
-                    Toast.LENGTH_SHORT
-                ).show()
-                return@setOnClickListener
+        val afterTextChangedListener = object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                viewModel.onFieldChanged(
+                    city = binding.inputCity.text.toString(),
+                    place = binding.pointLocation.text.toString(),
+                    date = binding.inputDay.text.toString(),
+                    time = binding.inputTime.text.toString(),
+                    description = binding.inputDetails.text.toString()
+                )
             }
-            createEvent()
         }
 
-        binding.cancelEvent.setOnClickListener {
-            findNavController().navigateUp()
+        cityList()
+        binding.inputCity.addTextChangedListener(afterTextChangedListener)
+
+        latitudeAndLongitude()
+        binding.btnChooseLocation.setOnClickListener {
+            findNavController().navigate(R.id.action_newEventFragment_to_eventMapFragment)
         }
 
         binding.userAvatar.setOnClickListener {
@@ -129,6 +152,41 @@ class NewEventFragment : Fragment() {
 
         binding.inputTime.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) openTimePickerDialog(binding)
+        }
+
+        binding.cancelEvent.setOnClickListener {
+            findNavController().navigateUp()
+        }
+
+        binding.createEvent.setOnClickListener {
+            if (selectedLocation == null) {
+                Toast.makeText(
+                    requireContext(),
+                    "Пожалуйста, выберите местоположение",
+                    Toast.LENGTH_SHORT
+                ).show()
+                return@setOnClickListener
+            }
+            createEvent()
+        }
+    }
+
+    private fun cityList() {
+        val inputStream = resources.openRawResource(R.raw.cities)
+        val cities = inputStream.bufferedReader().use(BufferedReader::readLines)
+        val adapter =
+            ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, cities)
+        binding.inputCity.setAdapter(adapter)
+        binding.inputCity.threshold = 1
+    }
+
+    fun latitudeAndLongitude() {
+        setFragmentResultListener("locationRequestKey")
+        { _, bundle ->
+            val latitude = bundle.getDouble("latitude")
+            val longitude = bundle.getDouble("longitude")
+            selectedLocation = LatLng(latitude, longitude)
+            binding.pointLocation.setText("Широта: $latitude,\nДолгота: $longitude")
         }
     }
 
