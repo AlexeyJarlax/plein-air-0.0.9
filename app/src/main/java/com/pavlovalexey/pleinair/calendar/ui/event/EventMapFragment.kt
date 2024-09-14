@@ -52,19 +52,28 @@ class EventMapFragment : Fragment(), OnMapReadyCallback {
         return view
     }
 
-    // Когда карта готова
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
 
-        // Обработка клика по карте для выбора местоположения
+        // Получаем координаты из аргументов, если переданы
+        val latitude = arguments?.getDouble("latitude")
+        val longitude = arguments?.getDouble("longitude")
+
+        val defaultLatitude = 55.75
+        val defaultLongitude = 37.61
+        val initialPosition = if (latitude != null && longitude != null) {
+            LatLng(latitude, longitude)
+        } else {
+            LatLng(defaultLatitude, defaultLongitude)
+        }
+
+        // Устанавливаем начальную позицию и уровень зума
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(initialPosition, 12f))
+
         mMap.setOnMapClickListener { latLng ->
             mMap.clear()
             mMap.addMarker(MarkerOptions().position(latLng).title("Выбрано местоположение"))
             selectedLocation = latLng
         }
-
-        // Установка начальной позиции карты (Петропавловская крепость)
-        val initialPosition = LatLng(59.9500019, 30.3166718)
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(initialPosition, 15f))
     }
 }

@@ -4,7 +4,6 @@ import android.app.Application
 import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -48,8 +47,15 @@ class NewEventViewModel @Inject constructor(
         _isFormValid.value = false
     }
 
-    fun onFieldChanged(city: String, place: String, date: String, time: String, description: String) {
-        _isFormValid.value = validateForm(city, place, date, time, description)
+    fun onFieldChanged(city: String, place: String, date: String, time: String, description: String, currentStep: Int) {
+        _isFormValid.value = when (currentStep) {
+            1 -> city.isNotEmpty()
+            2 -> place.isNotEmpty()
+            3 -> date.isNotEmpty()
+            4 -> time.isNotEmpty()
+            5 -> true  // На последнем этапе не требуется проверять обязательные поля
+            else -> false
+        }
     }
 
     private fun validateForm(city: String, place: String, date: String, time: String, description: String): Boolean {

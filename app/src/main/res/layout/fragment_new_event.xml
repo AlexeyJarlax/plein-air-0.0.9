@@ -26,24 +26,45 @@
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/btnBack"
         style="@style/GoBackButtons"
+        android:layout_width="wrap_content"
+        android:padding="@dimen/dp6"
+        android:layout_margin="@dimen/dp12"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:navigationIcon="@drawable/ic_btn_back"
-        app:title="@string/new_event"
+        app:title="@string/button_back"
         app:titleMarginBottom="@dimen/dp6" />
+
+    <TextView
+        android:id="@+id/stepDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dp12"
+        android:gravity="center_horizontal"
+        android:padding="@dimen/dp10"
+        android:textSize="@dimen/text_size_sp16"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/userAvatar"
         android:layout_width="150dp"
         android:layout_height="150dp"
-        android:layout_margin="@dimen/dp6"
+        android:layout_margin="@dimen/dp20"
         android:background="@drawable/pl_add_photo_background"
         android:scaleType="centerCrop"
         android:src="@drawable/pl_plus_photo"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btnBack"
-        app:shapeAppearanceOverlay="@style/CircleImage"/>
+        app:layout_constraintTop_toBottomOf="@+id/stepDescription"
+        app:shapeAppearanceOverlay="@style/CircleImage" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp20"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/userAvatar" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/inputCityLayout"
@@ -69,6 +90,7 @@
         android:gravity="center_horizontal"
         android:padding="@dimen/dp16"
         android:text="@string/location"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/inputCityLayout" />
 
@@ -121,20 +143,47 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/create_event"
+        android:id="@+id/cancelEvent"
         style="@style/PLbuttonCreateNewPlaylist"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dp60"
         android:enabled="false"
         android:fontFamily="@font/ys_display_medium"
+        android:text="@string/cancel"
+        app:layout_constrainedHeight="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/verticalBarrier"
+        app:layout_constraintVertical_bias="1" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/create_event"
+        style="@style/PLbuttonCreateNewPlaylist"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dp60"
+        android:enabled="false"
+        android:fontFamily="@font/ys_display_medium"
         android:text="@string/create"
         app:layout_constrainedHeight="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/verticalBarrier"
         app:layout_constraintVertical_bias="1" />
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/btnNext"
+        style="@style/GoBackButtons"
+        android:layout_width="wrap_content"
+        android:gravity="center_horizontal"
+        android:padding="@dimen/dp6"
+android:layout_marginRight="@dimen/dp12"
+        android:layout_marginBottom="@dimen/dp60"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:title="@string/button_next"
+        app:titleMarginBottom="@dimen/dp6" />
 
     <ProgressBar
         android:id="@+id/loading_indicator"

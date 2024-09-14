@@ -74,4 +74,5 @@
     <string name="user_agreement_url">https://raw.githubusercontent.com/AlexeyJarlax/Privacy-Policy/main/UA2.0.txt</string>
     <string name="donat">https://pay.cloudtips.ru/p/da048bc5</string>
     <string name="delit_me">Удалить аккаунт</string>
+    <string name="button_next">Вперёд</string>
 </resources>
