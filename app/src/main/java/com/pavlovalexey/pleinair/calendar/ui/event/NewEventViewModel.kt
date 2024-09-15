@@ -8,13 +8,9 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.google.android.gms.maps.model.LatLng
-import com.google.firebase.auth.FirebaseAuth
 import com.pavlovalexey.pleinair.calendar.data.EventRepository
 import com.pavlovalexey.pleinair.calendar.model.Event
-import com.pavlovalexey.pleinair.profile.model.User
 import com.pavlovalexey.pleinair.utils.firebase.FirebaseUserManager
-import com.pavlovalexey.pleinair.utils.image.ImageUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.util.UUID
@@ -30,12 +26,25 @@ class NewEventViewModel @Inject constructor(
 
     private val _isFormValid = MutableLiveData<Boolean>()
     val isFormValid: LiveData<Boolean> get() = _isFormValid
+
     private val _event = MutableLiveData<Event?>()
-    val event: MutableLiveData<Event?> get() = _event
+    val event: LiveData<Event?> get() = _event
+
     private val _creationStatus = MutableLiveData<CreationStatus>()
     val creationStatus: LiveData<CreationStatus> get() = _creationStatus
 
-    fun onFieldChanged(city: String, place: String, date: String, time: String, description: String, currentStep: Int) {
+    init {
+        _event.value = Event() // Инициализация пустого объекта события
+    }
+
+    fun onFieldChanged(
+        city: String,
+        place: String,
+        date: String,
+        time: String,
+        description: String,
+        currentStep: Int
+    ) {
         _isFormValid.value = when (currentStep) {
             1 -> city.isNotEmpty()
             2 -> place.isNotEmpty()
@@ -47,14 +56,9 @@ class NewEventViewModel @Inject constructor(
     }
 
     fun checkAndGenerateEventAvatar() {
-        val currentEvent = _event.value ?: return
-        firebaseUserManager.setDefaultAvatarIfEmpty(currentEvent.id)
-    }
-
-    fun handleImageSelection(processedBitmap: Bitmap) {
-        uploadEventImageToFirebase(processedBitmap, { uri ->
-            saveEventProfileImageUrl(uri.toString())
-        }, {})
+        _event.value?.let { event ->
+            firebaseUserManager.setDefaultAvatarIfEmpty(event.id)
+        }
     }
 
     fun uploadEventImageToFirebase(
@@ -62,22 +66,26 @@ class NewEventViewModel @Inject constructor(
         onSuccess: (Uri) -> Unit,
         onFailure: (Exception) -> Unit
     ) {
-        firebaseUserManager.uploadImageToFirebase(
-            UUID.randomUUID().toString(),
-            imageBitmap,
-            "event_images",
-            onSuccess = onSuccess,
-            onFailure = onFailure
-        )
+        _event.value?.id?.let { eventId ->
+            firebaseUserManager.uploadImageToFirebase(
+                eventId,
+                imageBitmap,
+                "event_images",
+                onSuccess = onSuccess,
+                onFailure = onFailure
+            )
+        }
     }
 
     fun createEvent() {
         saveEventPreferences()
+
         _creationStatus.value = CreationStatus.Loading
         viewModelScope.launch {
             try {
-                val eventId = eventRepository.createEvent()
-                _creationStatus.value = CreationStatus.Success(eventId.toString())
+                val eventId = _event.value?.id ?: UUID.randomUUID().toString()
+                eventRepository.createEvent(eventId)  // передаем eventId
+                _creationStatus.value = CreationStatus.Success(eventId)
             } catch (e: Exception) {
                 _creationStatus.value = CreationStatus.Error(e.localizedMessage ?: "Error creating event")
             }

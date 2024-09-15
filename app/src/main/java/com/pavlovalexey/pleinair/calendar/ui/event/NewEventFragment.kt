@@ -1,6 +1,5 @@
 package com.pavlovalexey.pleinair.calendar.ui.event
 
-
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap

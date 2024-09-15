@@ -29,7 +29,8 @@ class EventRepository @Inject constructor(
         eventRef.update("profileImageUrl", imageUrl).await()
     }
 
-    suspend fun createEvent(): String {
+    // Исправление: добавлен тип параметра eventId
+    suspend fun createEvent(eventId: String): String {
         val userId = sharedPreferences.getString("userId", "") ?: ""
         val profileImageUrl = sharedPreferences.getString("profileEventImageUrl", "") ?: ""
         val city = sharedPreferences.getString("eventCity", "") ?: ""
@@ -40,6 +41,7 @@ class EventRepository @Inject constructor(
         val longitude = sharedPreferences.getFloat("eventLongitude", 0f).toDouble()
 
         val event = Event(
+            id = eventId,
             userId = userId,
             profileImageUrl = profileImageUrl,
             city = city,
@@ -52,8 +54,8 @@ class EventRepository @Inject constructor(
         )
 
         return try {
-            val eventId = addEvent(event)
-            eventId
+            val newEventId = addEvent(event)
+            newEventId
         } catch (e: Exception) {
             throw e
         }

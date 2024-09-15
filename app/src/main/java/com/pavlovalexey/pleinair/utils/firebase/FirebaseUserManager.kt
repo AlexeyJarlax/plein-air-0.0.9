@@ -29,7 +29,7 @@ class FirebaseUserManager @Inject constructor(
     private val sharedPreferences: SharedPreferences
 ) {
 
-    fun getCurrentUserId () : String {
+    fun getCurrentUserId() : String {
         val userId = auth.currentUser?.uid
         return userId?: "class FirebaseUserManager не выдал ID"
     }
