@@ -27,6 +27,7 @@ import com.pavlovalexey.pleinair.utils.image.setupImageResultLaunchers
 import com.pavlovalexey.pleinair.utils.image.showImageSelectionDialog
 import com.pavlovalexey.pleinair.utils.timeAndData.openDatePickerDialog
 import com.pavlovalexey.pleinair.utils.timeAndData.openTimePickerDialog
+import com.pavlovalexey.pleinair.utils.ui.showSnackbar
 import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -136,6 +137,7 @@ class NewEventFragment : Fragment() {
             val longitude = bundle.getDouble("longitude")
             selectedLocation = LatLng(latitude, longitude)
             binding.pointLocation.setText("Широта: $latitude,\nДолгота: $longitude")
+            binding.btnNext.performClick()
         }
 
         binding.inputDay.setOnFocusChangeListener { _, hasFocus ->
@@ -171,33 +173,34 @@ class NewEventFragment : Fragment() {
         }
 
         binding.createEvent.setOnClickListener {
-            if (selectedLocation == null) {
-                Toast.makeText(
-                    requireContext(),
-                    "Пожалуйста, выберите местоположение",
-                    Toast.LENGTH_SHORT
-                ).show()
-                return@setOnClickListener
-            }
             createEvent()
         }
     }
 
     private fun setupEditorActionListeners() {
         val fields = listOf(
-            binding.inputCity,
-            binding.inputDay,
-            binding.inputTime
+            binding.inputCity to binding.btnChooseLocation,
+            binding.inputDay to binding.btnNext,
+            binding.inputTime to binding.btnNext
         )
 
-        fields.forEach { field ->
+        fields.forEach { (field, button) ->
             field.setOnEditorActionListener { _, actionId, _ ->
-
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    if (button == binding.btnChooseLocation) {
+                        showSnackbar("Выберите место ивента")
+                        button.performClick()
+                    } else if (button == binding.btnNext) {
+                        // Нажатие кнопки btnNext
+                        button.performClick()
+                    }
+
+                    // Обновление текущего шага и проверки
                     if (validateStep()) {
                         currentStep++
                         updateStepView()
                     }
+
                     true
                 } else {
                     false

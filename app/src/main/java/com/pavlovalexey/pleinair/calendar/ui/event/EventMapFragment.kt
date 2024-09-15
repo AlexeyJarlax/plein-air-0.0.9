@@ -41,8 +41,6 @@ class EventMapFragment : Fragment(), OnMapReadyCallback {
                     putDouble("longitude", it.longitude)
                 }
                 parentFragmentManager.setFragmentResult("locationRequestKey", resultBundle)
-
-                // Закрываем фрагмент карты
                 parentFragmentManager.popBackStack()
             } ?: run {
                 Toast.makeText(requireContext(), "Выберите местоположение", Toast.LENGTH_SHORT).show()
