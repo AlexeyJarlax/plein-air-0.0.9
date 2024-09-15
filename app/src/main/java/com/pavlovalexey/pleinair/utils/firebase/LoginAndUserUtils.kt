@@ -97,9 +97,4 @@ class LoginAndUserUtils @Inject constructor(
                 Log.w("FirebaseUserManager", "Error updating user name", e)
             }
     }
-
-    fun getUserID () : String {
-        val userId = auth.currentUser?.uid
-        return userId?: ""
-    }
 }

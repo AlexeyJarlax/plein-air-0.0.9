@@ -17,13 +17,13 @@ import com.pavlovalexey.pleinair.utils.firebase.FirebaseUserManager
 import com.pavlovalexey.pleinair.utils.image.ImageUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
 class NewEventViewModel @Inject constructor(
     application: Application,
     private val firebaseUserManager: FirebaseUserManager,
-    private val auth: FirebaseAuth,
     private val sharedPreferences: SharedPreferences,
     private val eventRepository: EventRepository
 ) : AndroidViewModel(application) {
@@ -31,18 +31,8 @@ class NewEventViewModel @Inject constructor(
     private val _isFormValid = MutableLiveData<Boolean>()
     val isFormValid: LiveData<Boolean> get() = _isFormValid
 
-    private val _event = MutableLiveData<Event?>()
-    val event: MutableLiveData<Event?> get() = _event
-
-    private val _user = MutableLiveData<User?>()
-    val user: MutableLiveData<User?> get() = _user
-
     private val _creationStatus = MutableLiveData<CreationStatus>()
     val creationStatus: LiveData<CreationStatus> get() = _creationStatus
-
-    init {
-        _isFormValid.value = false
-    }
 
     fun onFieldChanged(city: String, place: String, date: String, time: String, description: String, currentStep: Int) {
         _isFormValid.value = when (currentStep) {
@@ -55,13 +45,10 @@ class NewEventViewModel @Inject constructor(
         }
     }
 
-    private fun validateForm(city: String, place: String, date: String, time: String, description: String): Boolean {
-        return city.isNotEmpty() && place.isNotEmpty() && date.isNotEmpty() && time.isNotEmpty() && description.isNotEmpty()
-    }
-
-    fun checkAndGenerateEventAvatar() {
-        val currentEvent = _event.value ?: return
-        firebaseUserManager.setDefaultAvatarIfEmpty(currentEvent.id)
+    fun handleImageSelection(processedBitmap: Bitmap) {
+        uploadEventImageToFirebase(processedBitmap, { uri ->
+            saveEventProfileImageUrl(uri.toString())
+        }, {})
     }
 
     fun uploadEventImageToFirebase(
@@ -69,65 +56,57 @@ class NewEventViewModel @Inject constructor(
         onSuccess: (Uri) -> Unit,
         onFailure: (Exception) -> Unit
     ) {
-        val eventId = _event.value?.id ?: return
         firebaseUserManager.uploadImageToFirebase(
-            eventId,
+            UUID.randomUUID().toString(),
             imageBitmap,
-            "event_images",
-            onSuccess = { uri ->
-                val updatedEvent = _event.value?.copy(profileImageUrl = uri.toString())
-                _event.value = updatedEvent
-                saveEventProfileImageUrl(uri.toString())
-                updateEventProfileImageUrl(uri.toString())
-                onSuccess(uri)
-            },
-            onFailure = {
-                onFailure(it)
-            }
-        )
-    }
-
-    private fun updateEventProfileImageUrl(imageUrl: String) {
-        val eventId = _event.value?.id ?: return
-        firebaseUserManager.updateImageUrl(
-            eventId,
-            imageUrl,
-            "events",
-            onSuccess = {
-                _event.value = _event.value?.copy(profileImageUrl = imageUrl)
-                saveEventProfileImageUrl(imageUrl)
-            },
-            onFailure = { e ->
-            }
-        )
-    }
-
-    fun loadEventImageFromStorage(onSuccess: (Bitmap) -> Unit, onFailure: (Exception) -> Unit) {
-        val eventId = _event.value?.id ?: return
-        firebaseUserManager.loadProfileImageFromStorage(
-            eventId,
             "event_images",
             onSuccess = onSuccess,
             onFailure = onFailure
         )
     }
 
-    private fun saveEventProfileImageUrl(url: String) {
+    fun createEvent(location: LatLng) {
+        saveEventPreferences(location)
+        _creationStatus.value = CreationStatus.Loading
+        viewModelScope.launch {
+            try {
+                val eventId = eventRepository.createEvent()
+                _creationStatus.value = CreationStatus.Success(eventId.toString())
+            } catch (e: Exception) {
+                _creationStatus.value = CreationStatus.Error(e.localizedMessage ?: "Error creating event")
+            }
+        }
+    }
+
+    private fun saveEventPreferences(location: LatLng) {
         with(sharedPreferences.edit()) {
-            putString("profileEventImageUrl", url)
+            putString("userId", firebaseUserManager.getCurrentUserId())
+            putString("profileEventImageUrl", sharedPreferences.getString("profileEventImageUrl", ""))
+            putString("eventCity", sharedPreferences.getString("eventCity", ""))
+            putString("eventPlace", sharedPreferences.getString("eventPlace", ""))
+            putString("eventDate", sharedPreferences.getString("eventDate", ""))
+            putString("eventTime", sharedPreferences.getString("eventTime", ""))
+            putString("eventDescription", sharedPreferences.getString("eventDescription", ""))
+            putFloat("eventLatitude", location.latitude.toFloat())
+            putFloat("eventLongitude", location.longitude.toFloat())
             apply()
         }
     }
 
-    fun createEvent() {
-        _creationStatus.value = CreationStatus.Loading
-        viewModelScope.launch {
-            try {
-                val id = eventRepository.createEvent()
-                _creationStatus.value = CreationStatus.Success(id.toString())
-            } catch (e: Exception) {
-                _creationStatus.value = CreationStatus.Error(e.localizedMessage ?: "createEvent() error")
-            }
+    fun validateStep(currentStep: Int): Boolean {
+        return when (currentStep) {
+            1 -> sharedPreferences.getString("eventCity", "").isNullOrEmpty().not()
+            2 -> sharedPreferences.getFloat("eventLatitude", 0f) != 0f
+            3 -> sharedPreferences.getString("eventDate", "").isNullOrEmpty().not()
+            4 -> sharedPreferences.getString("eventTime", "").isNullOrEmpty().not()
+            else -> true
+        }
+    }
+
+    private fun saveEventProfileImageUrl(url: String) {
+        with(sharedPreferences.edit()) {
+            putString("profileEventImageUrl", url)
+            apply()
         }
     }
 }
