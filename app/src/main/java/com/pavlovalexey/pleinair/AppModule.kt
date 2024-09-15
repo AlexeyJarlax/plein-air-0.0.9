@@ -32,6 +32,12 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object AppModule {
 
+//    @Provides
+//    @ApplicationContext
+//    fun provideApplicationContext(application: Application): Context {
+//        return application.applicationContext
+//    }
+
     @Provides
     @Singleton
     fun provideSharedPreferences(@ApplicationContext appContext: Context): SharedPreferences {

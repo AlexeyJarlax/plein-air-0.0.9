@@ -1,13 +1,5 @@
 package com.pavlovalexey.pleinair.auth.ui
 
-/** Приложение построено как синглактивити на фрагментах с отправной точкой MainActivity
- * TermsActivity и AuthActivity выделены как отдельные активити чтобы безопасно изолировать
- * от основной структуры фрагментов.
- * 1 Этап - подписание соглашений в TermsActivity
- * 2 Этап - авторизация в AuthActivity
- * 3 Этап - MainActivity и фрагменты по всему функционалу приложения с с навигацией через НавГраф
-*/
-
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
