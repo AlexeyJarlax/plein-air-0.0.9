@@ -74,8 +74,11 @@ object AppModule {
         return SettingsRepositoryImpl(context, sharedPreferences)
     }
     @Provides
-    fun provideEventRepository(firebase: FirebaseFirestore): EventRepository {
-        return EventRepository(firebase)
+    fun provideEventRepository(
+        firebase: FirebaseFirestore,
+        sharedPreferences: SharedPreferences
+    ): EventRepository {
+        return EventRepository(firebase, sharedPreferences)
     }
 
     ////////// Interactor

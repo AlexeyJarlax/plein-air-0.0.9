@@ -50,7 +50,7 @@ class NewEventViewModel @Inject constructor(
             2 -> place.isNotEmpty()
             3 -> date.isNotEmpty()
             4 -> time.isNotEmpty()
-            5 -> true  // На последнем этапе не требуется проверять обязательные поля
+            5 -> true
             else -> false
         }
     }
@@ -119,38 +119,14 @@ class NewEventViewModel @Inject constructor(
         }
     }
 
-    fun createEvent(
-        userId: String,
-        profileImageUrl: String,
-        city: String,
-        place: String,
-        date: String,
-        time: String,
-        description: String,
-        latitude: Double,
-        longitude: Double
-    ) {
+    fun createEvent() {
         _creationStatus.value = CreationStatus.Loading
-
-        val event = Event(
-            userId = userId,
-            profileImageUrl = profileImageUrl,
-            city = city,
-            place = place,
-            date = date,
-            time = time,
-            description = description,
-            latitude = latitude,
-            longitude = longitude,
-            timestamp = System.currentTimeMillis()
-        )
-
         viewModelScope.launch {
             try {
-                val eventId = eventRepository.addEvent(event)
-                _creationStatus.value = CreationStatus.Success(eventId.toString())
+                val id = eventRepository.createEvent()
+                _creationStatus.value = CreationStatus.Success(id.toString())
             } catch (e: Exception) {
-                _creationStatus.value = CreationStatus.Error(e.localizedMessage ?: "Unknown error")
+                _creationStatus.value = CreationStatus.Error(e.localizedMessage ?: "createEvent() error")
             }
         }
     }

@@ -311,26 +311,9 @@ class NewEventFragment : Fragment() {
     }
 
     private fun createEvent() {
-        val sharedPreferences = requireContext().getSharedPreferences(
-            AppPreferencesKeys.PREFS_NAME,
-            Context.MODE_PRIVATE
-        )
-        val userId = viewModel.user.value?.userId ?: "неизвестный пользователь"
-        val profileImageUrl = viewModel.event.value?.profileImageUrl ?: "не получил URL"
         val latitude = selectedLocation?.latitude ?: 0.0
         val longitude = selectedLocation?.longitude ?: 0.0
-
-        viewModel.createEvent(
-            userId = userId,
-            profileImageUrl = profileImageUrl,
-            city = binding.inputCity.text.toString(),
-            place = binding.pointLocation.text.toString(),
-            date = binding.inputDay.text.toString(),
-            time = binding.inputTime.text.toString(),
-            description = binding.inputDetails.text.toString(),
-            latitude = latitude,
-            longitude = longitude
-        )
+        viewModel.createEvent()
     }
 
     private fun handleImageSelection(processedBitmap: Bitmap) {
