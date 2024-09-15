@@ -7,6 +7,7 @@ plugins {
     id("com.google.dagger.hilt.android") version "2.52" apply false
     id("com.google.gms.google-services") version "4.4.2" apply false
     id("org.jetbrains.kotlin.plugin.compose") version "2.0.0" // Добавлено сюда
+    kotlin("plugin.serialization") version "1.9.10" // Версия Kotlin 1.9.x
 }
 
 buildscript {

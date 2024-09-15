@@ -2,7 +2,6 @@ plugins {
     id("com.android.application")
     id("com.google.dagger.hilt.android")
     id("org.jetbrains.kotlin.android")
-    kotlin("plugin.serialization") version "2.0.0"
     id("kotlin-kapt") // Плагин kotlin-kapt для работы с Kapt
     id("com.google.devtools.ksp")
     id("com.google.gms.google-services")
@@ -45,6 +44,7 @@ android {
 
     kotlinOptions {
         jvmTarget = "17"
+        languageVersion = "1.9" // Добавляем язык 1.9
     }
 
     buildFeatures {
@@ -74,7 +74,6 @@ android {
 
 composeCompiler {
     reportsDestination = layout.buildDirectory.dir("compose_compiler") // Директория для отчетов
-    stabilityConfigurationFile = rootProject.layout.projectDirectory.file("stability_config.conf") // Файл стабильности
 }
 
 dependencies {
