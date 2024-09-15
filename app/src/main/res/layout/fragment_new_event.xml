@@ -98,6 +98,7 @@
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp60"
         android:gravity="center"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="@+id/btnChooseLocation"
         app:layout_constraintStart_toEndOf="@+id/btnChooseLocation"
         app:layout_constraintTop_toTopOf="@+id/btnChooseLocation" />
