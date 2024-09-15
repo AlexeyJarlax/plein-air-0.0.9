@@ -56,7 +56,7 @@ android {
 
     packagingOptions {
         resources {
-            excludes += "META-INF/versions/9/OSGI-INF/MANIFEST.MF"
+            excludes += "META-INF/DEPENDENCIES"
         }
     }
 
@@ -113,7 +113,7 @@ dependencies {
 
     // glide для пикч
     implementation(libs.glide)
-    implementation(libs.identity.jvm)
+//    implementation(libs.identity.jvm)
     ksp(libs.compiler)
 
 ////////// ТЕСТИРОВАНИЕ
