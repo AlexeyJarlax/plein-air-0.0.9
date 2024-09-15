@@ -18,12 +18,10 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.pavlovalexey.pleinair.R
 import com.pavlovalexey.pleinair.databinding.FragmentNewEventBinding
 import com.google.android.gms.maps.model.LatLng
-import com.pavlovalexey.pleinair.utils.AppPreferencesKeys
 import com.pavlovalexey.pleinair.utils.firebase.LoginAndUserUtils
 import com.pavlovalexey.pleinair.utils.image.CircleTransform
 import com.pavlovalexey.pleinair.utils.image.setupImageResultLaunchers
@@ -195,6 +193,7 @@ class NewEventFragment : Fragment() {
 
         fields.forEach { field ->
             field.setOnEditorActionListener { _, actionId, _ ->
+
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
                     if (validateStep()) {
                         currentStep++
@@ -250,16 +249,6 @@ class NewEventFragment : Fragment() {
         binding.inputCity.threshold = 1
     }
 
-    fun latitudeAndLongitude() {
-        setFragmentResultListener("locationRequestKey")
-        { _, bundle ->
-            val latitude = bundle.getDouble("latitude")
-            val longitude = bundle.getDouble("longitude")
-            selectedLocation = LatLng(latitude, longitude)
-            binding.pointLocation.setText("Широта: $latitude,\nДолгота: $longitude")
-        }
-    }
-
     private fun validateStep(): Boolean {
         return when (currentStep) {
             1 -> {
@@ -301,8 +290,6 @@ class NewEventFragment : Fragment() {
         binding.btnNext.visibility = if (currentStep < 5) View.VISIBLE else View.GONE
         binding.createEvent.visibility = if (currentStep == 5) View.VISIBLE else View.GONE
         binding.cancelEvent.visibility = if (currentStep == 5) View.VISIBLE else View.GONE
-
-        // Показ и скрытие полей в зависимости от текущего этапа
         binding.inputCityLayout.visibility = if (currentStep == 1) View.VISIBLE else View.GONE
         binding.btnChooseLocation.visibility = if (currentStep == 2) View.VISIBLE else View.GONE
         binding.inputDayLayout.visibility = if (currentStep == 3) View.VISIBLE else View.GONE
@@ -311,8 +298,6 @@ class NewEventFragment : Fragment() {
     }
 
     private fun createEvent() {
-        val latitude = selectedLocation?.latitude ?: 0.0
-        val longitude = selectedLocation?.longitude ?: 0.0
         viewModel.createEvent()
     }
 

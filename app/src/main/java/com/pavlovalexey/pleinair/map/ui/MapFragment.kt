@@ -200,7 +200,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 val markerOptions = MarkerOptions()
                     .position(location)
                     .title(event.city)
-                    .snippet("${event.place} - ${event.date} ${event.time}")
+                    .snippet("- ${event.date} ${event.time}")
                     .icon(bitmap?.let { BitmapDescriptorFactory.fromBitmap(it) })
                 val marker = googleMap.addMarker(markerOptions)
                 marker?.tag = event // Связываем маркер с объектом Event

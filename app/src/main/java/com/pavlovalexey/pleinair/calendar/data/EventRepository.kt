@@ -33,7 +33,6 @@ class EventRepository @Inject constructor(
         val userId = sharedPreferences.getString("userId", "") ?: ""
         val profileImageUrl = sharedPreferences.getString("profileEventImageUrl", "") ?: ""
         val city = sharedPreferences.getString("eventCity", "") ?: ""
-        val place = sharedPreferences.getString("eventPlace", "") ?: ""
         val date = sharedPreferences.getString("eventDate", "") ?: ""
         val time = sharedPreferences.getString("eventTime", "") ?: ""
         val description = sharedPreferences.getString("eventDescription", "") ?: ""
@@ -44,7 +43,6 @@ class EventRepository @Inject constructor(
             userId = userId,
             profileImageUrl = profileImageUrl,
             city = city,
-            place = place,
             date = date,
             time = time,
             description = description,

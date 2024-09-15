@@ -30,7 +30,8 @@ class NewEventViewModel @Inject constructor(
 
     private val _isFormValid = MutableLiveData<Boolean>()
     val isFormValid: LiveData<Boolean> get() = _isFormValid
-
+    private val _event = MutableLiveData<Event?>()
+    val event: MutableLiveData<Event?> get() = _event
     private val _creationStatus = MutableLiveData<CreationStatus>()
     val creationStatus: LiveData<CreationStatus> get() = _creationStatus
 
@@ -43,6 +44,11 @@ class NewEventViewModel @Inject constructor(
             5 -> true
             else -> false
         }
+    }
+
+    fun checkAndGenerateEventAvatar() {
+        val currentEvent = _event.value ?: return
+        firebaseUserManager.setDefaultAvatarIfEmpty(currentEvent.id)
     }
 
     fun handleImageSelection(processedBitmap: Bitmap) {
@@ -65,8 +71,8 @@ class NewEventViewModel @Inject constructor(
         )
     }
 
-    fun createEvent(location: LatLng) {
-        saveEventPreferences(location)
+    fun createEvent() {
+        saveEventPreferences()
         _creationStatus.value = CreationStatus.Loading
         viewModelScope.launch {
             try {
@@ -78,17 +84,16 @@ class NewEventViewModel @Inject constructor(
         }
     }
 
-    private fun saveEventPreferences(location: LatLng) {
+    private fun saveEventPreferences() {
         with(sharedPreferences.edit()) {
             putString("userId", firebaseUserManager.getCurrentUserId())
             putString("profileEventImageUrl", sharedPreferences.getString("profileEventImageUrl", ""))
             putString("eventCity", sharedPreferences.getString("eventCity", ""))
-            putString("eventPlace", sharedPreferences.getString("eventPlace", ""))
             putString("eventDate", sharedPreferences.getString("eventDate", ""))
             putString("eventTime", sharedPreferences.getString("eventTime", ""))
             putString("eventDescription", sharedPreferences.getString("eventDescription", ""))
-            putFloat("eventLatitude", location.latitude.toFloat())
-            putFloat("eventLongitude", location.longitude.toFloat())
+            putFloat("eventLatitude", sharedPreferences.getFloat("eventLatitude", 0.0F))
+            putFloat("eventLongitude", sharedPreferences.getFloat("eventLongitude", 0.0F))
             apply()
         }
     }

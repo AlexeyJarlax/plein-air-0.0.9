@@ -32,7 +32,7 @@ class CalendarViewModel @Inject constructor(
 
     fun searchEvents(query: String) {
         val filteredList = _events.value?.filter {
-            it.city.contains(query, true) || it.place.contains(query, true) || it.description.contains(query, true)
+            it.city.contains(query, true) || it.description.contains(query, true)
         }
         _events.value = filteredList
     }
