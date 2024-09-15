@@ -142,11 +142,13 @@ dependencies {
     // Компонент ViewPager2 для реализации горизонтальных и вертикальных листалок.
     implementation(libs.androidx.viewpager2)
 
-    // Jetpack Navigation Component
-//    implementation(libs.androidx.navigation.fragment.ktx)
-//    implementation(libs.androidx.navigation.ui.ktx)
-//    implementation(libs.androidx.fragment.ktx.v181)
-//    implementation(libs.androidx.hilt.navigation.compose)
+    // Jetpack Compose
+    implementation ("androidx.compose.ui:ui:1.5.0")
+    implementation ("androidx.compose.material:material:1.5.0")
+    implementation ("androidx.compose.ui:ui-tooling-preview:1.5.0")
+    implementation ("androidx.activity:activity-compose:1.7.2")
+    implementation ("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
+    implementation(libs.androidx.material)
 
     // корутин
     implementation(libs.kotlinx.coroutines.android.v180)
@@ -173,9 +175,6 @@ dependencies {
     implementation(libs.firebase.appcheck.playintegrity)
     implementation(libs.firebase.database)
     implementation(libs.firebase.core)
-
-    // Jetpack Compose
-    implementation(libs.androidx.material)
 
     //изображения
     implementation(libs.picasso)

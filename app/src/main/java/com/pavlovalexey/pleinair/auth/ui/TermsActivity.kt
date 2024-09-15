@@ -11,112 +11,59 @@ package com.pavlovalexey.pleinair.auth.ui
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.widget.Button
-import android.widget.CheckBox
-import android.widget.TextView
+import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import com.pavlovalexey.pleinair.R
-import java.net.URL
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
-import kotlin.concurrent.thread
-import android.content.SharedPreferences
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Button
+import androidx.compose.material.Checkbox
+import androidx.compose.material.Text
+import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.pavlovalexey.pleinair.utils.firebase.LoginAndUserUtils
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
+import android.content.SharedPreferences
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.lifecycle.ViewModel
+import java.net.URL
+import java.text.SimpleDateFormat
+import java.util.*
 
 @AndroidEntryPoint
 class TermsActivity : AppCompatActivity() {
 
     @Inject
     lateinit var loginAndUserUtils: LoginAndUserUtils
+
     @Inject
     lateinit var sharedPreferences: SharedPreferences
 
-    private lateinit var checkAgreement: CheckBox
-    private lateinit var checkPrivacyPolicy: CheckBox
-    private lateinit var btnContinue: Button
-    private lateinit var tvBeforeAgreement: TextView
-    private lateinit var tvAgreement: TextView
-    private lateinit var tvBeforePolicy: TextView
-    private lateinit var tvPrivacyPolicy: TextView
+    private val viewModel: TermsViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_terms)
 
-        // Проверяем состояние согласия
         if (isTermsAccepted()) {
             startActivity(Intent(this, AuthActivity::class.java))
             finish()
-            return
         } else {
-            loginAndUserUtils.logout() // если пользователь удалил и поставил заново приложень, чистим его аутентификацию
+            loginAndUserUtils.logout() // Чистим аутентификацию при переустановке
         }
 
-        checkAgreement = findViewById(R.id.checkAgreement)
-        checkPrivacyPolicy = findViewById(R.id.checkPrivacyPolicy)
-        btnContinue = findViewById(R.id.btnContinue)
-        tvBeforeAgreement = findViewById(R.id.tvBeforeAgreement)
-        tvAgreement = findViewById(R.id.tvAgreement)
-        tvBeforePolicy = findViewById(R.id.tvBeforePolicy)
-        tvPrivacyPolicy = findViewById(R.id.tvPrivacyPolicy)
-
-        // Получаем текущую дату
-        val currentDate = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(Date())
-        // Устанавливаем текст Пользовательского соглашения с динамической датой
-        val beforeAgreementText =
-            getString(R.string.terms_of_agreement, getString(R.string.app_name), currentDate)
-        tvBeforeAgreement.text = beforeAgreementText
-        val beforePolicyText =
-            getString(R.string.terms_of_privacy, getString(R.string.app_name), currentDate)
-        tvBeforePolicy.text = beforePolicyText
-
-        // Получаем URL из строковых ресурсов
-        val userAgreementUrl = getString(R.string.user_agreement_url)
-        val privacyPolicyUrl = getString(R.string.privacy_policy_url)
-
-        // Загрузка Пользовательского соглашения
-        loadTextFromUrl(userAgreementUrl, tvAgreement, R.string.error_loading_agreement)
-
-        // Загрузка Политики конфиденциальности
-        loadTextFromUrl(privacyPolicyUrl, tvPrivacyPolicy, R.string.error_loading_policy)
-
-        // Проверяем состояние чекбоксов
-        btnContinue.isEnabled = checkAgreement.isChecked && checkPrivacyPolicy.isChecked
-
-        checkAgreement.setOnCheckedChangeListener { _, _ ->
-            btnContinue.isEnabled = checkAgreement.isChecked && checkPrivacyPolicy.isChecked
-        }
-
-        checkPrivacyPolicy.setOnCheckedChangeListener { _, _ ->
-            btnContinue.isEnabled = checkAgreement.isChecked && checkPrivacyPolicy.isChecked
-        }
-
-        btnContinue.setOnClickListener {
-            // Сохраняем состояние согласия
-            saveTermsAccepted(true)
-            val intent = Intent(this, AuthActivity::class.java)
-            startActivity(intent)
-            finish()
-        }
-    }
-
-    private fun loadTextFromUrl(url: String, textView: TextView, errorResId: Int) {
-        thread {
-            try {
-                val text = URL(url).readText()
-
-                runOnUiThread {
-                    textView.text = text
-                }
-            } catch (e: Exception) {
-                Log.e("TermsActivity", "Ошибка загрузки текста из URL: $url", e)
-                runOnUiThread {
-                    textView.text = getString(errorResId)
-                }
-            }
+        setContent {
+            TermsScreen(
+                onContinue = {
+                    saveTermsAccepted(true)
+                    startActivity(Intent(this, AuthActivity::class.java))
+                    finish()
+                },
+                viewModel = viewModel
+            )
         }
     }
 
@@ -130,5 +77,95 @@ class TermsActivity : AppCompatActivity() {
 
     private fun isTermsAccepted(): Boolean {
         return sharedPreferences.getBoolean("all_terms_accepted", false)
+    }
+}
+
+@Composable
+fun TermsScreen(onContinue: () -> Unit, viewModel: TermsViewModel) {
+    var isAgreementChecked by rememberSaveable { mutableStateOf(false) }
+    var isPrivacyPolicyChecked by rememberSaveable { mutableStateOf(false) }
+
+    val isButtonEnabled = isAgreementChecked && isPrivacyPolicyChecked
+    val scrollState = rememberScrollState()
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+            .verticalScroll(scrollState),
+        verticalArrangement = Arrangement.SpaceBetween
+    ) {
+        Column {
+            Text(
+                text = viewModel.termsOfPrivacy,
+                fontSize = 18.sp,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+            Text(
+                text = viewModel.privacyPolicyContent,
+                fontSize = 16.sp,
+                modifier = Modifier.padding(bottom = 16.dp)
+            )
+            Checkbox(
+                checked = isPrivacyPolicyChecked,
+                onCheckedChange = { isPrivacyPolicyChecked = it },
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+            Text(
+                text = viewModel.termsOfAgreement,
+                fontSize = 18.sp,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+            Text(
+                text = viewModel.userAgreementContent,
+                fontSize = 16.sp,
+                modifier = Modifier.padding(bottom = 16.dp)
+            )
+            Checkbox(
+                checked = isAgreementChecked,
+                onCheckedChange = { isAgreementChecked = it },
+                modifier = Modifier.padding(bottom = 16.dp)
+            )
+        }
+
+        Button(
+            onClick = onContinue,
+            enabled = isButtonEnabled,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 16.dp)
+        ) {
+            Text(text = "Продолжить")
+        }
+    }
+}
+
+class TermsViewModel @Inject constructor() : ViewModel() {
+    val currentDate = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(Date())
+    val termsOfPrivacy = "Политика конфиденциальности на $currentDate"
+    val termsOfAgreement = "Условия использования на $currentDate"
+
+    var privacyPolicyContent by mutableStateOf("Политика конфиденциальности загружается...")
+        private set
+    var userAgreementContent by mutableStateOf("Пользовательское соглашение загружается...")
+        private set
+
+    init {
+        loadTextFromUrl("https://ваш_сайт.com/privacy_policy") { text ->
+            privacyPolicyContent = text
+        }
+        loadTextFromUrl("https://ваш_сайт.com/user_agreement") { text ->
+            userAgreementContent = text
+        }
+    }
+
+    private fun loadTextFromUrl(url: String, onTextLoaded: (String) -> Unit) {
+        try {
+            val text = URL(url).readText()
+            onTextLoaded(text)
+        } catch (e: Exception) {
+            Log.e("TermsViewModel", "Ошибка загрузки текста из URL: $url", e)
+            onTextLoaded("Ошибка загрузки текста.")
+        }
     }
 }
