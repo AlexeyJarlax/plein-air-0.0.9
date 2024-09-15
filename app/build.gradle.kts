@@ -3,11 +3,11 @@ plugins {
     id("com.google.dagger.hilt.android")
     id("org.jetbrains.kotlin.android")
     kotlin("plugin.serialization") version "2.0.0"
-    id("kotlin-kapt") // плагин kotlin-kapt для работы зависимостей kapt("
+    id("kotlin-kapt") // Плагин kotlin-kapt для работы с Kapt
     id("com.google.devtools.ksp")
     id("com.google.gms.google-services")
+    id("org.jetbrains.kotlin.plugin.compose") // Плагин компилятора Compose
 }
-
 
 android {
     namespace = "com.pavlovalexey.pleinair"
@@ -34,24 +34,27 @@ android {
         }
         debug {
             isMinifyEnabled = false
-            // applicationIdSuffix = ".debug" не делаю суфикс, чтобы файл нашелся файрбазой
-            // Включаем отладку
-//            isDebuggable = true
         }
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17 // более новая сборка виртуальной машины: 17
-        targetCompatibility = JavaVersion.VERSION_17 // более новая сборка виртуальной машины: 17
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
         encoding = "UTF-8"
     }
+
     kotlinOptions {
-        jvmTarget = "17" // более новая сборка виртуальной машины: 17
+        jvmTarget = "17"
     }
 
     buildFeatures {
         viewBinding = true
         dataBinding = true
+        compose = true // Включаем поддержку Compose
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.15" // Версия компилятора Compose
     }
 
     packagingOptions {
@@ -62,7 +65,6 @@ android {
 
     hilt {
         enableAggregatingTask = true
-//        enableExperimentalClasspathAggregation = true для ускорения много модульных проектов
     }
 
     kapt {
@@ -70,8 +72,12 @@ android {
     }
 }
 
-dependencies {
+composeCompiler {
+    reportsDestination = layout.buildDirectory.dir("compose_compiler") // Директория для отчетов
+    stabilityConfigurationFile = rootProject.layout.projectDirectory.file("stability_config.conf") // Файл стабильности
+}
 
+dependencies {
 ////////// БАЗОВЫЕ
 
     // Расширения Kotlin для работы с Activity.
@@ -143,12 +149,12 @@ dependencies {
     implementation(libs.androidx.viewpager2)
 
     // Jetpack Compose
-    implementation ("androidx.compose.ui:ui:1.5.0")
-    implementation ("androidx.compose.material:material:1.5.0")
-    implementation ("androidx.compose.ui:ui-tooling-preview:1.5.0")
-    implementation ("androidx.activity:activity-compose:1.7.2")
-    implementation ("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
-    implementation(libs.androidx.material)
+    implementation(libs.androidx.ui.v171)
+    implementation(libs.androidx.material.v171)
+    implementation(libs.androidx.ui.tooling.preview.v171)
+    implementation(libs.androidx.activity.compose.v192)
+//    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
+    implementation(libs.material)
 
     // корутин
     implementation(libs.kotlinx.coroutines.android.v180)
