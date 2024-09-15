@@ -1,5 +1,6 @@
 package com.pavlovalexey.pleinair.calendar.ui.event
 
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,10 +16,12 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.pavlovalexey.pleinair.R
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class EventMapFragment : Fragment(), OnMapReadyCallback {
-
+    @Inject
+    lateinit var sharedPreferences: SharedPreferences
     private lateinit var mMap: GoogleMap
     private var selectedLocation: LatLng? = null
 
@@ -37,7 +40,9 @@ class EventMapFragment : Fragment(), OnMapReadyCallback {
             selectedLocation?.let {
                 // Передаем координаты обратно в NewEventFragment через FragmentResultAPI
                 val resultBundle = Bundle().apply {
+                    saveToSharedPreferences("eventLatitude", it.latitude.toFloat())
                     putDouble("latitude", it.latitude)
+                    saveToSharedPreferences("eventLongitude", it.longitude.toFloat())
                     putDouble("longitude", it.longitude)
                 }
                 parentFragmentManager.setFragmentResult("locationRequestKey", resultBundle)
@@ -48,6 +53,10 @@ class EventMapFragment : Fragment(), OnMapReadyCallback {
         }
 
         return view
+    }
+
+    fun saveToSharedPreferences(key: String, value: Float) {
+        sharedPreferences.edit().putFloat(key, value).apply()
     }
 
     override fun onMapReady(googleMap: GoogleMap) {

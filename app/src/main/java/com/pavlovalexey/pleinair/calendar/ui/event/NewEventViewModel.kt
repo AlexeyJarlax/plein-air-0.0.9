@@ -122,4 +122,8 @@ class NewEventViewModel @Inject constructor(
             apply()
         }
     }
+
+    fun saveToSharedPreferences(key: String, value: String) {
+        sharedPreferences.edit().putString(key, value).apply()
+    }
 }

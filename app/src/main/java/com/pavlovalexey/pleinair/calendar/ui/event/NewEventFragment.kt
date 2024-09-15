@@ -194,8 +194,6 @@ class NewEventFragment : Fragment() {
                         // Нажатие кнопки btnNext
                         button.performClick()
                     }
-
-                    // Обновление текущего шага и проверки
                     if (validateStep()) {
                         currentStep++
                         updateStepView()
@@ -214,14 +212,16 @@ class NewEventFragment : Fragment() {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             override fun afterTextChanged(s: Editable?) {
-                viewModel.onFieldChanged(
-                    city = binding.inputCity.text.toString(),
-                    place = binding.pointLocation.text.toString(),
-                    date = binding.inputDay.text.toString(),
-                    time = binding.inputTime.text.toString(),
-                    description = binding.inputDetails.text.toString(),
-                    currentStep
-                )
+                val city = binding.inputCity.text.toString()
+                val place = binding.pointLocation.text.toString()
+                val date = binding.inputDay.text.toString()
+                val time = binding.inputTime.text.toString()
+                val description = binding.inputDetails.text.toString()
+                viewModel.saveToSharedPreferences("eventCity", city)
+                viewModel.saveToSharedPreferences("eventDate", date)
+                viewModel.saveToSharedPreferences("eventTime", time)
+                viewModel.saveToSharedPreferences("eventDescription", description)
+                viewModel.onFieldChanged(city, place, date, time, description, currentStep)
             }
         }
     }

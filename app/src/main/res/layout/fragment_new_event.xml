@@ -47,12 +47,11 @@
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/userAvatar"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
         android:layout_margin="@dimen/dp20"
-        android:background="@drawable/pl_add_photo_background"
+        android:background="@drawable/add_photo_alternate_50dp"
         android:scaleType="centerCrop"
-        android:src="@drawable/pl_plus_photo"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
