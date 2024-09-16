@@ -31,15 +31,13 @@ fun NavGraph(navController: NavHostController) {
         }
         composable("auth") {
             AuthScreen(
-                navController = navController
-            )
-        }
-        composable("main") {
-            MainScreen(onLogout = {
-                navController.navigate("auth") {
-                    popUpTo("terms") { inclusive = true }
+                navController = navController,
+                onAuthSuccess = {
+                    navController.navigate("profile") {
+                        popUpTo("auth") { inclusive = true }
+                    }
                 }
-            })
+            )
         }
         composable("profile") {
             ProfileScreen(
@@ -56,9 +54,7 @@ fun NavGraph(navController: NavHostController) {
             )
         }
 //        composable("userMap") {
-//            UserMapScreen(
-//                onBack = { navController.popBackStack() }
-//            )
+//            UserMapScreen() // Замените на ваш экран карты
 //        }
     }
 }

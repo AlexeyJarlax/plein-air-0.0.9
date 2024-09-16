@@ -135,14 +135,6 @@ dependencies {
 
 ////////// ПРОДВИНУТЫЕ
 
-    // Библиотека для управления зависимостями koin и Dagger Hilt  //  implementation("androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03") больше не поддерживается, не добавлять!
-    implementation(libs.hilt.android)
-    kapt(libs.dagger.hilt.compiler)
-    implementation(libs.hilt.android)
-    implementation (libs.androidx.lifecycle.viewmodel.compose.v285)
-//    kapt ("com.google.dagger:hilt-android-compiler:2.44")
-    implementation ("androidx.hilt:hilt-navigation-compose:1.0.0")
-
     // Расширения Kotlin для работы с жизненным циклом компонентов.
     implementation(libs.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.lifecycle.livedata.ktx)
@@ -152,6 +144,14 @@ dependencies {
 
     // Компонент ViewPager2 для реализации горизонтальных и вертикальных листалок.
     implementation(libs.androidx.viewpager2)
+
+    // Библиотека для управления зависимостями koin и Dagger Hilt  //  implementation("androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03") больше не поддерживается, не добавлять!
+    implementation(libs.hilt.android)
+    kapt(libs.dagger.hilt.compiler)
+    implementation(libs.hilt.android)
+    implementation (libs.androidx.lifecycle.viewmodel.compose.v285)
+//    kapt ("com.google.dagger:hilt-android-compiler:2.44")
+    implementation ("androidx.hilt:hilt-navigation-compose:1.0.0")
 
     // Jetpack Compose
     implementation(libs.androidx.ui.v171)
@@ -167,6 +167,9 @@ dependencies {
     implementation(libs.runtime.livedata)
     implementation(libs.coil)
     implementation(libs.coil.compose)
+
+    // Jetpack DataStore
+    implementation(libs.androidx.datastore.preferences)
 
     // корутин
     implementation(libs.kotlinx.coroutines.android.v180)

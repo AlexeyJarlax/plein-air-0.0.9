@@ -18,6 +18,7 @@ constraintlayout = "2.1.4"
 converterGson = "2.9.0"
 coreKtxVersion = "1.10.1"
 daggerCompiler = "2.52"
+datastorePreferences = "1.1.1"
 emailIntentBuilder = "2.0.0"
 espressoCoreVersion = "3.5.1"
 firebaseAuth = "23.6.0"
@@ -127,6 +128,7 @@ androidx-appcompat-v161 = { module = "androidx.appcompat:appcompat", version.ref
 androidx-constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "constraintlayout" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-core-ktx-v1101 = { module = "androidx.core:core-ktx", version.ref = "coreKtxVersion" }
+androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
 androidx-espresso-core-v351 = { module = "androidx.test.espresso:espresso-core", version.ref = "espressoCoreVersion" }
 androidx-fragment-ktx = { module = "androidx.fragment:fragment-ktx", version.ref = "fragmentKtx" }
 androidx-fragment-ktx-v181 = { module = "androidx.fragment:fragment-ktx", version.ref = "fragmentKtxVersion" }

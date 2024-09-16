@@ -27,12 +27,12 @@ import com.pavlovalexey.pleinair.R
 @Composable
 fun AuthScreen(
     navController: NavHostController,
+    onAuthSuccess: () -> Unit,
     authViewModel: AuthViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current as Activity
     val authState by authViewModel.authState.collectAsState()
 
-    // Лаунчер для Google Sign-In
     val googleSignInLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
     ) { result ->
@@ -58,7 +58,6 @@ fun AuthScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            // Кнопка авторизации через Google
             AndroidView(
                 factory = { context ->
                     SignInButton(context).apply {
@@ -76,18 +75,15 @@ fun AuthScreen(
             // Кнопка выхода
             Button(
                 onClick = {
-                    ActivityCompat.finishAffinity(context) // Закрыть приложение
+                    ActivityCompat.finishAffinity(context)
                 }
             ) {
                 Text(text = "Exit")
             }
 
-            // Навигация на основе состояния авторизации
             LaunchedEffect(authState.isAuthenticated) {
                 if (authState.isAuthenticated) {
-                    navController.navigate("main") {
-                        popUpTo("auth") { inclusive = true }
-                    }
+                    onAuthSuccess()
                 }
             }
         }
