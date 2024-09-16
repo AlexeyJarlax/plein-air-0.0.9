@@ -14,14 +14,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.res.painterResource
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.pavlovalexey.pleinair.R
+import com.pavlovalexey.pleinair.auth.ui.AuthViewModel
 import com.pavlovalexey.pleinair.profile.viewmodel.ProfileViewModel
 import com.pavlovalexey.pleinair.utils.image.ImageUtils.decodeSampledBitmapFromUri
-
+import androidx.compose.material.*
+import androidx.compose.ui.platform.LocalContext
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 
 @Composable
 fun ProfileScreen(
-    viewModel: ProfileViewModel,
+    viewModel: ProfileViewModel = hiltViewModel(),
     onNavigateToUserMap: () -> Unit,
     onContinue: () -> Unit,
     onLogout: () -> Unit,
@@ -120,30 +125,19 @@ fun ProfileScreen(
     }
 }
 
-
 @Composable
 fun ProfileImage(onClick: () -> Unit, imageUrl: String?) {
-    if (imageUrl != null) {
-        val imageBitmap = remember(imageUrl) { decodeSampledBitmapFromUri(imageUrl) }
-        Image(
-            bitmap = imageBitmap,
-            contentDescription = null,
-            modifier = Modifier
-                .size(100.dp)
-                .clip(CircleShape)
-                .clickable(onClick = onClick)
-        )
-    } else {
-        Image(
-            painter = painterResource(id = R.drawable.account_circle_50dp),
-            contentDescription = null,
-            modifier = Modifier
-                .size(100.dp)
-                .clip(CircleShape)
-                .clickable(onClick = onClick)
-        )
-    }
+    AsyncImage(
+        model = ImageRequest.Builder(LocalContext.current)
+            .data(imageUrl)
+            .crossfade(true)
+            .placeholder(R.drawable.account_circle_50dp)  // Use resource ID directly
+            .error(R.drawable.account_circle_50dp)         // Use resource ID directly
+            .build(),
+        contentDescription = null,
+        modifier = Modifier
+            .size(100.dp)
+            .clip(CircleShape)
+            .clickable(onClick = onClick)
+    )
 }
-
-
-

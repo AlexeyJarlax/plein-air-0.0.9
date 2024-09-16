@@ -43,8 +43,8 @@ fun NavGraph(navController: NavHostController) {
         }
         composable("profile") {
             ProfileScreen(
-                onNavigateToUserMap = { navController.navigate("userMap") },
                 viewModel = hiltViewModel(),
+                onNavigateToUserMap = { navController.navigate("userMap") },
                 onContinue = { /* Handle continue */ },
                 onLogout = {
                     // Logout logic

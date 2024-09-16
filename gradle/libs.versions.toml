@@ -10,6 +10,8 @@ androidxMaterial = "1.6.8"
 androidxMaterialVersion = "1.5.0"
 androidxUi = "1.7.1"
 appcompatVersion = "1.6.1"
+coil = "2.3.0"
+coilCompose = "2.3.0"
 comGoogleDaggerHiltAndroidGradlePlugin = "2.44"
 compiler = "4.16.0"
 constraintlayout = "2.1.4"
@@ -164,6 +166,8 @@ androidx-ui-tooling-preview-v171 = { module = "androidx.compose.ui:ui-tooling-pr
 androidx-ui-v150 = { module = "androidx.compose.ui:ui", version.ref = "uiVersion" }
 androidx-ui-v171 = { module = "androidx.compose.ui:ui", version.ref = "androidxUi" }
 androidx-viewpager2 = { module = "androidx.viewpager2:viewpager2", version.ref = "viewpager2" }
+coil = { module = "io.coil-kt:coil", version.ref = "coil" }
+coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
 com-google-firebase-firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 com-google-firebase-firebase-analytics2 = { module = "com.google.firebase:firebase-analytics" }
 com-google-firebase-firebase-auth = { module = "com.google.firebase:firebase-auth" }

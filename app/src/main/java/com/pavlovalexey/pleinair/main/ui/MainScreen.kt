@@ -14,6 +14,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -42,8 +43,8 @@ fun MainScreen(
         ) {
 
             composable("profile") { ProfileScreen(
+                viewModel = hiltViewModel(),
                 onNavigateToUserMap = { navController.navigate("userMap") },
-                viewModel = viewModel(),
                 onContinue = { /* Handle continue */ },
                 onLogout = {
                     navController.navigate("auth") {

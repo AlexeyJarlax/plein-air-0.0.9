@@ -165,6 +165,8 @@ dependencies {
     implementation(libs.androidx.navigation.testing)
     implementation(libs.androidx.material3.android)
     implementation(libs.runtime.livedata)
+    implementation(libs.coil)
+    implementation(libs.coil.compose)
 
     // корутин
     implementation(libs.kotlinx.coroutines.android.v180)

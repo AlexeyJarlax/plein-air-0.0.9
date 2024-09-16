@@ -1,5 +1,8 @@
 package com.pavlovalexey.pleinair.auth.ui
 
+import android.app.Activity
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -15,6 +18,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.app.ActivityCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.google.android.gms.common.SignInButton
@@ -25,15 +29,23 @@ fun AuthScreen(
     navController: NavHostController,
     authViewModel: AuthViewModel = hiltViewModel()
 ) {
+    val context = LocalContext.current as Activity
     val authState by authViewModel.authState.collectAsState()
-    val context = LocalContext.current
+
+    // Лаунчер для Google Sign-In
+    val googleSignInLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            authViewModel.handleSignInResult(result.data)
+        }
+    }
 
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
-        // Фон как изображение
         Image(
-            painter = painterResource(id = R.drawable.back_lay), // ваш фон
+            painter = painterResource(id = R.drawable.back_lay),
             contentDescription = null,
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop
@@ -50,24 +62,21 @@ fun AuthScreen(
             AndroidView(
                 factory = { context ->
                     SignInButton(context).apply {
-                        // Дополнительная настройка кнопки, если нужно
                         setSize(SignInButton.SIZE_WIDE)
+                        setOnClickListener {
+                            authViewModel.signInWithGoogle(googleSignInLauncher)
+                        }
                     }
                 },
                 modifier = Modifier.wrapContentSize()
-            ) {
-                // Нажатие на кнопку Google Sign-In
-                authViewModel.signInWithGoogle()
-            }
+            )
 
             Spacer(modifier = Modifier.height(16.dp))
 
             // Кнопка выхода
             Button(
                 onClick = {
-                    navController.navigate("terms") {
-                        popUpTo("auth") { inclusive = true }
-                    }
+                    ActivityCompat.finishAffinity(context) // Закрыть приложение
                 }
             ) {
                 Text(text = "Exit")
