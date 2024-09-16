@@ -10,15 +10,16 @@ package com.pavlovalexey.pleinair.main.ui
  * 3 Этап - MainActivity и фрагменты по всему функционалу приложения с навигацией через НавГраф
  */
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.Toast
+import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.navigation.compose.rememberNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -36,6 +37,8 @@ import com.google.firebase.database.ServerValue
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
+import com.pavlovalexey.pleinair.MainNavGraph
+import com.pavlovalexey.pleinair.PleinairTheme
 import com.pavlovalexey.pleinair.R
 import com.pavlovalexey.pleinair.auth.ui.AuthActivity
 import com.pavlovalexey.pleinair.databinding.ActivityMainBinding
@@ -63,20 +66,13 @@ class MainActivity : AppCompatActivity(), UserMapFragment.OnLocationSelectedList
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-//        com.google.firebase.Firebase.initialize(this)
-//        firestore = com.google.firebase.Firebase.firestore
-//        auth = FirebaseAuth.getInstance()
-//        storage = com.google.firebase.Firebase.storage
-//        Firebase.appCheck.installAppCheckProviderFactory(
-//            PlayIntegrityAppCheckProviderFactory.getInstance(),
-//        )
-//
-//        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-//            .requestIdToken(getString(R.string.default_web_client_id))
-//            .requestEmail()
-//            .build()
-//        googleSignInClient = GoogleSignIn.getClient(this, gso)
-//
+        setContent {
+            PleinairTheme {
+                val navController = rememberNavController()
+                MainNavGraph(navController = navController)
+            }
+        }
+
         if (auth.currentUser == null) {
             startActivity(Intent(this, AuthActivity::class.java))
             finish()

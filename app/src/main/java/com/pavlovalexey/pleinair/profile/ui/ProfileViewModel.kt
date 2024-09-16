@@ -8,6 +8,7 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.auth.FirebaseAuth
 import com.pavlovalexey.pleinair.profile.model.User
@@ -18,11 +19,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
-    application: Application,
     private val firebaseUserManager: FirebaseUserManager,
     private val auth: FirebaseAuth,
     private val sharedPreferences: SharedPreferences
-) : AndroidViewModel(application) {
+) : ViewModel() {
 
     private val _user = MutableLiveData<User?>()
     val user: MutableLiveData<User?> get() = _user
@@ -89,7 +89,6 @@ class ProfileViewModel @Inject constructor(
             }
         )
     }
-
 
     private fun updateProfileImageUrl(imageUrl: String) {
         val userId = auth.currentUser?.uid ?: return

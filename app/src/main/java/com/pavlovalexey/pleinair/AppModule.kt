@@ -105,12 +105,11 @@ object AppModule {
     @Provides
     @Singleton
     fun provideProfileViewModel(
-        application: Application,
         firebaseUserManager: FirebaseUserManager,
         auth: FirebaseAuth,
         sharedPreferences: SharedPreferences
     ): ProfileViewModel {
-        return ProfileViewModel(application, firebaseUserManager, auth, sharedPreferences)
+        return ProfileViewModel(firebaseUserManager, auth, sharedPreferences)
     }
     @Provides
     @Singleton

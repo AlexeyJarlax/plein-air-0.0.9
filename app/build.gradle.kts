@@ -152,8 +152,11 @@ dependencies {
     implementation(libs.androidx.material.v171)
     implementation(libs.androidx.ui.tooling.preview.v171)
     implementation(libs.androidx.activity.compose.v192)
-//    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.material)
+    implementation(libs.navigation.compose)
+    implementation(libs.dagger.hilt.android.gradle.plugin.v244)
+    implementation(libs.androidx.navigation.testing)
 
     // корутин
     implementation(libs.kotlinx.coroutines.android.v180)
