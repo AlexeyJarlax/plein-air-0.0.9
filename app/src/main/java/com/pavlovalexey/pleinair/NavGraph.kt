@@ -1,64 +1,64 @@
 package com.pavlovalexey.pleinair
 
+import ProfileScreen
 import androidx.compose.runtime.Composable
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.pavlovalexey.pleinair.profile.ui.ProfileScreen
-import androidx.lifecycle.viewmodel.compose.viewModel
+import com.pavlovalexey.pleinair.auth.ui.AuthScreen
+import com.pavlovalexey.pleinair.auth.ui.TermsScreen
+import com.pavlovalexey.pleinair.auth.ui.TermsViewModel
+import com.pavlovalexey.pleinair.main.ui.MainScreen
 
 @Composable
-fun MainNavGraph(navController: NavHostController) {
+fun NavGraph(navController: NavHostController) {
 
     NavHost(
         navController = navController,
-        startDestination = "profile"
+        startDestination = "terms"
     ) {
+        composable("terms") {
+            TermsScreen(
+                onContinue = {
+                    navController.navigate("auth") {
+                        popUpTo("terms") { inclusive = true }
+                    }
+                },
+                viewModel = hiltViewModel()
+            )
+        }
+        composable("auth") {
+            AuthScreen(
+                navController = navController
+            )
+        }
+        composable("main") {
+            MainScreen(onLogout = {
+                navController.navigate("auth") {
+                    popUpTo("terms") { inclusive = true }
+                }
+            })
+        }
         composable("profile") {
             ProfileScreen(
                 onNavigateToUserMap = { navController.navigate("userMap") },
-                viewModel = viewModel(),
-                onContinue = { /* Обработка продолжения */ },
-                onLogout = { /* Обработка выхода */ }
+                viewModel = hiltViewModel(),
+                onContinue = { /* Handle continue */ },
+                onLogout = {
+                    // Logout logic
+                    navController.navigate("auth") {
+                        popUpTo("profile") { inclusive = true }
+                    }
+                },
+                onExit = { /* Handle exit */ }
             )
         }
-
-        composable("userMap") {
-            UserMapScreen(
-                // передайте необходимые параметры или ViewModel
-            )
-        }
-
-        composable("settings") {
-            SettingsScreen(
-                // передайте необходимые параметры или ViewModel
-            )
-        }
-
-        composable("map") {
-            MapScreen(
-                // передайте необходимые параметры или ViewModel
-            )
-        }
-
-        composable("calendar") {
-            CalendarScreen(
-                onNavigateToNewEvent = { navController.navigate("newEvent") }
-                // передайте необходимые параметры или ViewModel
-            )
-        }
-
-        composable("newEvent") {
-            NewEventScreen(
-                onNavigateToEventMap = { navController.navigate("eventMap") }
-                // передайте необходимые параметры или ViewModel
-            )
-        }
-
-        composable("eventMap") {
-            EventMapScreen(
-                // передайте необходимые параметры или ViewModel
-            )
-        }
+//        composable("userMap") {
+//            UserMapScreen(
+//                onBack = { navController.popBackStack() }
+//            )
+//        }
     }
 }

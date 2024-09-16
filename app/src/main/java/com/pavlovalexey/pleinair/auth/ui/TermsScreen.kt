@@ -4,6 +4,7 @@ package com.pavlovalexey.pleinair.auth.ui
  * собрал на Jetpack Compose — фреймворк для создания UI на Android, основанный на декларативном подходе без xml
  */
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -14,13 +15,18 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.pavlovalexey.pleinair.R
 
 @Composable
-fun TermsScreen(onContinue: () -> Unit, viewModel: TermsViewModel) {
+fun TermsScreen(
+    onContinue: () -> Unit,
+    viewModel: TermsViewModel = hiltViewModel()
+) {
     var isAgreementChecked by rememberSaveable { mutableStateOf(false) }
     var isPrivacyPolicyChecked by rememberSaveable { mutableStateOf(false) }
 
@@ -38,20 +44,24 @@ fun TermsScreen(onContinue: () -> Unit, viewModel: TermsViewModel) {
             Text(
                 text = viewModel.termsOfPrivacy,
                 fontSize = 18.sp,
+                color = if (isSystemInDarkTheme()) Color.White else Color.Black,
                 modifier = Modifier.padding(bottom = 8.dp)
             )
             Text(
                 text = viewModel.privacyPolicyContent,
+                color = if (isSystemInDarkTheme()) Color.White else Color.Black,
                 fontSize = 16.sp,
                 modifier = Modifier.padding(bottom = 16.dp)
             )
             Text(
                 text = viewModel.termsOfAgreement,
+                color = if (isSystemInDarkTheme()) Color.White else Color.Black,
                 fontSize = 18.sp,
                 modifier = Modifier.padding(bottom = 8.dp)
             )
             Text(
                 text = viewModel.userAgreementContent,
+                color = if (isSystemInDarkTheme()) Color.White else Color.Black,
                 fontSize = 16.sp,
                 modifier = Modifier.padding(bottom = 16.dp)
             )
@@ -67,6 +77,7 @@ fun TermsScreen(onContinue: () -> Unit, viewModel: TermsViewModel) {
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
                     text = stringResource(R.string.i_have_read_privacy_policy),
+                    color = if (isSystemInDarkTheme()) Color.White else Color.Black,
                     fontSize = 16.sp
                 )
             }
@@ -82,6 +93,7 @@ fun TermsScreen(onContinue: () -> Unit, viewModel: TermsViewModel) {
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
                     text = stringResource(R.string.i_have_read_user_policy),
+                    color = if (isSystemInDarkTheme()) Color.White else Color.Black,
                     fontSize = 16.sp
                 )
             }

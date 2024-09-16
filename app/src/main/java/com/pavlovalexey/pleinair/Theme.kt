@@ -11,7 +11,8 @@ import androidx.compose.ui.graphics.Color
 private val DarkColorPalette = darkColors(
     primary = Color.Blue,
     primaryVariant = Color.Red,
-    secondary = Color.Magenta
+    secondary = Color.Magenta,
+    onPrimary = Color.White // Белый цвет текста на темном фоне
 )
 
 private val LightColorPalette = lightColors(

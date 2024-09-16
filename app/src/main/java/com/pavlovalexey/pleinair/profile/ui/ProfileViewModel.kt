@@ -13,19 +13,23 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.auth.FirebaseAuth
 import com.pavlovalexey.pleinair.profile.model.User
 import com.pavlovalexey.pleinair.utils.firebase.FirebaseUserManager
+import com.pavlovalexey.pleinair.utils.firebase.LoginAndUserUtils
 import com.pavlovalexey.pleinair.utils.image.ImageUtils
+import com.pavlovalexey.pleinair.utils.ui.DialogUtils
+import com.pavlovalexey.pleinair.utils.ui.showSnackbar
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
     private val firebaseUserManager: FirebaseUserManager,
+    private val loginAndUserUtils: LoginAndUserUtils,
     private val auth: FirebaseAuth,
     private val sharedPreferences: SharedPreferences
 ) : ViewModel() {
 
     private val _user = MutableLiveData<User?>()
-    val user: MutableLiveData<User?> get() = _user
+    val user: LiveData<User?> get() = _user
     private val _selectedArtStyles = MutableLiveData<Set<String>>(emptySet())
     val selectedArtStyles: LiveData<Set<String>> get() = _selectedArtStyles
 
@@ -46,7 +50,7 @@ class ProfileViewModel @Inject constructor(
         )
     }
 
-    fun checkAndGenerateAvatar(onSuccess: () -> Unit) {
+    fun checkAndGenerateAvatar(onSuccess: () -> Unit = {}) {
         val currentUser = _user.value ?: return
 
         if (currentUser.profileImageUrl.isEmpty()) {
@@ -54,7 +58,7 @@ class ProfileViewModel @Inject constructor(
             uploadAvatarImageToFirebase(
                 imageBitmap = generatedAvatar,
                 onSuccess = { uri ->
-                    updateProfileImageUrl(uri.toString()) // Обновляем URL аватара в Firestore
+                    updateProfileImageUrl(uri.toString())
                     onSuccess()
                 },
                 onFailure = {
@@ -104,6 +108,11 @@ class ProfileViewModel @Inject constructor(
                 Log.w("ProfileViewModel", "Error updating profile image URL", e)
             }
         )
+    }
+
+    fun updateUserName(newName: String, onSuccess: () -> Unit) {
+        val userId = auth.currentUser?.uid ?: return
+        loginAndUserUtils.updateUserNameOnFirebase( newName)
     }
 
     fun loadProfileImageFromStorage(onSuccess: (Bitmap) -> Unit, onFailure: (Exception) -> Unit) {
@@ -158,7 +167,6 @@ class ProfileViewModel @Inject constructor(
             }
         )
     }
-
 
     private fun saveProfileImageUrl(url: String) {
         with(sharedPreferences.edit()) {

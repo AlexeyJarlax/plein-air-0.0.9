@@ -38,7 +38,6 @@ class ProfileFragment : Fragment(), UserMapFragment.OnLocationSelectedListener {
     private lateinit var binding: FragmentProfileBinding
     private val viewModel: ProfileViewModel by viewModels()
 
-    private val TAG = ProfileFragment::class.java.simpleName
     private lateinit var cameraActivityResultLauncher: ActivityResultLauncher<Intent>
     private lateinit var galleryActivityResultLauncher: ActivityResultLauncher<Intent>
 
@@ -88,7 +87,6 @@ class ProfileFragment : Fragment(), UserMapFragment.OnLocationSelectedListener {
         binding.logoutButton.setOnClickListener { showLogoutConfirmationDialog() }
         binding.userAvatar.setOnClickListener {
             showImageSelectionDialog(cameraActivityResultLauncher, galleryActivityResultLauncher)
-
         }
         binding.userName.setOnClickListener { showEditNameDialog() }
         binding.btnChooseLocation.setOnClickListener { openUserMapFragment() }
@@ -104,6 +102,7 @@ class ProfileFragment : Fragment(), UserMapFragment.OnLocationSelectedListener {
                 Picasso.get().load(uri).transform(CircleTransform()).into(binding.userAvatar)
             },
             onFailure = {
+                // Handle failure
             }
         )
     }
@@ -184,7 +183,7 @@ class ProfileFragment : Fragment(), UserMapFragment.OnLocationSelectedListener {
     private fun openUserMapFragment() {
         val userMapFragment = UserMapFragment()
         userMapFragment.setOnLocationSelectedListener(this)
-        findNavController().navigate(R.id.action_profileFragment_to_UserMapFragment)
+//        findNavController().navigate(R.id.action_profileFragment_to_UserMapFragment)
     }
 
     override fun onLocationSelected(location: LatLng) {

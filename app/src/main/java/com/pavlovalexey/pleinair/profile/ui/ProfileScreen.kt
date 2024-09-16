@@ -1,33 +1,35 @@
-package com.pavlovalexey.pleinair.profile.ui
 
-import android.graphics.Bitmap
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.runtime.Composable
-import com.pavlovalexey.pleinair.profile.viewmodel.ProfileViewModel
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material.TextField
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.google.type.LatLng
+import androidx.compose.ui.res.painterResource
 import com.pavlovalexey.pleinair.R
+import com.pavlovalexey.pleinair.profile.viewmodel.ProfileViewModel
+import com.pavlovalexey.pleinair.utils.image.ImageUtils.decodeSampledBitmapFromUri
+
 
 @Composable
 fun ProfileScreen(
-    onNavigateToUserMap: () -> Unit,
     viewModel: ProfileViewModel,
+    onNavigateToUserMap: () -> Unit,
     onContinue: () -> Unit,
-    onLogout: () -> Unit
+    onLogout: () -> Unit,
+    onExit: () -> Unit
 ) {
-    val user by viewModel.user.collectAsState()
-    val selectedArtStyles by viewModel.selectedArtStyles.collectAsState()
+    val user by viewModel.user.observeAsState()
+    var showDialog by remember { mutableStateOf(false) }
+    var newDescription by remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier
@@ -38,26 +40,29 @@ fun ProfileScreen(
 
         // Profile Image
         ProfileImage(
-            bitmap = user?.profileImageBitmap,
-            onClick = { viewModel.pickImageFromGallery() }
+            imageUrl = user?.profileImageUrl,
+            onClick = { viewModel.checkAndGenerateAvatar {} }
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Display Name with clickable option to edit
+        // User Name
         Text(
             text = user?.name ?: "User",
             style = MaterialTheme.typography.h5,
             modifier = Modifier.clickable {
-                viewModel.showEditNameDialog()
+                user?.name?.let { currentName ->
+                    viewModel.updateUserName(newName = currentName) {
+                        // Handle success
+                    }
+                }
             }
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Edit Description Button
         Button(
-            onClick = { viewModel.showEditDescriptionDialog() },
+            onClick = { showDialog = true },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(text = "Edit Description")
@@ -83,13 +88,45 @@ fun ProfileScreen(
             Text(text = "Continue")
         }
     }
+
+    if (showDialog) {
+        AlertDialog(
+            onDismissRequest = { showDialog = false },
+            title = { Text("Edit Description") },
+            text = {
+                TextField(
+                    value = newDescription,
+                    onValueChange = { newDescription = it },
+                    label = { Text("New Description") }
+                )
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        viewModel.updateUserDescription(newDescription) {
+                            showDialog = false
+                        }
+                    }
+                ) {
+                    Text("Save")
+                }
+            },
+            dismissButton = {
+                Button(onClick = { showDialog = false }) {
+                    Text("Cancel")
+                }
+            }
+        )
+    }
 }
 
+
 @Composable
-fun ProfileImage(bitmap: Bitmap?, onClick: () -> Unit) {
-    if (bitmap != null) {
+fun ProfileImage(onClick: () -> Unit, imageUrl: String?) {
+    if (imageUrl != null) {
+        val imageBitmap = remember(imageUrl) { decodeSampledBitmapFromUri(imageUrl) }
         Image(
-            bitmap = bitmap.asImageBitmap(),
+            bitmap = imageBitmap,
             contentDescription = null,
             modifier = Modifier
                 .size(100.dp)
@@ -107,3 +144,6 @@ fun ProfileImage(bitmap: Bitmap?, onClick: () -> Unit) {
         )
     }
 }
+
+
+

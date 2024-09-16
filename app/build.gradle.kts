@@ -115,10 +115,13 @@ dependencies {
 
     // Библиотека для создания функций отправки в Intents с помощью mailto: URI
     implementation(libs.email.intent.builder)
+/////////////////////////////////////////////////////////////  новые зависимости
+
+
+///////////////////////////////////////////////////////////// новые зависимости
 
     // glide для пикч
     implementation(libs.glide)
-//    implementation(libs.identity.jvm)
     ksp(libs.compiler)
 
 ////////// ТЕСТИРОВАНИЕ
@@ -136,6 +139,9 @@ dependencies {
     implementation(libs.hilt.android)
     kapt(libs.dagger.hilt.compiler)
     implementation(libs.hilt.android)
+    implementation (libs.androidx.lifecycle.viewmodel.compose.v285)
+//    kapt ("com.google.dagger:hilt-android-compiler:2.44")
+    implementation ("androidx.hilt:hilt-navigation-compose:1.0.0")
 
     // Расширения Kotlin для работы с жизненным циклом компонентов.
     implementation(libs.lifecycle.viewmodel.ktx)
@@ -157,6 +163,8 @@ dependencies {
     implementation(libs.navigation.compose)
     implementation(libs.dagger.hilt.android.gradle.plugin.v244)
     implementation(libs.androidx.navigation.testing)
+    implementation(libs.androidx.material3.android)
+    implementation(libs.runtime.livedata)
 
     // корутин
     implementation(libs.kotlinx.coroutines.android.v180)

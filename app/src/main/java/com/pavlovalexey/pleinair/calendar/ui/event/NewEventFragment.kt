@@ -120,7 +120,7 @@ class NewEventFragment : Fragment() {
                     putDouble("longitude", cityCoordinates.longitude)
                 }
                 findNavController().navigate(
-                    R.id.action_newEventFragment_to_eventMapFragment,
+//                    R.id.action_newEventFragment_to_eventMapFragment,
                     bundle
                 )
             } else {

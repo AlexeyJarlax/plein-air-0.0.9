@@ -72,7 +72,7 @@ class CalendarFragment : Fragment() {
             if (userId != null) {
                 viewModel.checkUserEvent(userId) { canCreate ->
                     if (canCreate) {
-                        findNavController().navigate(R.id.action_calendarFragment_to_NewEventFragment)
+//                        findNavController().navigate(R.id.action_calendarFragment_to_NewEventFragment)
                     } else {
                         Toast.makeText(
                             requireContext(),

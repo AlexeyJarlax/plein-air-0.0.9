@@ -1,61 +1,47 @@
 package com.pavlovalexey.pleinair.main.ui
 
-/** Приложение построено как синглактивити на фрагментах с отправной точкой MainActivity.
- * TermsActivity и AuthActivity выделены как отдельные активности чтобы изолировать
- * от основной структуры фрагментов и навигации через НавХостКонтроллер.
- * Вместо xml применил Jetpack Compose — фреймворк для создания UI на Android, основанный на декларативном подходе.
- *
- * 1 Этап - подписание соглашений в TermsActivity
- * 2 Этап - авторизация в AuthActivity
- * 3 Этап - MainActivity и фрагменты по всему функционалу приложения с навигацией через НавГраф
- */
-
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.ProgressBar
-import android.widget.Toast
+import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.setupWithNavController
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ServerValue
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
-import com.pavlovalexey.pleinair.MainNavGraph
+import com.pavlovalexey.pleinair.NavGraph
 import com.pavlovalexey.pleinair.PleinairTheme
-import com.pavlovalexey.pleinair.R
-import com.pavlovalexey.pleinair.auth.ui.AuthActivity
-import com.pavlovalexey.pleinair.databinding.ActivityMainBinding
-import com.pavlovalexey.pleinair.profile.ui.UserMapFragment
 import com.pavlovalexey.pleinair.utils.firebase.LoginAndUserUtils
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity(), UserMapFragment.OnLocationSelectedListener, OnMapReadyCallback {
+class MainActivity : ComponentActivity(), OnMapReadyCallback {
 
     @Inject lateinit var auth: FirebaseAuth
     @Inject lateinit var firestore: FirebaseFirestore
     @Inject lateinit var googleSignInClient: GoogleSignInClient
     @Inject lateinit var loginAndUserUtils: LoginAndUserUtils
 
-    private lateinit var binding: ActivityMainBinding
     private lateinit var storage: FirebaseStorage
     private lateinit var mMap: GoogleMap
     private lateinit var progressBar: ProgressBar
@@ -67,37 +53,8 @@ class MainActivity : AppCompatActivity(), UserMapFragment.OnLocationSelectedList
         super.onCreate(savedInstanceState)
 
         setContent {
-            PleinairTheme {
-                val navController = rememberNavController()
-                MainNavGraph(navController = navController)
-            }
-        }
-
-        if (auth.currentUser == null) {
-            startActivity(Intent(this, AuthActivity::class.java))
-            finish()
-            return
-        }
-
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        hideSystemUI()
-        progressBar = findViewById(R.id.loading_indicator)
-
-        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-        val navController = navHostFragment.navController
-        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
-        bottomNavigationView.setupWithNavController(navController)
-        bottomNavigationView.setBackgroundColor(ContextCompat.getColor(this, R.color.menu_background))
-        navController.addOnDestinationChangedListener { _, destination, _ ->
-            when (destination.id) {
-                R.id.mapFragment, R.id.userMapFragment, R.id.eventMapFragment -> {
-                    bottomNavigationView.visibility = View.GONE
-                }
-                else -> {
-                    bottomNavigationView.visibility = View.VISIBLE
-                }
-            }
+            val navController = rememberNavController()
+            NavGraph(navController = navController)
         }
 
         setupOnlineStatusListener()
@@ -133,28 +90,6 @@ class MainActivity : AppCompatActivity(), UserMapFragment.OnLocationSelectedList
         })
     }
 
-    override fun onLocationSelected(location: LatLng) {
-        selectedLocation = location
-        val user = auth.currentUser ?: return
-        val userId = user.uid
-        val userDocRef = firestore.collection("users").document(userId)
-
-        val updatedLocation = hashMapOf(
-            "latitude" to location.latitude,
-            "longitude" to location.longitude
-        )
-
-        userDocRef.update("location", updatedLocation)
-            .addOnSuccessListener {
-                Log.d(TAG, "User location updated to: $location")
-                Toast.makeText(this, "Координаты обновлены!", Toast.LENGTH_SHORT).show()
-            }
-            .addOnFailureListener { e ->
-                Log.w(TAG, "Error updating user location", e)
-                Toast.makeText(this, "Ошибка координат!", Toast.LENGTH_SHORT).show()
-            }
-    }
-
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
         mMap.setOnMapClickListener { latLng ->
@@ -169,8 +104,7 @@ class MainActivity : AppCompatActivity(), UserMapFragment.OnLocationSelectedList
     fun logoutAndRevokeAccess() {
         loginAndUserUtils.logout()
         googleSignInClient.revokeAccess().addOnCompleteListener {
-            startActivity(Intent(this, AuthActivity::class.java))
-            finish()
+            // Handle logout completion
         }
     }
 
