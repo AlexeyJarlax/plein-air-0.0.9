@@ -1,26 +1,29 @@
 package com.pavlovalexey.pleinair.main.ui.termsScreen
 
-import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Button
-import androidx.compose.material.Checkbox
-import androidx.compose.material.Text
+
+import androidx.compose.foundation.text.BasicText
+import androidx.compose.material.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pavlovalexey.pleinair.R
-
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.CircularProgressIndicator
 
 @Composable
 fun TermsScreen(
@@ -29,26 +32,33 @@ fun TermsScreen(
 ) {
     var isAgreementChecked by rememberSaveable { mutableStateOf(false) }
     var isPrivacyPolicyChecked by rememberSaveable { mutableStateOf(false) }
+
     val isButtonEnabled = isAgreementChecked && isPrivacyPolicyChecked && viewModel.isTermsLoaded
+    val scrollState = rememberScrollState()
 
-    LaunchedEffect(viewModel.areTermsAccepted) {
-        if (viewModel.areTermsAccepted) {
-            onContinue()
-        }
-    }
-
-    if (viewModel.isTermsLoaded) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
+        Image(
+            painter = painterResource(R.drawable.back_lay),
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .fillMaxSize()
+                .alpha(0.6f)
+        )
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp)
-                .verticalScroll(rememberScrollState()),
+                .verticalScroll(scrollState),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             Column {
                 Text(
                     text = viewModel.termsOfPrivacy,
-                    fontSize = 18.sp,
+                    fontSize = 21.sp,
                     color = if (isSystemInDarkTheme()) Color.White else Color.Black,
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
@@ -61,7 +71,7 @@ fun TermsScreen(
                 Text(
                     text = viewModel.termsOfAgreement,
                     color = if (isSystemInDarkTheme()) Color.White else Color.Black,
-                    fontSize = 18.sp,
+                    fontSize = 21.sp,
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
                 Text(
@@ -105,11 +115,7 @@ fun TermsScreen(
             }
 
             Button(
-                onClick = {
-                    if (isButtonEnabled) {
-                        viewModel.acceptTerms()
-                    }
-                },
+                onClick = onContinue,
                 enabled = isButtonEnabled,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -117,14 +123,6 @@ fun TermsScreen(
             ) {
                 Text(text = stringResource(R.string.resume))
             }
-        }
-    } else {
-        // Показать загрузочный индикатор
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            CircularProgressIndicator(color = Color.Blue)
         }
     }
 }

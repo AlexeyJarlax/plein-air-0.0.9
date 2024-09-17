@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Pleinair</string>
-    <string name="playlist_maker">Pleinair</string>
+    <string name="pleinair">Пленэр</string>
     <string name="button_search">Поиск</string>
     <string name="button_back">Назад</string>
     <string name="button_media_lib">Медиатека</string>
@@ -59,8 +59,8 @@
     <string name="city">Город</string>
     <string name="day">Дата</string>
     <string name="time">Время</string>
-    <string name="terms_of_agreement">Пользовательское соглашение для %1$s. Дата вступления в силу: %2$s</string>
-    <string name="terms_of_privacy">Политика конфиденциальности для %1$s. Дата вступления в силу: %2$s</string>
+    <string name="terms_of_agreement">\nПользовательское соглашение для %1$s. Дата вступления в силу: %2$s</string>
+    <string name="terms_of_privacy">\nПолитика конфиденциальности для %1$s. Дата вступления в силу: %2$s</string>
     <string name="error_loading_policy">Ошибка при загрузке Политики конфиденциальности</string>
     <string name="error_loading_agreement">Ошибка при загрузке Пользовательского соглашения</string>
     <string name="resume">Продолжить</string>

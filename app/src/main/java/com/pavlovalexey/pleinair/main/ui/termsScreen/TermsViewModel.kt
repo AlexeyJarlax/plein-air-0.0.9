@@ -16,23 +16,15 @@ import java.net.URL
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.booleanPreferencesKey
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.preferencesDataStore
-private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
 
 @HiltViewModel
 class TermsViewModel @Inject constructor(
     @ApplicationContext private val context: Context
 ) : ViewModel() {
 
-    private val termsAcceptedKey = booleanPreferencesKey("terms_accepted")
-
     val currentDate = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(Date())
-    val termsOfPrivacy = context.getString(R.string.terms_of_privacy, "%s", currentDate)
-    val termsOfAgreement = context.getString(R.string.terms_of_agreement, "%s", currentDate)
+    val termsOfPrivacy = context.getString(R.string.terms_of_privacy, context.getString(R.string.pleinair), currentDate)
+    val termsOfAgreement = context.getString(R.string.terms_of_agreement, context.getString(R.string.pleinair), currentDate)
 
     var privacyPolicyContent by mutableStateOf(context.getString(R.string.load_privacy_policy))
         private set
@@ -42,23 +34,15 @@ class TermsViewModel @Inject constructor(
     var isTermsLoaded by mutableStateOf(false)
         private set
 
-    var areTermsAccepted by mutableStateOf(false)
-        private set
-
     init {
         viewModelScope.launch {
-            checkIfTermsAccepted()
-
-            if (!areTermsAccepted) {
-                loadTextFromUrl(context.getString(R.string.privacy_policy_url)) { text ->
-                    privacyPolicyContent = text
-                    checkTermsLoaded()
-                }
-                loadTextFromUrl(context.getString(R.string.user_agreement_url)) { text ->
-                    userAgreementContent = text
-                }
-            } else {
-                isTermsLoaded = true
+            loadTextFromUrl(context.getString(R.string.privacy_policy_url)) { text ->
+                privacyPolicyContent = text
+                checkTermsLoaded()
+            }
+            loadTextFromUrl(context.getString(R.string.user_agreement_url)) { text ->
+                userAgreementContent = text
+                checkTermsLoaded()
             }
         }
     }
@@ -72,34 +56,18 @@ class TermsViewModel @Inject constructor(
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    val errorMessage = when (url) {
-                        context.getString(R.string.privacy_policy_url) -> context.getString(R.string.error_loading_policy)
-                        context.getString(R.string.user_agreement_url) -> context.getString(R.string.error_loading_agreement)
+                    val fallbackText = when (url) {
+                        context.getString(R.string.privacy_policy_url) -> context.getString(R.string.pp_reserv)
+                        context.getString(R.string.user_agreement_url) -> context.getString(R.string.ua_reserv)
                         else -> "Ошибка загрузки текста соглашений. Подписание невозможно."
                     }
-                    onTextLoaded(errorMessage)
+                    onTextLoaded(fallbackText)
                 }
             }
         }
     }
 
     private fun checkTermsLoaded() {
-        isTermsLoaded = privacyPolicyContent.length > 100
-    }
-
-    private suspend fun checkIfTermsAccepted() {
-        context.dataStore.data
-            .collect { preferences ->
-                areTermsAccepted = preferences[termsAcceptedKey] ?: false
-            }
-    }
-
-    fun acceptTerms() {
-        viewModelScope.launch {
-            context.dataStore.edit { preferences ->
-                preferences[termsAcceptedKey] = true
-            }
-            areTermsAccepted = true
-        }
+        isTermsLoaded = privacyPolicyContent.length > 100 && userAgreementContent.length > 100
     }
 }
