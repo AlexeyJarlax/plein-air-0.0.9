@@ -5,6 +5,7 @@ agp = "8.5.0"
 androidxActivityCompose = "1.7.2"
 androidxActivityComposeVersion = "1.9.2"
 androidxComposeMaterialMaterial = "1.7.1"
+androidxHiltNavigationCompose = "1.0.0"
 androidxJunit = "1.1.5"
 androidxMaterial = "1.6.8"
 androidxMaterialVersion = "1.5.0"
@@ -80,6 +81,7 @@ lifecycleLivedataKtx = "2.8.3"
 lifecycleRuntimeKtx = "2.8.4"
 lifecycleRuntimeKtxVersion = "2.6.1"
 lifecycleViewmodelCompose = "2.8.5"
+mapsComposeVersion = "2.11.0"
 material = "1.12.0"
 materialVersion = "1.9.0"
 navigationCompose = "2.7.7"
@@ -118,6 +120,7 @@ runtimeLivedataVersion = "1.7.1"
 
 [libraries]
 android-hilt-compiler = { module = "android.dagger:hilt-compiler", version.ref = "hiltCompilerVersion" }
+android-maps-compose = { module = "com.google.maps.android:maps-compose", version.ref = "mapsComposeVersion" }
 androidx-activity = { module = "androidx.activity:activity", version.ref = "activityCompose" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
 androidx-activity-compose-v170 = { module = "androidx.activity:activity-compose", version.ref = "activityComposeVersion" }
@@ -220,6 +223,7 @@ hilt-android-v244 = { module = "com.google.dagger:hilt-android", version.ref = "
 hilt-android-v249 = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroidVersion" }
 hilt-android-v2xx = { module = "com.google.dagger:hilt-android", version.ref = "googleHiltAndroid" }
 hilt-compiler-v2xx = { module = "com.google.dagger:hilt-compiler", version.ref = "hiltCompiler" }
+hilt-navigation-compose-v100 = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "androidxHiltNavigationCompose" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }

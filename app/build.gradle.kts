@@ -151,7 +151,7 @@ dependencies {
     implementation(libs.hilt.android)
     implementation (libs.androidx.lifecycle.viewmodel.compose.v285)
 //    kapt ("com.google.dagger:hilt-android-compiler:2.44")
-    implementation ("androidx.hilt:hilt-navigation-compose:1.0.0")
+    implementation (libs.hilt.navigation.compose.v100)
 
     // Jetpack Compose
     implementation(libs.androidx.ui.v171)
@@ -167,6 +167,7 @@ dependencies {
     implementation(libs.runtime.livedata)
     implementation(libs.coil)
     implementation(libs.coil.compose)
+    implementation (libs.android.maps.compose)
 
     // Jetpack DataStore
     implementation(libs.androidx.datastore.preferences)

@@ -131,12 +131,14 @@ fun TermsScreen(
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Bottom,
-                modifier = Modifier.fillMaxHeight()
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(6.dp)
             ) {
                 CustomButtonOne(
                     onClick = onContinue,
                     text = stringResource(R.string.resume),
-                    iconResId = R.drawable.circle_down_30dp // Замените на нужный ресурс
+                    iconResId = R.drawable.circle_down_30dp,
                 )
                 CustomButtonOne(
                     onClick = onCancel,
