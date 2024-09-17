@@ -11,6 +11,7 @@ import androidx.compose.material.TextField
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -20,14 +21,16 @@ import com.pavlovalexey.pleinair.R
 import com.pavlovalexey.pleinair.profile.viewmodel.ProfileViewModel
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.pavlovalexey.pleinair.main.ui.components.CustomButtonOne
 
 @Composable
 fun ProfileScreen(
     viewModel: ProfileViewModel = hiltViewModel(),
     onNavigateToUserMap: () -> Unit,
-    onContinue: () -> Unit,
+    onMyLocation: () -> Unit,
     onLogout: () -> Unit,
     onExit: () -> Unit
 ) {
@@ -38,13 +41,14 @@ fun ProfileScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White)
     ) {
         Image(
             painter = painterResource(R.drawable.back_lay),
             contentDescription = "Background",
             contentScale = ContentScale.Crop,
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxSize()
+                .alpha(0.5f)
         )
         Column(
             modifier = Modifier
@@ -75,33 +79,33 @@ fun ProfileScreen(
             )
 
             Spacer(modifier = Modifier.height(16.dp))
-
-            Button(
+            CustomButtonOne(
                 onClick = { showDialog = true },
+                text = stringResource(R.string.description),
+                iconResId = R.drawable.description_30dp,
                 modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(text = "Edit Description")
-            }
-
+            )
             Spacer(modifier = Modifier.height(16.dp))
-
-            // Logout Button
-            Button(
+            CustomButtonOne(
+                onClick = onMyLocation,
+                text = stringResource(R.string.location),
+                iconResId = R.drawable.location_on_50dp,
+                modifier = Modifier.fillMaxWidth()
+            )
+            CustomButtonOne(
                 onClick = onLogout,
+                text = stringResource(R.string.logout),
+                iconResId = R.drawable.logout_30dp,
                 modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(text = "Logout")
-            }
-
+            )
             Spacer(modifier = Modifier.height(16.dp))
-
-            // Continue Button
-            Button(
-                onClick = onContinue,
+            CustomButtonOne(
+                onClick = onExit,
+                text = stringResource(R.string.exit),
+                iconResId = R.drawable.door_open_30dp,
                 modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(text = "Continue")
-            }
+            )
+            Spacer(modifier = Modifier.height(16.dp))
         }
     }
 

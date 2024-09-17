@@ -8,11 +8,14 @@ package com.pavlovalexey.pleinair.main.ui
  * 3 Этап - MainActivity и фрагменты по всему функционалу приложения с навигацией через НавГраф и BottomNavBar
  */
 
+import android.app.Activity
 import android.os.Bundle
 import android.view.View
 import android.widget.ProgressBar
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.rememberNavController
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -36,26 +39,35 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class MainActivity : ComponentActivity(), OnMapReadyCallback {
 
-    @Inject lateinit var auth: FirebaseAuth
-    @Inject lateinit var firestore: FirebaseFirestore
-    @Inject lateinit var googleSignInClient: GoogleSignInClient
-    @Inject lateinit var loginAndUserUtils: LoginAndUserUtils
+    @Inject
+    lateinit var auth: FirebaseAuth
+    @Inject
+    lateinit var firestore: FirebaseFirestore
+    @Inject
+    lateinit var googleSignInClient: GoogleSignInClient
+    @Inject
+    lateinit var loginAndUserUtils: LoginAndUserUtils
 
     private lateinit var storage: FirebaseStorage
     private lateinit var mMap: GoogleMap
     private lateinit var progressBar: ProgressBar
 
     private var selectedLocation: LatLng? = null
-    private val defaultLocation = LatLng(59.9500019, 30.3166718)    // Координаты Петропавловской крепости
+    private val defaultLocation =
+        LatLng(59.9500019, 30.3166718)    // Координаты Петропавловской крепости
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContent {
             val navController = rememberNavController()
-            NavGraph(navController = navController)
-        }
+            val activity = LocalContext.current as Activity
 
+            NavGraph(
+                navController = navController,
+                activity = activity
+            )
+        }
         setupOnlineStatusListener()
     }
 

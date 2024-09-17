@@ -59,8 +59,8 @@
     <string name="city">Город</string>
     <string name="day">Дата</string>
     <string name="time">Время</string>
-    <string name="terms_of_agreement">\nПользовательское соглашение для %1$s. Дата вступления в силу: %2$s</string>
-    <string name="terms_of_privacy">\nПолитика конфиденциальности для %1$s. Дата вступления в силу: %2$s</string>
+    <string name="terms_of_agreement">\nПользовательское соглашение\nдля %1$s.\nДата вступления в силу: %2$s</string>
+    <string name="terms_of_privacy">\nПолитика конфиденциальности\nдля %1$s.\nДата вступления в силу: %2$s</string>
     <string name="error_loading_policy">Ошибка при загрузке Политики конфиденциальности</string>
     <string name="error_loading_agreement">Ошибка при загрузке Пользовательского соглашения</string>
     <string name="resume">Продолжить</string>
@@ -76,4 +76,6 @@
     <string name="delit_me">Удалить аккаунт</string>
     <string name="button_next">Вперёд</string>
     <string name="loading">Загрузка…</string>
+    <string name="logout">Сменить аккаунт</string>
+    <string name="exit">Выход</string>
 </resources>

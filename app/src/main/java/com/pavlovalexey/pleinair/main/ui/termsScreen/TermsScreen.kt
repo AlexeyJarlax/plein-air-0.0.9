@@ -1,9 +1,6 @@
 package com.pavlovalexey.pleinair.main.ui.termsScreen
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-
-import androidx.compose.foundation.text.BasicText
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -21,13 +18,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.style.TextAlign
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pavlovalexey.pleinair.R
+import com.pavlovalexey.pleinair.main.ui.components.CustomButtonOne
+import com.pavlovalexey.pleinair.main.ui.components.CustomCheckbox
 
 @Composable
 fun TermsScreen(
     onContinue: () -> Unit,
+    onCancel: () -> Unit,
     viewModel: TermsViewModel = hiltViewModel()
 ) {
     var isAgreementChecked by rememberSaveable { mutableStateOf(false) }
@@ -46,7 +46,7 @@ fun TermsScreen(
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .fillMaxSize()
-                .alpha(0.6f)
+                .alpha(0.4f)
         )
         Column(
             modifier = Modifier
@@ -55,36 +55,50 @@ fun TermsScreen(
                 .verticalScroll(scrollState),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Column {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
                 Text(
                     text = viewModel.termsOfPrivacy,
                     fontSize = 21.sp,
                     color = if (isSystemInDarkTheme()) Color.White else Color.Black,
-                    modifier = Modifier.padding(bottom = 8.dp)
+                    modifier = Modifier
+                        .padding(bottom = 8.dp)
+                        .fillMaxWidth(),
+                    textAlign = TextAlign.Center
                 )
                 Text(
                     text = viewModel.privacyPolicyContent,
                     color = if (isSystemInDarkTheme()) Color.White else Color.Black,
                     fontSize = 16.sp,
-                    modifier = Modifier.padding(bottom = 16.dp)
+                    modifier = Modifier
+                        .padding(bottom = 16.dp)
+                        .fillMaxWidth(),
+                    textAlign = TextAlign.Center
                 )
                 Text(
                     text = viewModel.termsOfAgreement,
                     color = if (isSystemInDarkTheme()) Color.White else Color.Black,
                     fontSize = 21.sp,
-                    modifier = Modifier.padding(bottom = 8.dp)
+                    modifier = Modifier
+                        .padding(bottom = 8.dp)
+                        .fillMaxWidth(),
+                    textAlign = TextAlign.Center
                 )
                 Text(
                     text = viewModel.userAgreementContent,
                     color = if (isSystemInDarkTheme()) Color.White else Color.Black,
                     fontSize = 16.sp,
-                    modifier = Modifier.padding(bottom = 16.dp)
+                    modifier = Modifier
+                        .padding(bottom = 16.dp)
+                        .fillMaxWidth(),
+                    textAlign = TextAlign.Center
                 )
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.padding(bottom = 8.dp)
                 ) {
-                    Checkbox(
+                    CustomCheckbox(
                         checked = isPrivacyPolicyChecked,
                         onCheckedChange = { isPrivacyPolicyChecked = it },
                         enabled = viewModel.isTermsLoaded
@@ -100,7 +114,7 @@ fun TermsScreen(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.padding(bottom = 16.dp)
                 ) {
-                    Checkbox(
+                    CustomCheckbox(
                         checked = isAgreementChecked,
                         onCheckedChange = { isAgreementChecked = it },
                         enabled = viewModel.isTermsLoaded
@@ -114,14 +128,21 @@ fun TermsScreen(
                 }
             }
 
-            Button(
-                onClick = onContinue,
-                enabled = isButtonEnabled,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 16.dp)
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Bottom,
+                modifier = Modifier.fillMaxHeight()
             ) {
-                Text(text = stringResource(R.string.resume))
+                CustomButtonOne(
+                    onClick = onContinue,
+                    text = stringResource(R.string.resume),
+                    iconResId = R.drawable.circle_down_30dp // Замените на нужный ресурс
+                )
+                CustomButtonOne(
+                    onClick = onCancel,
+                    text = stringResource(R.string.cancel),
+                    iconResId = R.drawable.door_open_30dp // Замените на нужный ресурс
+                )
             }
         }
     }

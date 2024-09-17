@@ -38,7 +38,6 @@ fun MainScreen(navController: NavHostController) {
                 BottomNavBar(navController = navController)
             }
         }
-    ) { innerPadding ->
-        NavGraph(navController = navController, modifier = Modifier.padding(innerPadding))
+    ) {
     }
 }

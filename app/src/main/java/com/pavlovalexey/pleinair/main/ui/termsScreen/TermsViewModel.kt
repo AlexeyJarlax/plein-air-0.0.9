@@ -1,5 +1,6 @@
 package com.pavlovalexey.pleinair.main.ui.termsScreen
 
+import android.app.Activity
 import android.content.Context
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -69,5 +70,8 @@ class TermsViewModel @Inject constructor(
 
     private fun checkTermsLoaded() {
         isTermsLoaded = privacyPolicyContent.length > 100 && userAgreementContent.length > 100
+    }
+    fun closeApp() {
+        (context as? Activity)?.finishAffinity()
     }
 }

@@ -36,4 +36,7 @@
     <color name="yp_light_gray_and_yp_white">@color/yp_white</color>
     <!-- цвет progress bar -->
     <color name="yp_blue_and_yp_blue">@color/yp_blue</color>
+
+    НОВЫЕ
+    <color name="my_blue_light">#9FBBF3</color>
 </resources>

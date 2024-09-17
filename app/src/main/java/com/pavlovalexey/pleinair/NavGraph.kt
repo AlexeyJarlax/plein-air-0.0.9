@@ -1,6 +1,7 @@
 package com.pavlovalexey.pleinair
 
 import ProfileScreen
+import android.app.Activity
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -11,12 +12,14 @@ import com.pavlovalexey.pleinair.main.ui.authScreen.AuthScreen
 import com.pavlovalexey.pleinair.main.ui.termsScreen.TermsScreen
 import com.pavlovalexey.pleinair.settings.ui.SettingsScreen
 
+
 @Composable
-fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
+//fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier, activity: Activity) {
+fun NavGraph(navController: NavHostController, activity: Activity) {
     NavHost(
         navController = navController,
         startDestination = "terms",
-        modifier = modifier
+//        modifier = modifier
     ) {
         composable("terms") {
             TermsScreen(
@@ -24,6 +27,9 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
                     navController.navigate("auth") {
                         popUpTo("terms") { inclusive = true }
                     }
+                },
+                onCancel = {
+                        activity.finish()
                 },
                 viewModel = hiltViewModel()
             )
@@ -35,16 +41,19 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
                     navController.navigate("profile") {
                         popUpTo("auth") { inclusive = true }
                     }
-                }
+                },
+                        onCancel = {
+                        activity.finish()
+                },
+                viewModel = hiltViewModel()
             )
         }
         composable("profile") {
             ProfileScreen(
                 viewModel = hiltViewModel(),
                 onNavigateToUserMap = { navController.navigate("userMap") },
-                onContinue = { /* Handle continue */ },
+                onMyLocation = { /* Handle continue */ },
                 onLogout = {
-                    // Logout logic
                     navController.navigate("auth") {
                         popUpTo("profile") { inclusive = true }
                     }
