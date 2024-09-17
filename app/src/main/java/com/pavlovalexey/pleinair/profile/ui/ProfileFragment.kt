@@ -10,7 +10,6 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.navigation.fragment.findNavController
 import com.google.android.gms.maps.model.LatLng
 import com.pavlovalexey.pleinair.R
 import com.pavlovalexey.pleinair.databinding.FragmentProfileBinding
@@ -27,7 +26,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class ProfileFragment : Fragment(), UserMapFragment.OnLocationSelectedListener {
+class ProfileFragment : Fragment(), MyLocationFragment.OnLocationSelectedListener {
 
     @Inject
     lateinit var loginAndUserUtils: LoginAndUserUtils
@@ -181,8 +180,8 @@ class ProfileFragment : Fragment(), UserMapFragment.OnLocationSelectedListener {
     }
 
     private fun openUserMapFragment() {
-        val userMapFragment = UserMapFragment()
-        userMapFragment.setOnLocationSelectedListener(this)
+        val myLocationFragment = MyLocationFragment()
+        myLocationFragment.setOnLocationSelectedListener(this)
 //        findNavController().navigate(R.id.action_profileFragment_to_UserMapFragment)
     }
 

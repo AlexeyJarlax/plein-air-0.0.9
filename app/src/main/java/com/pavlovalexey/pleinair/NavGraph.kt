@@ -62,6 +62,12 @@ fun NavGraph(navController: NavHostController, activity: Activity) {
             )
         }
 
+        composable("myLocation") {
+            SettingsScreen(
+                onNavigateBack = { navController.popBackStack() }
+            )
+        }
+
         composable("settings") {
             SettingsScreen(
                 onNavigateBack = { navController.popBackStack() }

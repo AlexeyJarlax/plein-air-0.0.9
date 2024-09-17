@@ -16,7 +16,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.pavlovalexey.pleinair.R
 
-class UserMapFragment : Fragment(), OnMapReadyCallback {
+class MyLocationFragment : Fragment(), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
     private var selectedLocation: LatLng? = null
