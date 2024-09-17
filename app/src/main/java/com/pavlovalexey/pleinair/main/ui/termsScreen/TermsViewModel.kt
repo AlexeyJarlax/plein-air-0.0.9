@@ -47,10 +47,8 @@ class TermsViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            // Check if terms are already accepted
             checkIfTermsAccepted()
 
-            // Load texts only if terms are not accepted
             if (!areTermsAccepted) {
                 loadTextFromUrl(context.getString(R.string.privacy_policy_url)) { text ->
                     privacyPolicyContent = text
@@ -58,10 +56,8 @@ class TermsViewModel @Inject constructor(
                 }
                 loadTextFromUrl(context.getString(R.string.user_agreement_url)) { text ->
                     userAgreementContent = text
-                    checkTermsLoaded()
                 }
             } else {
-                // If terms are already accepted, set isTermsLoaded to true
                 isTermsLoaded = true
             }
         }
@@ -88,7 +84,7 @@ class TermsViewModel @Inject constructor(
     }
 
     private fun checkTermsLoaded() {
-        isTermsLoaded = privacyPolicyContent.length > 100 && userAgreementContent.length > 100
+        isTermsLoaded = privacyPolicyContent.length > 100
     }
 
     private suspend fun checkIfTermsAccepted() {
