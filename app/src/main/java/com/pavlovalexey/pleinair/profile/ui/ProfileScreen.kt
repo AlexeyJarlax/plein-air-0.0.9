@@ -1,5 +1,5 @@
-
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -12,15 +12,14 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.res.painterResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pavlovalexey.pleinair.R
-import com.pavlovalexey.pleinair.auth.ui.AuthViewModel
 import com.pavlovalexey.pleinair.profile.viewmodel.ProfileViewModel
-import com.pavlovalexey.pleinair.utils.image.ImageUtils.decodeSampledBitmapFromUri
-import androidx.compose.material.*
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 
@@ -36,61 +35,73 @@ fun ProfileScreen(
     var showDialog by remember { mutableStateOf(false) }
     var newDescription by remember { mutableStateOf("") }
 
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .background(Color.White)
     ) {
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Profile Image
-        ProfileImage(
-            imageUrl = user?.profileImageUrl,
-            onClick = { viewModel.checkAndGenerateAvatar {} }
+        Image(
+            painter = painterResource(R.drawable.back_lay),
+            contentDescription = "Background",
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.fillMaxSize()
         )
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
+        ) {
+            Spacer(modifier = Modifier.height(16.dp))
 
-        Spacer(modifier = Modifier.height(16.dp))
+            // Profile Image
+            ProfileImage(
+                imageUrl = user?.profileImageUrl,
+                onClick = { viewModel.checkAndGenerateAvatar {} }
+            )
 
-        // User Name
-        Text(
-            text = user?.name ?: "User",
-            style = MaterialTheme.typography.h5,
-            modifier = Modifier.clickable {
-                user?.name?.let { currentName ->
-                    viewModel.updateUserName(newName = currentName) {
-                        // Handle success
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // User Name
+            Text(
+                text = user?.name ?: "User",
+                style = MaterialTheme.typography.h5,
+                modifier = Modifier.clickable {
+                    user?.name?.let { currentName ->
+                        viewModel.updateUserName(newName = currentName) {
+                            // Handle success
+                        }
                     }
                 }
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Button(
+                onClick = { showDialog = true },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(text = "Edit Description")
             }
-        )
 
-        Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
-        Button(
-            onClick = { showDialog = true },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(text = "Edit Description")
-        }
+            // Logout Button
+            Button(
+                onClick = onLogout,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(text = "Logout")
+            }
 
-        Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
-        // Logout Button
-        Button(
-            onClick = onLogout,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(text = "Logout")
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Continue Button
-        Button(
-            onClick = onContinue,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(text = "Continue")
+            // Continue Button
+            Button(
+                onClick = onContinue,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(text = "Continue")
+            }
         }
     }
 

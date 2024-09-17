@@ -1,4 +1,4 @@
-package com.pavlovalexey.pleinair.auth.ui
+package com.pavlovalexey.pleinair.main.ui.authScreen
 
 import android.content.Intent
 import android.util.Log

@@ -2,22 +2,21 @@ package com.pavlovalexey.pleinair
 
 import ProfileScreen
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.pavlovalexey.pleinair.auth.ui.AuthScreen
-import com.pavlovalexey.pleinair.auth.ui.TermsScreen
-import com.pavlovalexey.pleinair.auth.ui.TermsViewModel
-import com.pavlovalexey.pleinair.main.ui.MainScreen
+import com.pavlovalexey.pleinair.main.ui.authScreen.AuthScreen
+import com.pavlovalexey.pleinair.main.ui.termsScreen.TermsScreen
+import com.pavlovalexey.pleinair.settings.ui.SettingsScreen
 
 @Composable
-fun NavGraph(navController: NavHostController) {
-
+fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
     NavHost(
         navController = navController,
-        startDestination = "terms"
+        startDestination = "terms",
+        modifier = modifier
     ) {
         composable("terms") {
             TermsScreen(
@@ -53,8 +52,11 @@ fun NavGraph(navController: NavHostController) {
                 onExit = { /* Handle exit */ }
             )
         }
-//        composable("userMap") {
-//            UserMapScreen() // Замените на ваш экран карты
-//        }
+
+        composable("settings") {
+            SettingsScreen(
+                onNavigateBack = { navController.popBackStack() }
+            )
+        }
     }
 }

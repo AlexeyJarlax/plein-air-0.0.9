@@ -12,41 +12,33 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.pavlovalexey.pleinair.NavGraph
+import com.pavlovalexey.pleinair.settings.ui.SettingsScreen
 
 @Composable
-fun MainScreen(
-    onLogout: () -> Unit
-) {
-    val navController = rememberNavController()
-    val bottomNavController = rememberNavController()
-    val showBottomNav by remember { mutableStateOf(true) } // Update based on the current screen
+fun MainScreen(navController: NavHostController) {
+    // Отслеживаем текущий маршрут
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
+
+    // Определяем, когда показывать нижнюю панель
+    val showBottomNav = remember { mutableStateOf(false) }
+
+    // Отображаем навигационную панель только на экранах profile и settings
+    showBottomNav.value = currentRoute == "profile" || currentRoute == "settings"
 
     Scaffold(
         bottomBar = {
-            if (showBottomNav) {
-                BottomNavBar(navController = bottomNavController)
+            if (showBottomNav.value) {
+                BottomNavBar(navController = navController)
             }
         }
     ) { innerPadding ->
-        NavHost(
-            navController = navController,
-            startDestination = "profile",
-            Modifier.padding(innerPadding)
-        ) {
-            composable("profile") {
-                ProfileScreen(
-                    viewModel = hiltViewModel(),
-                    onNavigateToUserMap = { navController.navigate("userMap") },
-                    onContinue = { /* Handle continue */ },
-                    onLogout = {
-                        onLogout() // Use the provided onLogout callback
-                    },
-                    onExit = { /* Handle exit */ }
-                )
-            }
-        }
+        NavGraph(navController = navController, modifier = Modifier.padding(innerPadding))
     }
 }

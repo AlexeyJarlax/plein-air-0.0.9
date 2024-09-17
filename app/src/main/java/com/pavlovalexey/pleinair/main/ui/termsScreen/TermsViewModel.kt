@@ -1,4 +1,4 @@
-package com.pavlovalexey.pleinair.auth.ui
+package com.pavlovalexey.pleinair.main.ui.termsScreen
 
 import android.content.Context
 import androidx.compose.runtime.getValue

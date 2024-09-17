@@ -1,4 +1,4 @@
-package com.pavlovalexey.pleinair.auth.ui
+package com.pavlovalexey.pleinair.main.ui.termsScreen
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
@@ -18,6 +18,10 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pavlovalexey.pleinair.R
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.CircularProgressIndicator
+
 @Composable
 fun TermsScreen(
     onContinue: () -> Unit,
@@ -26,7 +30,6 @@ fun TermsScreen(
     var isAgreementChecked by rememberSaveable { mutableStateOf(false) }
     var isPrivacyPolicyChecked by rememberSaveable { mutableStateOf(false) }
     val isButtonEnabled = isAgreementChecked && isPrivacyPolicyChecked && viewModel.isTermsLoaded
-    val scrollState = rememberScrollState()
 
     LaunchedEffect(viewModel.areTermsAccepted) {
         if (viewModel.areTermsAccepted) {
@@ -39,7 +42,7 @@ fun TermsScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp)
-                .verticalScroll(scrollState),
+                .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             Column {
@@ -116,7 +119,12 @@ fun TermsScreen(
             }
         }
     } else {
-        // Можно показать индикатор загрузки или просто ничего не показывать
-        Text(text = stringResource(R.string.loading))
+        // Показать загрузочный индикатор
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator(color = Color.Blue)
+        }
     }
 }

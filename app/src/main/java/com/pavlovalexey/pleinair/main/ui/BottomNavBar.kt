@@ -7,6 +7,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -20,47 +21,27 @@ fun BottomNavBar(navController: NavHostController) {
     val currentRoute = navBackStackEntry?.destination?.route
 
     BottomNavigation {
-//        BottomNavigationItem(
-//            icon = { Icon(Icons.Filled.Home, contentDescription = "Home") },
-//            label = { Text("Home") },
-//            selected = currentRoute == "home",
-//            onClick = {
-//                navController.navigate("home") {
-//                    popUpTo("home") { saveState = true }
-//                    launchSingleTop = true
-//                }
-//            }
-//        )
-//        BottomNavigationItem(
-//            icon = { Icon(Icons.Filled.Map, contentDescription = "Map") },
-//            label = { Text("Map") },
-//            selected = currentRoute == "map",
-//            onClick = {
-//                navController.navigate("map") {
-//                    popUpTo("map") { saveState = true }
-//                    launchSingleTop = true
-//                }
-//            }
-//        )
-//        BottomNavigationItem(
-//            icon = { Icon(Icons.Filled.PersonPin, contentDescription = "UserMap") },
-//            label = { Text("UserMap") },
-//            selected = currentRoute == "userMap",
-//            onClick = {
-//                navController.navigate("userMap") {
-//                    popUpTo("userMap") { saveState = true }
-//                    launchSingleTop = true
-//                }
-//            }
-//        )
         BottomNavigationItem(
             icon = { Icon(Icons.Filled.AccountCircle, contentDescription = "Profile") },
             label = { Text("Profile") },
             selected = currentRoute == "profile",
             onClick = {
                 navController.navigate("profile") {
-                    popUpTo("profile") { saveState = true }
+                    popUpTo(navController.graph.startDestinationId) { saveState = true }
                     launchSingleTop = true
+                    restoreState = true
+                }
+            }
+        )
+        BottomNavigationItem(
+            icon = { Icon(Icons.Filled.Settings, contentDescription = "Settings") },
+            label = { Text("Settings") },
+            selected = currentRoute == "settings",
+            onClick = {
+                navController.navigate("settings") {
+                    popUpTo(navController.graph.startDestinationId) { saveState = true }
+                    launchSingleTop = true
+                    restoreState = true
                 }
             }
         )
