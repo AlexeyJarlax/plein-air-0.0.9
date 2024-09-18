@@ -19,7 +19,6 @@ import com.pavlovalexey.pleinair.settings.domain.SettingsRepository
 import com.pavlovalexey.pleinair.utils.AppPreferencesKeys
 import com.pavlovalexey.pleinair.utils.firebase.FirebaseUserManager
 import com.pavlovalexey.pleinair.utils.firebase.LoginAndUserUtils
-import com.pavlovalexey.pleinair.utils.ui.IconStateUtils
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -141,10 +140,5 @@ object AppModule {
         sharedPreferences: SharedPreferences
     ): FirebaseUserManager {
         return FirebaseUserManager(appContext, auth, firestore, storage, sharedPreferences)
-    }
-    @Provides
-    @Singleton
-    fun provideIconStateUtils(sharedPreferences: SharedPreferences): IconStateUtils {
-        return IconStateUtils(sharedPreferences)
     }
 }
