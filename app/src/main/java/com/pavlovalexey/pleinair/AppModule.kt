@@ -12,7 +12,6 @@ import com.google.firebase.storage.FirebaseStorage
 import com.pavlovalexey.pleinair.calendar.adapter.EventAdapter
 import com.pavlovalexey.pleinair.calendar.data.EventRepository
 import com.pavlovalexey.pleinair.calendar.ui.calendar.CalendarViewModel
-import com.pavlovalexey.pleinair.profile.viewmodel.ProfileViewModel
 import com.pavlovalexey.pleinair.settings.data.SettingsRepositoryImpl
 import com.pavlovalexey.pleinair.settings.domain.SettingsInteractor
 import com.pavlovalexey.pleinair.settings.domain.SettingsInteractorImpl
@@ -32,11 +31,11 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object AppModule {
 
-//    @Provides
-//    @ApplicationContext
-//    fun provideApplicationContext(application: Application): Context {
-//        return application.applicationContext
-//    }
+    @Provides
+    @Singleton
+    fun provideContext(@ApplicationContext context: Context): Context {
+        return context
+    }
 
     @Provides
     @Singleton

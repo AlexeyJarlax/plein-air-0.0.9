@@ -15,8 +15,7 @@ class Pleinair : Application() {
     override fun onCreate() {
         super.onCreate()
         FirebaseApp.initializeApp(this)
-            applyDayNightTheme()
-
+        applyDayNightTheme()
     }
 
     private fun applyDayNightTheme() {

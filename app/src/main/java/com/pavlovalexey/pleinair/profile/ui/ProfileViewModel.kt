@@ -1,27 +1,32 @@
-package com.pavlovalexey.pleinair.profile.viewmodel
+package com.pavlovalexey.pleinair.profile.ui
 
-import android.app.Application
+import android.app.Activity.RESULT_OK
+import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
+import android.provider.MediaStore
 import android.util.Log
-import androidx.lifecycle.AndroidViewModel
+import androidx.activity.result.ActivityResult
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.model.LatLng
-import com.google.firebase.auth.FirebaseAuth
-import com.pavlovalexey.pleinair.profile.UserRepository
 import com.pavlovalexey.pleinair.profile.model.User
+import com.pavlovalexey.pleinair.profile.UserRepository
 import com.pavlovalexey.pleinair.utils.firebase.FirebaseUserManager
 import com.pavlovalexey.pleinair.utils.firebase.LoginAndUserUtils
 import com.pavlovalexey.pleinair.utils.image.ImageUtils
-import com.pavlovalexey.pleinair.utils.ui.DialogUtils
-import com.pavlovalexey.pleinair.utils.ui.showSnackbar
+import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import java.io.IOException
 import javax.inject.Inject
+
+private const val TAG = "ProfileViewModel"
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
@@ -34,8 +39,12 @@ class ProfileViewModel @Inject constructor(
 
     private val _user = MutableLiveData<User?>()
     val user: LiveData<User?> get() = _user
+
     private val _selectedArtStyles = MutableLiveData<Set<String>>(emptySet())
     val selectedArtStyles: LiveData<Set<String>> get() = _selectedArtStyles
+
+    private val _bitmap = MutableLiveData<Bitmap?>()
+    val bitmap: LiveData<Bitmap?> get() = _bitmap
 
     init {
         loadUser()
@@ -50,9 +59,15 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
+    fun logout() {
+        loginAndUserUtils.logout()
+        _user.value = null
+    }
+
     fun updateUserName(newName: String, onComplete: () -> Unit) {
         val userId = auth.currentUser?.uid ?: return
         loginAndUserUtils.updateUserNameOnFirebase(newName)
+        _user.value = _user.value?.copy(name = newName)
         onComplete()
     }
 
@@ -69,13 +84,7 @@ class ProfileViewModel @Inject constructor(
                 Log.w("ProfileViewModel", "Error updating user description", e)
             }
         )
-
     }
-
-    fun signOut() {
-        auth.signOut()
-    }
-
 
     fun checkAndGenerateAvatar(onComplete: () -> Unit) {
         val currentUser = _user.value ?: return
@@ -136,6 +145,40 @@ class ProfileViewModel @Inject constructor(
         )
     }
 
+    fun handleCameraResult(result: ActivityResult) {
+        if (result.resultCode == RESULT_OK) {
+            val imageBitmap = result.data?.extras?.get("data") as? Bitmap
+            imageBitmap?.let {
+                val processedBitmap = ImageUtils.compressAndGetCircularBitmap(it)
+                _bitmap.value = processedBitmap
+            }
+        }
+    }
+
+    fun handleGalleryResult(result: ActivityResult, context: Context) {
+        if (result.resultCode == RESULT_OK) {
+            val selectedImageUri: Uri? = result.data?.data
+            selectedImageUri?.let { uri ->
+                try {
+                    val inputStream = context.contentResolver.openInputStream(uri)
+                    val imageBitmap = BitmapFactory.decodeStream(inputStream)
+                    val processedBitmap = ImageUtils.compressAndGetCircularBitmap(imageBitmap)
+                    _bitmap.value = processedBitmap
+                } catch (e: IOException) {
+                    Log.e(TAG, "Ошибка при открытии InputStream для URI", e)
+                }
+            }
+        }
+    }
+
+    fun getCameraIntent(): Intent {
+        return Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+    }
+
+    fun getGalleryIntent(): Intent {
+        return Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+    }
+
     fun loadProfileImageFromStorage(onSuccess: (Bitmap) -> Unit, onFailure: (Exception) -> Unit) {
         val userId = auth.currentUser?.uid ?: return
         firebaseUserManager.loadProfileImageFromStorage(
@@ -159,7 +202,6 @@ class ProfileViewModel @Inject constructor(
         )
     }
 
-
     fun updateSelectedStyles(styles: Set<String>, onSuccess: () -> Unit) {
         val userId = auth.currentUser?.uid ?: return
         firebaseUserManager.updateSelectedStyles(
@@ -180,5 +222,9 @@ class ProfileViewModel @Inject constructor(
             putString("profileImageUrl", url)
             apply()
         }
+    }
+
+    fun onImageSelected(bitmap: Bitmap) {
+        _bitmap.value = bitmap
     }
 }

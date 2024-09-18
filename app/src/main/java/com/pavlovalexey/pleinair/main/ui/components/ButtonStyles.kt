@@ -24,30 +24,26 @@ fun CustomButtonOne(
     iconResId: Int,
     modifier: Modifier = Modifier
 ) {
-    val contentColor = if (isSystemInDarkTheme()) {
-        colorResource(id = R.color.my_blue_light) // Resource ID directly
-    } else {
-        colorResource(id = R.color.my_black) // Resource ID directly
-    }
+    val colors = MaterialTheme.colorScheme
 
     Button(
         onClick = onClick,
         colors = ButtonDefaults.buttonColors(
             containerColor = Color.Transparent,
-            contentColor = contentColor
+            contentColor = colors.primary
         ),
         modifier = modifier
             .padding(end = 12.dp, bottom = 12.dp)
             .background(Color.Transparent)
             .height(IntrinsicSize.Min),
-        elevation = ButtonDefaults.elevatedButtonElevation(0.dp),
+        elevation = ButtonDefaults.buttonElevation(defaultElevation = 0.dp),
         shape = RoundedCornerShape(0.dp),
         contentPadding = PaddingValues(16.dp)
     ) {
         Icon(
             painter = painterResource(id = iconResId),
             contentDescription = null,
-            tint = contentColor
+            tint = colors.primary
         )
         Spacer(modifier = Modifier.width(8.dp))
         Text(
@@ -55,7 +51,7 @@ fun CustomButtonOne(
             fontSize = 22.sp,
             letterSpacing = 0.0.sp,
             fontFamily = FontFamily.Default,
-            color = contentColor
+            color = colors.primary
         )
     }
 }

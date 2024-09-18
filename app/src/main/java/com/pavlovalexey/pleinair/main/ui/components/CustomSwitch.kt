@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
+import com.pavlovalexey.pleinair.MyBlueLight
 import com.pavlovalexey.pleinair.R
 import kotlin.math.exp
 
@@ -20,17 +21,15 @@ fun CustomSwitch(
     onCheckedChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val thumbColor = colorResource(id = if (checked) R.color.my_blue_light else R.color.my_black)
-    val trackColor = colorResource(id = if (checked) R.color.my_blue_light else R.color.my_black)
 
     Switch(
         checked = checked,
         onCheckedChange = onCheckedChange,
         colors = SwitchDefaults.colors(
-            checkedThumbColor = thumbColor,
-            checkedTrackColor = trackColor,
-            uncheckedThumbColor = thumbColor,
-            uncheckedTrackColor = trackColor
+            checkedThumbColor = Color.Blue,
+            checkedTrackColor = Color.Black,
+            uncheckedThumbColor = Color.LightGray,
+            uncheckedTrackColor = Color.DarkGray
         ),
         modifier = modifier
             .padding(end = 12.dp, bottom = 12.dp)

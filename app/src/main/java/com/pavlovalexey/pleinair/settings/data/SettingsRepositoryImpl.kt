@@ -12,7 +12,6 @@ import com.google.firebase.storage.FirebaseStorage
 import com.pavlovalexey.pleinair.R
 import com.pavlovalexey.pleinair.settings.domain.SettingsRepository
 import com.pavlovalexey.pleinair.utils.AppPreferencesKeys.KEY_NIGHT_MODE
-import com.pavlovalexey.pleinair.utils.firebase.LoginAndUserUtils
 import de.cketti.mailto.EmailIntentBuilder
 import java.io.File
 import javax.inject.Inject
@@ -31,8 +30,8 @@ class SettingsRepositoryImpl @Inject constructor(
     }
 
     override fun applyTheme() {
-        val nightModeEnabled = loadNightMode()
-        if (nightModeEnabled) {
+        val isNightMode = loadNightMode()
+        if (isNightMode) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
         } else {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
@@ -141,12 +140,15 @@ class SettingsRepositoryImpl @Inject constructor(
                         onAccountDeleted()
                     } else {
                         Log.w("DeleteUser", "Ошибка при удалении учетной записи пользователя.", task.exception)
+                        onAccountDeleted()
                     }
                 }
             }.addOnFailureListener { e ->
                 Log.w("DeleteUser", "Ошибка при удалении данных пользователя из Firestore", e)
+                onAccountDeleted()
             }
+        } ?: run {
+            // Если пользователь уже null, все равно вызовем onAccountDeleted
+            onAccountDeleted()
         }
-//        FirebaseAuth.getInstance().signOut()
-    }
-}
+    }   }

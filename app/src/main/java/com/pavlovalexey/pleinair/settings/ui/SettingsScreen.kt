@@ -12,6 +12,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -22,6 +23,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.pavlovalexey.pleinair.R
 import com.pavlovalexey.pleinair.main.ui.components.CustomButtonOne
 import androidx.compose.ui.platform.LocalContext
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
+import com.pavlovalexey.pleinair.main.ui.components.CustomSwitch
 
 @Composable
 fun SettingsScreen(
@@ -31,40 +35,32 @@ fun SettingsScreen(
     val isNightMode by viewModel.isNightMode.observeAsState(initial = false)
     val isLoading by viewModel.isLoading.observeAsState(initial = false)
     val context = LocalContext.current as Activity
-    val coroutineScope = rememberCoroutineScope()
 
-    LaunchedEffect(viewModel.eventFlow) {
-        viewModel.eventFlow.collect { event ->
-            when (event) {
-                is SettingsViewModel.Event.FinishActivity -> {
-                    context.finish()
-                }
-                is SettingsViewModel.Event.AccountDeleted -> {
-                    // Успешное удаление аккаунта
-                    context.finish()
-                }
-                is SettingsViewModel.Event.DeleteAccountFailed -> {
-                    // Показать ошибку удаления
-                    Toast.makeText(context, "Ошибка удаления аккаунта", Toast.LENGTH_LONG).show()
-                }
-                is SettingsViewModel.Event.ReauthenticationFailed -> {
-                    // Показать ошибку реаутентификации
-                    Toast.makeText(context, "Ошибка реаутентификации", Toast.LENGTH_LONG).show()
-                }
-            }
+    // Collecting events from view model
+    val eventFlow = viewModel.eventFlow.collectAsState(initial = null)
+
+    eventFlow.value?.let { event ->
+        when (event) {
+            is SettingsViewModel.Event.FinishActivity -> context.finish()
+            is SettingsViewModel.Event.AccountDeleted -> context.finish()
+            is SettingsViewModel.Event.DeleteAccountFailed ->
+                Toast.makeText(context, "Ошибка удаления аккаунта", Toast.LENGTH_LONG).show()
+            is SettingsViewModel.Event.ReauthenticationFailed ->
+                Toast.makeText(context, "Ошибка реаутентификации", Toast.LENGTH_LONG).show()
         }
     }
 
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White)
     ) {
         Image(
             painter = painterResource(R.drawable.back_lay),
-            contentDescription = "Background",
+            contentDescription = null,
             contentScale = ContentScale.Crop,
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxSize()
+                .alpha(0.5f)
         )
         Column(
             modifier = Modifier
@@ -83,7 +79,7 @@ fun SettingsScreen(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(text = "Темный режим", modifier = Modifier.weight(1f))
-                Switch(
+                CustomSwitch(
                     checked = isNightMode,
                     onCheckedChange = { viewModel.changeNightMode(it) }
                 )

@@ -1,6 +1,5 @@
 package com.pavlovalexey.pleinair
 
-import ProfileScreen
 import android.app.Activity
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -11,6 +10,7 @@ import androidx.navigation.compose.composable
 import com.pavlovalexey.pleinair.main.ui.authScreen.AuthScreen
 import com.pavlovalexey.pleinair.main.ui.termsScreen.TermsScreen
 import com.pavlovalexey.pleinair.profile.ui.MyLocationScreen
+import com.pavlovalexey.pleinair.profile.ui.ProfileScreen
 import com.pavlovalexey.pleinair.settings.ui.SettingsScreen
 
 @Composable

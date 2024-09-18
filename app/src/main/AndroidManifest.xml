@@ -28,7 +28,7 @@
         android:roundIcon="@drawable/icon2"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/Theme.MyApp"
+        android:theme="@style/Theme.AppCompat.DayNight"
         tools:targetApi="tiramisu">
 
         <activity
