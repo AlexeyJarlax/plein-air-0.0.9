@@ -26,7 +26,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class ProfileFragment : Fragment(), MyLocationFragment.OnLocationSelectedListener {
+class ProfileFragment : Fragment() {
 
     @Inject
     lateinit var loginAndUserUtils: LoginAndUserUtils
@@ -88,7 +88,7 @@ class ProfileFragment : Fragment(), MyLocationFragment.OnLocationSelectedListene
             showImageSelectionDialog(cameraActivityResultLauncher, galleryActivityResultLauncher)
         }
         binding.userName.setOnClickListener { showEditNameDialog() }
-        binding.btnChooseLocation.setOnClickListener { openUserMapFragment() }
+//        binding.btnChooseLocation.setOnClickListener { openUserMapFragment() }
         binding.editDescription.setOnClickListener { showEditDescriptionDialog() }
         binding.exitButton.setOnClickListener { showExitConfirmationDialog() }
         binding.btnTechnic.setOnClickListener { showTechnicDialog() }
@@ -179,13 +179,13 @@ class ProfileFragment : Fragment(), MyLocationFragment.OnLocationSelectedListene
         )
     }
 
-    private fun openUserMapFragment() {
-        val myLocationFragment = MyLocationFragment()
-        myLocationFragment.setOnLocationSelectedListener(this)
+//    private fun openUserMapFragment() {
+//        val myLocationFragment = MyLocationFragment()
+//        myLocationFragment.setOnLocationSelectedListener(this)
 //        findNavController().navigate(R.id.action_profileFragment_to_UserMapFragment)
-    }
+//    }
 
-    override fun onLocationSelected(location: LatLng) {
+    fun onLocationSelected(location: LatLng) {
         viewModel.updateUserLocation(location) {
             showSnackbar("Местоположение сохранено!")
             parentFragmentManager.popBackStack()

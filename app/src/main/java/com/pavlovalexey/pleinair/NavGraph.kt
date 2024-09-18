@@ -3,7 +3,6 @@ package com.pavlovalexey.pleinair
 import ProfileScreen
 import android.app.Activity
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -13,14 +12,11 @@ import com.pavlovalexey.pleinair.main.ui.termsScreen.TermsScreen
 import com.pavlovalexey.pleinair.profile.ui.MyLocationScreen
 import com.pavlovalexey.pleinair.settings.ui.SettingsScreen
 
-
 @Composable
-//fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier, activity: Activity) {
 fun NavGraph(navController: NavHostController, activity: Activity) {
     NavHost(
         navController = navController,
-        startDestination = "terms",
-//        modifier = modifier
+        startDestination = "terms"
     ) {
         composable("terms") {
             TermsScreen(
@@ -30,11 +26,12 @@ fun NavGraph(navController: NavHostController, activity: Activity) {
                     }
                 },
                 onCancel = {
-                        activity.finish()
+                    activity.finish()
                 },
                 viewModel = hiltViewModel()
             )
         }
+
         composable("auth") {
             AuthScreen(
                 navController = navController,
@@ -43,34 +40,38 @@ fun NavGraph(navController: NavHostController, activity: Activity) {
                         popUpTo("auth") { inclusive = true }
                     }
                 },
-                        onCancel = {
-                        activity.finish()
+                onCancel = {
+                    activity.finish()
                 },
                 viewModel = hiltViewModel()
             )
         }
+
         composable("profile") {
             ProfileScreen(
                 viewModel = hiltViewModel(),
                 onNavigateToUserMap = { navController.navigate("userMap") },
                 onMyLocation = {
-                    navController.navigate("myLocation") {
-                    popUpTo("profile") { inclusive = true }
-                } },
+                    navController.navigate("myLocation")
+                },
                 onLogout = {
                     navController.navigate("auth") {
                         popUpTo("profile") { inclusive = true }
                     }
                 },
-                onExit = { /* Handle exit */ }
+                onExit = { activity.finish() }
             )
         }
 
-
         composable("myLocation") {
-            MyLocationScreen { selectedLocation ->
-                navController.popBackStack()
-            }
+            MyLocationScreen(
+                navController = navController,
+                onLocationSelected = {
+                    navController.navigate("profile") {
+                        popUpTo("myLocation") { inclusive = true }
+                    }
+                }
+            )
         }
 
         composable("settings") {

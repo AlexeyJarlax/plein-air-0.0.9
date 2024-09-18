@@ -12,11 +12,12 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.CameraPositionState
-import com.pavlovalexey.pleinair.utils.firebase.FirebaseUserManager
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import androidx.compose.runtime.State
+import androidx.lifecycle.ViewModel
+import com.pavlovalexey.pleinair.utils.firebase.FirebaseUserManager
+import dagger.hilt.android.lifecycle.HiltViewModel
 
 @HiltViewModel
 class MyLocationViewModel @Inject constructor(
@@ -25,21 +26,21 @@ class MyLocationViewModel @Inject constructor(
 ) : AndroidViewModel(application) {
 
     private val fusedLocationClient = LocationServices.getFusedLocationProviderClient(application)
-    private val _locationEnabled = mutableStateOf(false) // Приватное состояние
-    val locationEnabled: State<Boolean> = _locationEnabled // Публичное чтение состояния
+    private val _locationEnabled = mutableStateOf(false)
+    val locationEnabled: State<Boolean> = _locationEnabled
 
     private val _cameraPositionState = mutableStateOf(
         CameraPositionState(
             position = CameraPosition.fromLatLngZoom(LatLng(0.0, 0.0), 10f)
         )
     )
-    val cameraPositionState: State<CameraPositionState> = _cameraPositionState // Публичное чтение состояния
+    val cameraPositionState: State<CameraPositionState> = _cameraPositionState
 
     fun checkLocationPermission() {
         viewModelScope.launch {
             val permissionGranted = ContextCompat.checkSelfPermission(
                 getApplication(),
-                Manifest.permission.ACCESS_FINE_LOCATION
+                android.Manifest.permission.ACCESS_FINE_LOCATION
             ) == PackageManager.PERMISSION_GRANTED
 
             if (permissionGranted) {
@@ -54,13 +55,15 @@ class MyLocationViewModel @Inject constructor(
     private fun getLastLocation() {
         if (ContextCompat.checkSelfPermission(
                 getApplication(),
-                Manifest.permission.ACCESS_FINE_LOCATION
+                android.Manifest.permission.ACCESS_FINE_LOCATION
             ) == PackageManager.PERMISSION_GRANTED
         ) {
             fusedLocationClient.lastLocation.addOnSuccessListener { location ->
                 location?.let {
                     val userLatLng = LatLng(it.latitude, it.longitude)
-                    _cameraPositionState.value.move(CameraUpdateFactory.newLatLngZoom(userLatLng, 12f))
+                    _cameraPositionState.value = CameraPositionState(
+                        position = CameraPosition.fromLatLngZoom(userLatLng, 12f)
+                    )
                 }
             }
         }

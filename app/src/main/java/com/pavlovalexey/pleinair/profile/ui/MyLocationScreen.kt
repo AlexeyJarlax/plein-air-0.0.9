@@ -13,21 +13,28 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.google.android.gms.maps.CameraUpdateFactory
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.Marker
+import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
+import com.google.maps.android.compose.rememberMarkerState
+import com.pavlovalexey.pleinair.profile.viewmodel.ProfileViewModel
 
 @Composable
 fun MyLocationScreen(
+    navController: NavController,
     viewModel: MyLocationViewModel = hiltViewModel(),
     onLocationSelected: (LatLng) -> Unit
 ) {
     val context = LocalContext.current
     val locationEnabled by viewModel.locationEnabled
-    val cameraPositionState by viewModel.cameraPositionState
-    var selectedLocation by remember { mutableStateOf<LatLng?>(null) } // Переменная для хранения координат маркера
+    val cameraPositionState = rememberCameraPositionState {
+        position = viewModel.cameraPositionState.value.position
+    }
+    var selectedLocation by remember { mutableStateOf<LatLng?>(null) }
 
     val requestPermissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -49,13 +56,15 @@ fun MyLocationScreen(
                 modifier = Modifier.fillMaxSize(),
                 cameraPositionState = cameraPositionState,
                 onMapClick = { latLng ->
-                    selectedLocation = latLng // Сохраняем координаты клика
+                    selectedLocation = latLng
                     viewModel.updateUserLocation(latLng)
-                    onLocationSelected(latLng)
                 }
             ) {
-                // Если выбранное местоположение есть, отображаем маркер
-                selectedLocation?.let { Marker(position = it) }
+                selectedLocation?.let {
+                    Marker(
+                        state = MarkerState(position = it)
+                    )
+                }
             }
         } else {
             Text(text = "Геолокация выключена", modifier = Modifier.align(Alignment.Center))
@@ -65,7 +74,7 @@ fun MyLocationScreen(
             onClick = {
                 selectedLocation?.let {
                     onLocationSelected(it)
-                    viewModel.updateUserLocation(it) // Вызываем updateUserLocation с координатами маркера
+                    navController.popBackStack()
                 } ?: run {
                     Toast.makeText(context, "Выберите местоположение", Toast.LENGTH_SHORT).show()
                 }
@@ -77,4 +86,4 @@ fun MyLocationScreen(
             Text("Подтвердить")
         }
     }
-}}
+}
