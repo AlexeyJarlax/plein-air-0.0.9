@@ -2,26 +2,28 @@ package com.pavlovalexey.pleinair
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Typography
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
-// Определение цветов для светлой и темной темы
+// Цвета для светлой и темной темы
 private val DarkColorPalette = darkColors(
     primary = Color.Blue,
     primaryVariant = Color.Red,
     secondary = Color.Magenta,
-    onPrimary = Color.White // Белый цвет текста на темном фоне
+    onPrimary = Color.White, // Цвет текста на темном фоне
+    background = Color.Black.copy(alpha = 0.6f) // Черный фон с альфой для темной темы
 )
 
 private val LightColorPalette = lightColors(
     primary = Color.Blue,
     primaryVariant = Color.Red,
-    secondary = Color.Magenta
+    secondary = Color.Magenta,
+    background = Color.White.copy(alpha = 0.6f) // Белый фон с альфой для светлой темы
 )
 
-// Основная функция темы
 @Composable
 fun PleinairTheme(
     darkTheme: Boolean,
@@ -35,7 +37,11 @@ fun PleinairTheme(
 
     MaterialTheme(
         colors = colors,
-        typography = Typography,
+        typography = Typography(
+            body1 = MaterialTheme.typography.body1.copy(
+                color = if (darkTheme) Color(0xFF9FBBF3) else Color(0xFF1C1E27) // Цвет текста
+            )
+        ),
         shapes = Shapes,
         content = content
     )

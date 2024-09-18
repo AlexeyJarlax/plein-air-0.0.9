@@ -4,9 +4,17 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.google.firebase.auth.FirebaseAuth
 import com.pavlovalexey.pleinair.settings.domain.SettingsInteractor
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlinx.coroutines.withContext
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
@@ -19,6 +27,8 @@ class SettingsViewModel @Inject constructor(
     val accountDeleted: LiveData<Boolean> get() = _accountDeleted
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> get() = _isLoading
+    private val _eventChannel = Channel<Event>()
+    val eventFlow = _eventChannel.receiveAsFlow()
 
     init {
         _isNightMode.value = settingsInteractor.loadNightMode()
@@ -57,10 +67,27 @@ class SettingsViewModel @Inject constructor(
     }
 
     fun deleteUserAccount() {
-        _isLoading.value = true
-        settingsInteractor.deleteUserAccount {
-            _isLoading.value = false
-            _accountDeleted.value = true
-        }
+        val user = FirebaseAuth.getInstance().currentUser
+        user?.delete()
+            ?.addOnCompleteListener { deleteTask ->
+                if (deleteTask.isSuccessful) {
+                    // Успешное удаление аккаунта
+                    viewModelScope.launch {
+                        _eventChannel.send(Event.AccountDeleted)
+                    }
+                } else {
+                    // Обрабатывать ошибку удаления
+                    viewModelScope.launch {
+                        _eventChannel.send(Event.DeleteAccountFailed(deleteTask.exception))
+                    }
+                }
+            }
+    }
+
+    sealed class Event {
+        object FinishActivity : Event()
+        object AccountDeleted : Event()
+        data class DeleteAccountFailed(val exception: Exception?) : Event()
+        data class ReauthenticationFailed(val exception: Exception?) : Event()
     }
 }

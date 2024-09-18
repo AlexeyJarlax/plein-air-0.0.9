@@ -51,24 +51,9 @@ class LoginAndUserUtils @Inject constructor(
         }
     }
 
-    private val defaultLocation = LatLng(59.9500019, 30.3166718)
-    private val animals: List<String> by lazy { loadFile(R.raw.animals) }
-    private val verbs: List<String> by lazy { loadFile(R.raw.verbs) }
-    private val nouns: List<String> by lazy { loadFile(R.raw.nouns) }
-
     fun logout() {
         auth.signOut()
         googleSignInClient.signOut()
-
-        // Clear SharedPreferences
-//        val prefs = sharedPreferences.all
-//        val editor = sharedPreferences.edit()
-//        for (key in prefs.keys) {
-//            if (key != "all_terms_accepted") {
-//                editor.remove(key)
-//            }
-//        }
-//        editor.apply()
 
         // Clear DataStore
         runBlocking {
@@ -78,6 +63,10 @@ class LoginAndUserUtils @Inject constructor(
         }
     }
 
+    private val defaultLocation = LatLng(59.9500019, 30.3166718)
+    private val animals: List<String> by lazy { loadFile(R.raw.animals) }
+    private val verbs: List<String> by lazy { loadFile(R.raw.verbs) }
+    private val nouns: List<String> by lazy { loadFile(R.raw.nouns) }
 
     private fun loadFile(resourceId: Int): List<String> {
         val inputStream = context.resources.openRawResource(resourceId)
@@ -120,6 +109,7 @@ class LoginAndUserUtils @Inject constructor(
             }
         }
     }
+
 
     private fun saveUserNameLocally(userName: String) {
         val editor = sharedPreferences.edit()

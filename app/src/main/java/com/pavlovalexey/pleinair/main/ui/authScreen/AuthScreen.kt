@@ -40,6 +40,12 @@ fun AuthScreen(
         }
     }
 
+    LaunchedEffect(authState.isAuthenticated) {
+        if (authState.isAuthenticated) {
+            onAuthSuccess()
+        }
+    }
+
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -49,7 +55,6 @@ fun AuthScreen(
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .fillMaxSize()
-                .alpha(0.5f)
         )
 
         Column(
@@ -72,25 +77,20 @@ fun AuthScreen(
             )
 
             Spacer(modifier = Modifier.height(16.dp))
+        }
 
-            Box(
-                modifier = Modifier.wrapContentSize() // Заполняет весь доступный экран
-            ) {
-                CustomButtonOne(
-                    onClick = onCancel,
-                    text = stringResource(R.string.cancel),
-                    iconResId = R.drawable.door_open_30dp,
-                    modifier = Modifier
-                        .align(Alignment.BottomEnd) // Расположить в нижнем правом углу
-                        .padding(end = 16.dp, bottom = 70.dp) // Отступы от краёв
-                )
-            }
-
-            LaunchedEffect(authState.isAuthenticated) {
-                if (authState.isAuthenticated) {
-                    onAuthSuccess()
-                }
-            }
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Bottom
+        ) {
+            CustomButtonOne(
+                onClick = onCancel,
+                text = stringResource(R.string.cancel),
+                iconResId = R.drawable.door_open_30dp,
+            )
         }
     }
 }

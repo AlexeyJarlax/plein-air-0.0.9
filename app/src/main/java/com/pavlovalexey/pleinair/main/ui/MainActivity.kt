@@ -14,12 +14,16 @@ import android.view.View
 import android.widget.ProgressBar
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
+import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -34,6 +38,8 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.pavlovalexey.pleinair.PleinairTheme
+import com.pavlovalexey.pleinair.main.ui.authScreen.AuthScreen
+import com.pavlovalexey.pleinair.main.ui.authScreen.AuthViewModel
 import com.pavlovalexey.pleinair.settings.ui.SettingsViewModel
 import com.pavlovalexey.pleinair.utils.firebase.LoginAndUserUtils
 import dagger.hilt.android.AndroidEntryPoint
@@ -45,10 +51,13 @@ class MainActivity : ComponentActivity(), OnMapReadyCallback {
 
     @Inject
     lateinit var auth: FirebaseAuth
+
     @Inject
     lateinit var firestore: FirebaseFirestore
+
     @Inject
     lateinit var googleSignInClient: GoogleSignInClient
+
     @Inject
     lateinit var loginAndUserUtils: LoginAndUserUtils
 
@@ -63,15 +72,43 @@ class MainActivity : ComponentActivity(), OnMapReadyCallback {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        googleSignInClient = GoogleSignIn.getClient(this, GoogleSignInOptions.DEFAULT_SIGN_IN)
+
         setContent {
             val navController = rememberNavController()
+            val authViewModel: AuthViewModel = hiltViewModel()
             val settingsViewModel: SettingsViewModel = hiltViewModel()
             val isNightMode by settingsViewModel.isNightMode.observeAsState(initial = false)
+            val authState by authViewModel.authState.collectAsState()
+
             PleinairTheme(darkTheme = isNightMode) {
-                MainScreen(navController = navController)
+                if (authState.isAuthenticated) {
+                    MainScreen(navController = navController)
+                } else {
+                    AuthScreen(
+                        navController = navController,
+                        onAuthSuccess = {
+                            navController.navigate("profile") {
+                                popUpTo("auth") { inclusive = true }
+                            }
+                        },
+                        onCancel = { finish() }
+                    )
+                }
             }
         }
         setupOnlineStatusListener()
+    }
+
+    @Composable
+    private fun logoutAndRevokeAccess() {
+        val authViewModel: AuthViewModel = hiltViewModel()
+        authViewModel.signOut()
+        googleSignInClient.revokeAccess().addOnCompleteListener {
+            // перезапуск активити или навигация на экран авторизации
+            finish()
+            startActivity(intent)
+        }
     }
 
     private fun setupOnlineStatusListener() {
@@ -104,6 +141,8 @@ class MainActivity : ComponentActivity(), OnMapReadyCallback {
         })
     }
 
+
+
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
         mMap.setOnMapClickListener { latLng ->
@@ -113,13 +152,6 @@ class MainActivity : ComponentActivity(), OnMapReadyCallback {
         }
         val initialPosition = selectedLocation ?: defaultLocation
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(initialPosition, 12f))
-    }
-
-    fun logoutAndRevokeAccess() {
-        loginAndUserUtils.logout()
-        googleSignInClient.revokeAccess().addOnCompleteListener {
-            // Handle logout completion
-        }
     }
 
     private fun hideSystemUI() {

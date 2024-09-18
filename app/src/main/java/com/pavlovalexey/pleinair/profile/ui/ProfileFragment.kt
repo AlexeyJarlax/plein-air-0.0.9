@@ -10,7 +10,6 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import com.google.android.gms.maps.model.LatLng
 import com.pavlovalexey.pleinair.R
 import com.pavlovalexey.pleinair.databinding.FragmentProfileBinding
 import com.pavlovalexey.pleinair.profile.viewmodel.ProfileViewModel
@@ -88,7 +87,6 @@ class ProfileFragment : Fragment() {
             showImageSelectionDialog(cameraActivityResultLauncher, galleryActivityResultLauncher)
         }
         binding.userName.setOnClickListener { showEditNameDialog() }
-//        binding.btnChooseLocation.setOnClickListener { openUserMapFragment() }
         binding.editDescription.setOnClickListener { showEditDescriptionDialog() }
         binding.exitButton.setOnClickListener { showExitConfirmationDialog() }
         binding.btnTechnic.setOnClickListener { showTechnicDialog() }
@@ -177,20 +175,5 @@ class ProfileFragment : Fragment() {
             message = "Закрыть приложение?",
             onConfirm = { activity?.finishAffinity() }
         )
-    }
-
-//    private fun openUserMapFragment() {
-//        val myLocationFragment = MyLocationFragment()
-//        myLocationFragment.setOnLocationSelectedListener(this)
-//        findNavController().navigate(R.id.action_profileFragment_to_UserMapFragment)
-//    }
-
-    fun onLocationSelected(location: LatLng) {
-        viewModel.updateUserLocation(location) {
-            showSnackbar("Местоположение сохранено!")
-            parentFragmentManager.popBackStack()
-            iconStateUtils.saveIconState(requireContext(), "location", true)
-            iconStateUtils.updateIconToChecked(binding.txtChooseLocation)
-        }
     }
 }

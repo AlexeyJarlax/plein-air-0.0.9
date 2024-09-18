@@ -102,16 +102,16 @@ object AppModule {
     }
 
     ////////// ViewModel
-    @Provides
-    @Singleton
-    fun provideProfileViewModel(
-        firebaseUserManager: FirebaseUserManager,
-        loginAndUserUtils: LoginAndUserUtils,
-        auth: FirebaseAuth,
-        sharedPreferences: SharedPreferences
-    ): ProfileViewModel {
-        return ProfileViewModel(firebaseUserManager, loginAndUserUtils, auth, sharedPreferences)
-    }
+//    @Provides
+//    @Singleton
+//    fun provideProfileViewModel(
+//        firebaseUserManager: FirebaseUserManager,
+//        loginAndUserUtils: LoginAndUserUtils,
+//        auth: FirebaseAuth,
+//        sharedPreferences: SharedPreferences
+//    ): ProfileViewModel {
+//        return ProfileViewModel(firebaseUserManager, loginAndUserUtils, auth, sharedPreferences)
+//    }
     @Provides
     @Singleton
     fun provideCalendarViewModel(

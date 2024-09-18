@@ -48,7 +48,7 @@ fun ProfileScreen(
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .fillMaxSize()
-                .alpha(0.5f)
+                .alpha(0.6f)
         )
         Column(
             modifier = Modifier
@@ -85,26 +85,32 @@ fun ProfileScreen(
                 iconResId = R.drawable.description_30dp,
                 modifier = Modifier.fillMaxWidth()
             )
+
             Spacer(modifier = Modifier.height(16.dp))
+
             CustomButtonOne(
                 onClick = onMyLocation,
                 text = stringResource(R.string.location),
                 iconResId = R.drawable.location_on_50dp,
                 modifier = Modifier.fillMaxWidth()
             )
+
             CustomButtonOne(
                 onClick = onLogout,
                 text = stringResource(R.string.logout),
                 iconResId = R.drawable.logout_30dp,
                 modifier = Modifier.fillMaxWidth()
             )
+
             Spacer(modifier = Modifier.height(16.dp))
+
             CustomButtonOne(
                 onClick = onExit,
                 text = stringResource(R.string.exit),
                 iconResId = R.drawable.door_open_30dp,
                 modifier = Modifier.fillMaxWidth()
             )
+
             Spacer(modifier = Modifier.height(16.dp))
         }
     }
@@ -146,8 +152,8 @@ fun ProfileImage(onClick: () -> Unit, imageUrl: String?) {
         model = ImageRequest.Builder(LocalContext.current)
             .data(imageUrl)
             .crossfade(true)
-            .placeholder(R.drawable.account_circle_50dp)  // Use resource ID directly
-            .error(R.drawable.account_circle_50dp)         // Use resource ID directly
+            .placeholder(R.drawable.account_circle_50dp)
+            .error(R.drawable.account_circle_50dp)
             .build(),
         contentDescription = null,
         modifier = Modifier

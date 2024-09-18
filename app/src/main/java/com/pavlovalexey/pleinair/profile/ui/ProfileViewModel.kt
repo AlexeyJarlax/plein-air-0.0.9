@@ -9,8 +9,10 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.auth.FirebaseAuth
+import com.pavlovalexey.pleinair.profile.UserRepository
 import com.pavlovalexey.pleinair.profile.model.User
 import com.pavlovalexey.pleinair.utils.firebase.FirebaseUserManager
 import com.pavlovalexey.pleinair.utils.firebase.LoginAndUserUtils
@@ -18,12 +20,14 @@ import com.pavlovalexey.pleinair.utils.image.ImageUtils
 import com.pavlovalexey.pleinair.utils.ui.DialogUtils
 import com.pavlovalexey.pleinair.utils.ui.showSnackbar
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
     private val firebaseUserManager: FirebaseUserManager,
     private val loginAndUserUtils: LoginAndUserUtils,
+    private val userRepository: UserRepository,
     private val auth: FirebaseAuth,
     private val sharedPreferences: SharedPreferences
 ) : ViewModel() {
@@ -38,35 +42,57 @@ class ProfileViewModel @Inject constructor(
     }
 
     private fun loadUser() {
-        val userId = auth.currentUser?.uid ?: return
-        firebaseUserManager.fetchUserFromServer(
-            userId,
-            onSuccess = { name, profileImageUrl ->
-                _user.value = User(name = name, profileImageUrl = profileImageUrl, locationName = "")
-            },
-            onFailure = {
-                Log.w("ProfileViewModel", "Error fetching user data", it)
+        viewModelScope.launch {
+            val userId = auth.currentUser?.uid
+            if (userId != null) {
+                _user.value = userRepository.getUserById(userId)
             }
-        )
+        }
     }
 
-    fun checkAndGenerateAvatar(onSuccess: () -> Unit = {}) {
-        val currentUser = _user.value ?: return
+    fun updateUserName(newName: String, onComplete: () -> Unit) {
+        val userId = auth.currentUser?.uid ?: return
+        loginAndUserUtils.updateUserNameOnFirebase(newName)
+        onComplete()
+    }
 
+    fun updateUserDescription(newDescription: String, onComplete: () -> Unit) {
+        val userId = auth.currentUser?.uid ?: return
+        firebaseUserManager.updateUserDescription(
+            userId,
+            newDescription,
+            onSuccess = {
+                _user.value = _user.value?.copy(description = newDescription)
+                onComplete()
+            },
+            onFailure = { e ->
+                Log.w("ProfileViewModel", "Error updating user description", e)
+            }
+        )
+
+    }
+
+    fun signOut() {
+        auth.signOut()
+    }
+
+
+    fun checkAndGenerateAvatar(onComplete: () -> Unit) {
+        val currentUser = _user.value ?: return
         if (currentUser.profileImageUrl.isEmpty()) {
             val generatedAvatar = ImageUtils.generateRandomAvatar()
             uploadAvatarImageToFirebase(
                 imageBitmap = generatedAvatar,
                 onSuccess = { uri ->
                     updateProfileImageUrl(uri.toString())
-                    onSuccess()
+                    onComplete()
                 },
                 onFailure = {
                     Log.w("ProfileViewModel", "Error uploading generated avatar", it)
                 }
             )
         } else {
-            onSuccess()
+            onComplete()
         }
     }
 
@@ -110,11 +136,6 @@ class ProfileViewModel @Inject constructor(
         )
     }
 
-    fun updateUserName(newName: String, onSuccess: () -> Unit) {
-        val userId = auth.currentUser?.uid ?: return
-        loginAndUserUtils.updateUserNameOnFirebase( newName)
-    }
-
     fun loadProfileImageFromStorage(onSuccess: (Bitmap) -> Unit, onFailure: (Exception) -> Unit) {
         val userId = auth.currentUser?.uid ?: return
         firebaseUserManager.loadProfileImageFromStorage(
@@ -138,20 +159,6 @@ class ProfileViewModel @Inject constructor(
         )
     }
 
-    fun updateUserDescription(newDescription: String, onSuccess: () -> Unit) {
-        val userId = auth.currentUser?.uid ?: return
-        firebaseUserManager.updateUserDescription(
-            userId,
-            newDescription,
-            onSuccess = {
-                _user.value = _user.value?.copy(description = newDescription)
-                onSuccess()
-            },
-            onFailure = { e ->
-                Log.w("ProfileViewModel", "Error updating user description", e)
-            }
-        )
-    }
 
     fun updateSelectedStyles(styles: Set<String>, onSuccess: () -> Unit) {
         val userId = auth.currentUser?.uid ?: return
