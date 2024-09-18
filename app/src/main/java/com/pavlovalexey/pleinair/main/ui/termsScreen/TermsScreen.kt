@@ -17,12 +17,16 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pavlovalexey.pleinair.R
 import com.pavlovalexey.pleinair.main.ui.components.CustomButtonOne
 import com.pavlovalexey.pleinair.main.ui.components.CustomCheckbox
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+
 
 @Composable
 fun TermsScreen(
@@ -30,8 +34,17 @@ fun TermsScreen(
     onCancel: () -> Unit,
     viewModel: TermsViewModel = hiltViewModel()
 ) {
+    val context = LocalContext.current
     var isAgreementChecked by rememberSaveable { mutableStateOf(false) }
     var isPrivacyPolicyChecked by rememberSaveable { mutableStateOf(false) }
+    var isAlreadySigned by remember { mutableStateOf(false) }
+
+    LaunchedEffect(viewModel) {
+        isAlreadySigned = viewModel.checkIfSigned(context)
+        if (isAlreadySigned) {
+            onContinue()
+        }
+    }
 
     val isButtonEnabled = isAgreementChecked && isPrivacyPolicyChecked && viewModel.isTermsLoaded
     val scrollState = rememberScrollState()
@@ -135,16 +148,24 @@ fun TermsScreen(
                     .fillMaxSize()
                     .padding(6.dp)
             ) {
-                CustomButtonOne(
-                    onClick = onContinue,
-                    text = stringResource(R.string.resume),
-                    iconResId = R.drawable.circle_down_30dp,
-                )
-                CustomButtonOne(
+                Button(
+                    onClick = {
+                        viewModel.markAsSigned(context)
+                        onContinue()
+                    },
+                    enabled = isButtonEnabled,
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors(backgroundColor = if (isButtonEnabled) Color.Blue else Color.Gray)
+                ) {
+                    Text(text = stringResource(R.string.resume))
+                }
+                Button(
                     onClick = onCancel,
-                    text = stringResource(R.string.cancel),
-                    iconResId = R.drawable.door_open_30dp // Замените на нужный ресурс
-                )
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors(backgroundColor = Color.DarkGray)
+                ) {
+                    Text(text = stringResource(R.string.cancel))
+                }
             }
         }
     }

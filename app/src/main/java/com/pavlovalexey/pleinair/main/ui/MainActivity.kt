@@ -14,7 +14,10 @@ import android.view.View
 import android.widget.ProgressBar
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.platform.LocalContext
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -30,6 +33,8 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
+import com.pavlovalexey.pleinair.PleinairTheme
+import com.pavlovalexey.pleinair.settings.ui.SettingsViewModel
 import com.pavlovalexey.pleinair.utils.firebase.LoginAndUserUtils
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -60,7 +65,11 @@ class MainActivity : ComponentActivity(), OnMapReadyCallback {
 
         setContent {
             val navController = rememberNavController()
-            MainScreen(navController = navController)
+            val settingsViewModel: SettingsViewModel = hiltViewModel()
+            val isNightMode by settingsViewModel.isNightMode.observeAsState(initial = false)
+            PleinairTheme(darkTheme = isNightMode) {
+                MainScreen(navController = navController)
+            }
         }
         setupOnlineStatusListener()
     }

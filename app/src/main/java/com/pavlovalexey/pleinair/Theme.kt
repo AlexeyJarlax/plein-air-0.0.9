@@ -24,7 +24,7 @@ private val LightColorPalette = lightColors(
 // Основная функция темы
 @Composable
 fun PleinairTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    darkTheme: Boolean,
     content: @Composable () -> Unit
 ) {
     val colors = if (darkTheme) {
@@ -41,6 +41,6 @@ fun PleinairTheme(
     )
 }
 
-// Определение типографики и форм (для примера, можно настроить по своему)
+// Определение типографики и форм
 private val Typography = androidx.compose.material.Typography()
 private val Shapes = androidx.compose.material.Shapes()

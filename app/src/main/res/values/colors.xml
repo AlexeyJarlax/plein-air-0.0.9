@@ -37,5 +37,6 @@
     <color name="yp_blue_and_yp_blue">@color/yp_blue</color>
 
     НОВЫЕ
-    <color name="my_black">#1A1B22</color>
+    <color name="my_black">#1C1E27</color>
+    <color name="my_blue_light">#9FBBF3</color>
 </resources>

@@ -36,6 +36,10 @@ class TermsViewModel @Inject constructor(
         private set
 
     init {
+        loadAgreementTexts()
+    }
+
+    private fun loadAgreementTexts() {
         viewModelScope.launch {
             loadTextFromUrl(context.getString(R.string.privacy_policy_url)) { text ->
                 privacyPolicyContent = text
@@ -71,7 +75,17 @@ class TermsViewModel @Inject constructor(
     private fun checkTermsLoaded() {
         isTermsLoaded = privacyPolicyContent.length > 100 && userAgreementContent.length > 100
     }
-    fun closeApp() {
-        (context as? Activity)?.finishAffinity()
+
+    fun checkIfSigned(context: Context): Boolean {
+        val prefs = context.getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE)
+        return prefs.getBoolean("isSigned", false)
+    }
+
+    fun markAsSigned(context: Context) {
+        val prefs = context.getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE)
+        with(prefs.edit()) {
+            putBoolean("isSigned", true)
+            apply()
+        }
     }
 }
