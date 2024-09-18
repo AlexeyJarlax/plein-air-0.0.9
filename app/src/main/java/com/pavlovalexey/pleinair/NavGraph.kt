@@ -3,6 +3,7 @@ package com.pavlovalexey.pleinair
 import ProfileScreen
 import android.app.Activity
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -13,10 +14,11 @@ import com.pavlovalexey.pleinair.profile.ui.MyLocationScreen
 import com.pavlovalexey.pleinair.settings.ui.SettingsScreen
 
 @Composable
-fun NavGraph(navController: NavHostController, activity: Activity) {
+fun NavGraph(navController: NavHostController, activity: Activity, modifier: Modifier = Modifier) {
     NavHost(
         navController = navController,
-        startDestination = "terms"
+        startDestination = "terms",
+        modifier = modifier
     ) {
         composable("terms") {
             TermsScreen(

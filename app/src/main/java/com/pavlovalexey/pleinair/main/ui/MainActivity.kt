@@ -14,7 +14,6 @@ import android.view.View
 import android.widget.ProgressBar
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.rememberNavController
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -31,10 +30,10 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
-import com.pavlovalexey.pleinair.NavGraph
 import com.pavlovalexey.pleinair.utils.firebase.LoginAndUserUtils
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
+
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity(), OnMapReadyCallback {
@@ -61,12 +60,7 @@ class MainActivity : ComponentActivity(), OnMapReadyCallback {
 
         setContent {
             val navController = rememberNavController()
-            val activity = LocalContext.current as Activity
-
-            NavGraph(
-                navController = navController,
-                activity = activity
-            )
+            MainScreen(navController = navController)
         }
         setupOnlineStatusListener()
     }

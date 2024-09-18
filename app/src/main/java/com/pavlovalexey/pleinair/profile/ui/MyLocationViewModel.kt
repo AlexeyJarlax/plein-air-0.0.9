@@ -31,7 +31,7 @@ class MyLocationViewModel @Inject constructor(
 
     private val _cameraPositionState = mutableStateOf(
         CameraPositionState(
-            position = CameraPosition.fromLatLngZoom(LatLng(0.0, 0.0), 10f)
+            position = CameraPosition.fromLatLngZoom(LatLng(59.9343, 30.3351), 10f)
         )
     )
     val cameraPositionState: State<CameraPositionState> = _cameraPositionState
