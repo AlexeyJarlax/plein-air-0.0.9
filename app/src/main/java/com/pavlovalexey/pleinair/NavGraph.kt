@@ -10,6 +10,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.pavlovalexey.pleinair.main.ui.authScreen.AuthScreen
 import com.pavlovalexey.pleinair.main.ui.termsScreen.TermsScreen
+import com.pavlovalexey.pleinair.profile.ui.MyLocationScreen
 import com.pavlovalexey.pleinair.settings.ui.SettingsScreen
 
 
@@ -52,7 +53,10 @@ fun NavGraph(navController: NavHostController, activity: Activity) {
             ProfileScreen(
                 viewModel = hiltViewModel(),
                 onNavigateToUserMap = { navController.navigate("userMap") },
-                onMyLocation = { /* Handle continue */ },
+                onMyLocation = {
+                    navController.navigate("myLocation") {
+                    popUpTo("profile") { inclusive = true }
+                } },
                 onLogout = {
                     navController.navigate("auth") {
                         popUpTo("profile") { inclusive = true }
@@ -62,10 +66,11 @@ fun NavGraph(navController: NavHostController, activity: Activity) {
             )
         }
 
+
         composable("myLocation") {
-            SettingsScreen(
-                onNavigateBack = { navController.popBackStack() }
-            )
+            MyLocationScreen { selectedLocation ->
+                navController.popBackStack()
+            }
         }
 
         composable("settings") {

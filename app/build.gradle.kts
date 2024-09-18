@@ -168,6 +168,7 @@ dependencies {
     implementation(libs.coil)
     implementation(libs.coil.compose)
     implementation (libs.android.maps.compose)
+    implementation (libs.play.services.location)
 
     // Jetpack DataStore
     implementation(libs.androidx.datastore.preferences)
