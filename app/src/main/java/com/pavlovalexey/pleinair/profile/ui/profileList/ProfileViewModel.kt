@@ -1,4 +1,4 @@
-package com.pavlovalexey.pleinair.profile.ui
+package com.pavlovalexey.pleinair.profile.ui.profileList
 
 import android.app.Activity.RESULT_OK
 import android.content.Context
@@ -16,7 +16,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.model.LatLng
 import com.pavlovalexey.pleinair.profile.model.User
-import com.pavlovalexey.pleinair.profile.UserRepository
+import com.pavlovalexey.pleinair.profile.data.UserRepository
 import com.pavlovalexey.pleinair.utils.firebase.FirebaseUserManager
 import com.pavlovalexey.pleinair.utils.firebase.LoginAndUserUtils
 import com.pavlovalexey.pleinair.utils.image.ImageUtils

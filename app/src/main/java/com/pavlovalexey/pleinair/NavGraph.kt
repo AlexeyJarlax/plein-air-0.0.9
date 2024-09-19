@@ -13,7 +13,7 @@ import com.pavlovalexey.pleinair.event.ui.newEvent.NewEventScreen
 import com.pavlovalexey.pleinair.event.ui.eventMap.EventMapScreen
 import com.pavlovalexey.pleinair.main.ui.authScreen.AuthScreen
 import com.pavlovalexey.pleinair.main.ui.termsScreen.TermsScreen
-import com.pavlovalexey.pleinair.profile.ui.MyLocationScreen
+import com.pavlovalexey.pleinair.profile.ui.myLocation.MyLocationScreen
 import com.pavlovalexey.pleinair.profile.ui.profileList.ProfileScreen
 import com.pavlovalexey.pleinair.settings.ui.SettingsScreen
 

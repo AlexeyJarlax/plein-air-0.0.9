@@ -6,23 +6,28 @@ import com.google.android.gms.maps.model.LatLng
 import android.location.Geocoder
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.BottomAppBar
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.model.CameraPosition
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.rememberCameraPositionState
-import com.pavlovalexey.pleinair.profile.ui.MyLocationViewModel
+import com.pavlovalexey.pleinair.R
+import com.pavlovalexey.pleinair.profile.ui.myLocation.MyLocationViewModel
+import com.pavlovalexey.pleinair.utils.uiComponents.CustomButtonOne
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.IOException
@@ -39,8 +44,7 @@ fun EventMapScreen(
     val cameraPositionState = rememberCameraPositionState()
     var markerPosition by remember { mutableStateOf<LatLng?>(null) }
 
-    // Геокодирование города для получения начальной позиции
-    LaunchedEffect(city) {
+    LaunchedEffect(city) {    // Геокодирование города для получения начальной позиции
         withContext(Dispatchers.IO) {
             val geocoder = Geocoder(context)
             try {
@@ -55,32 +59,44 @@ fun EventMapScreen(
                 } else {
                     // Если геокодирование не удалось, установка начальной позиции в Москве
                     withContext(Dispatchers.Main) {
-                        cameraPositionState.move(CameraUpdateFactory.newLatLngZoom(LatLng(55.75, 37.61), 12f))
+                        cameraPositionState.move(
+                            CameraUpdateFactory.newLatLngZoom(
+                                LatLng(
+                                    55.75,
+                                    37.61
+                                ), 12f
+                            )
+                        )
                     }
                 }
             } catch (e: IOException) {
                 // Обработка исключения
                 withContext(Dispatchers.Main) {
-                    cameraPositionState.move(CameraUpdateFactory.newLatLngZoom(LatLng(55.75, 37.61), 12f))
+                    cameraPositionState.move(
+                        CameraUpdateFactory.newLatLngZoom(
+                            LatLng(55.75, 37.61),
+                            12f
+                        )
+                    )
                 }
             }
         }
     }
-
     Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Выбор местоположения") },
-                actions = {
-                    IconButton(onClick = {
-                        markerPosition?.let {
-                            onLocationSelected(it.latitude, it.longitude)
-                        } ?: run {
-                            // Показываем сообщение, если местоположение не выбрано
-                            Toast.makeText(context, "Выберите местоположение", Toast.LENGTH_SHORT).show()
-                        }
-                    }) {
-                        Icon(Icons.Default.Check, contentDescription = "Подтвердить местоположение")
+        backgroundColor = Color.Transparent,
+        bottomBar = {
+            CustomButtonOne(
+                text = stringResource(R.string.geo_mark),
+                iconResId = R.drawable.ic_launcher_foreground,
+                textColor = MaterialTheme.colors.primary,
+                iconColor = MaterialTheme.colors.primary,
+                modifier = Modifier.fillMaxWidth(),
+                onClick = {
+                    markerPosition?.let {
+                        onLocationSelected(it.latitude, it.longitude)
+                    } ?: run {
+                        Toast.makeText(context, "Выберите местоположение", Toast.LENGTH_SHORT)
+                            .show()
                     }
                 }
             )

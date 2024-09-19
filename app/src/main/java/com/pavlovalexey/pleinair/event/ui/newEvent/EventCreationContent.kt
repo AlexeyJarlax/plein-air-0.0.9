@@ -23,12 +23,29 @@ import java.time.LocalDate
 
 @Composable
 fun EventCreationContent(
-    modifier: Modifier = Modifier, // Added parameter
+    modifier: Modifier = Modifier,
     uiState: NewEventUiState,
+    cities: List<String>,
     onUiStateChange: (NewEventUiState) -> Unit,
     onCreateEvent: () -> Unit,
-    onChooseLocation: () -> Unit
+    onChooseLocation: () -> Unit,
+    onCitySelected: (String) -> Unit // Новый параметр
 ) {
+    Column(modifier = modifier.fillMaxSize().padding(16.dp)) {
+        // Поле выбора города
+        CitySelectionField(
+            city = uiState.city,
+            onCityChange = { query ->
+                onUiStateChange(uiState.copy(city = query))
+            },
+            citiesList = cities,
+            onCitySelected = { selectedCity ->
+                onUiStateChange(uiState.copy(city = selectedCity))
+                onCitySelected(selectedCity) // Вызываем обратный вызов
+            }
+        )
+    }
+        Spacer(modifier = Modifier.height(8.dp))
 
     val context = LocalContext.current
 
@@ -50,19 +67,13 @@ fun EventCreationContent(
 
     Column(modifier = modifier.fillMaxSize().padding(16.dp)) {
 
-        OutlinedTextField(   // City Input
-            value = uiState.city,
-            onValueChange = { onUiStateChange(uiState.copy(city = it)) },
-            label = { Text("City") },
-            modifier = Modifier.fillMaxWidth()
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-
         CustomButtonOne( // Location Input
             onClick = onChooseLocation,
             text = stringResource(R.string.location),
             iconResId = R.drawable.location_on_50dp,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 60.dp),
         )
 
         if (uiState.latitude != null && uiState.longitude != null) {

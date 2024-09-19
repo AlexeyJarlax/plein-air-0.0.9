@@ -1,4 +1,4 @@
-package com.pavlovalexey.pleinair.profile
+package com.pavlovalexey.pleinair.profile.data
 
 import com.google.firebase.firestore.FirebaseFirestore
 import com.pavlovalexey.pleinair.profile.model.User

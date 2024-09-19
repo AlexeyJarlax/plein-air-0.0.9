@@ -7,32 +7,35 @@ import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
+
+@Composable
+fun PleinairTheme (
+darkTheme: Boolean = isSystemInDarkTheme(),
+content: @Composable () -> Unit
+) {
 
 // моя палитра:
 val MyBlack = Color(0xFF1C1E27)
 val MyBlueLight = Color(0xFF9FBBF3)
+val MySecondaryBackground = colorResource(id = R.color.my_secondary_background)
 
 // день и ночь:
-private val DarkColorPalette = darkColors(
+    val LightColorPalette = lightColors(
+        primary = MyBlack,
+        primaryVariant = MySecondaryBackground,
+        secondary = Color.Cyan,
+        background = Color.White
+    )
+
+val DarkColorPalette = darkColors(
     primary = MyBlueLight,
-    primaryVariant = Color.Red,
+    primaryVariant = MySecondaryBackground,
     secondary = MyBlack,
     onPrimary = Color.Gray,
-    background = Color.Black.copy(alpha = 0.5f)
+    background = MyBlack,
 )
 
-private val LightColorPalette = lightColors(
-    primary = MyBlack,
-    primaryVariant = Color.Green,
-    secondary = Color.Cyan,
-    background = Color.White.copy(alpha = 0.5f)
-)
-
-@Composable
-fun PleinairTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    content: @Composable () -> Unit
-) {
     val colors = if (darkTheme) {
         DarkColorPalette
     } else {

@@ -1,6 +1,5 @@
-package com.pavlovalexey.pleinair.profile.ui
+package com.pavlovalexey.pleinair.profile.ui.myLocation
 
-import android.Manifest
 import android.app.Application
 import android.content.pm.PackageManager
 import androidx.compose.runtime.mutableStateOf
@@ -8,14 +7,12 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.location.LocationServices
-import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.CameraPositionState
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import androidx.compose.runtime.State
-import androidx.lifecycle.ViewModel
 import com.pavlovalexey.pleinair.utils.firebase.FirebaseUserManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 

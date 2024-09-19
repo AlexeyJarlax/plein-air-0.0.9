@@ -1,4 +1,4 @@
-package com.pavlovalexey.pleinair.profile.ui
+package com.pavlovalexey.pleinair.profile.ui.myLocation
 
 import android.Manifest
 import android.widget.Toast
@@ -13,7 +13,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.GoogleMap

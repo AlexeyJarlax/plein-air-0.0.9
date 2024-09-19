@@ -28,6 +28,9 @@ fun NewEventScreen(
     val scope = rememberCoroutineScope()
     val uiState = remember { mutableStateOf(NewEventUiState()) }
 
+    // Загрузка списка городов
+    val cities = loadCitiesFromFile()
+
     val creationStatus by viewModel.creationStatus.observeAsState()
     val event by viewModel.event.observeAsState()
 
@@ -37,21 +40,19 @@ fun NewEventScreen(
     if (location?.value != null) {
         val (lat, lng) = location.value!!
         uiState.value = uiState.value.copy(latitude = lat, longitude = lng)
-        // Clear the saved state to prevent re-triggering
+        // Очищаем сохраненное состояние, чтобы предотвратить повторное срабатывание
         savedStateHandle?.remove<Pair<Double, Double>>("location")
     }
 
     LaunchedEffect(creationStatus) {
         when (creationStatus) {
             is CreationStatus.Loading -> {
-                // Show loading indicator
+                // Показать индикатор загрузки
             }
-
             is CreationStatus.Success -> {
-                // Navigation back once event is created
+                // Возврат назад после создания события
                 navController.popBackStack()
             }
-
             is CreationStatus.Error -> {
                 Toast.makeText(
                     context,
@@ -59,7 +60,6 @@ fun NewEventScreen(
                     Toast.LENGTH_LONG
                 ).show()
             }
-
             else -> Unit
         }
     }
@@ -79,12 +79,15 @@ fun NewEventScreen(
             EventCreationContent(
                 modifier = Modifier.padding(innerPadding),
                 uiState = uiState.value,
+                cities = cities,
                 onUiStateChange = { newState -> uiState.value = newState },
                 onCreateEvent = {
                     viewModel.createEvent(uiState.value)
                 },
                 onChooseLocation = {
-                    // Navigate to map screen, passing the selected city
+                    // Не используется, можно убрать или оставить для возможного использования
+                },
+                onCitySelected = {
                     navController.navigate("map?city=${uiState.value.city}")
                 }
             )

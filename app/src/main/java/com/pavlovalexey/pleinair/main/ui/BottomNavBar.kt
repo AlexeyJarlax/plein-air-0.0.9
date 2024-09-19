@@ -25,7 +25,7 @@ fun BottomNavBar(navController: NavHostController) {
     val primaryDayColor = colorResource(id = R.color.my_prime_day)
     val primeBackground = colorResource(id = R.color.my_secondary_background)
 
-    val backgroundColor = primeBackground.copy(alpha = 1f)
+    val backgroundColor = primeBackground.copy(alpha = 0.9f)
 
     var showExitDialog by remember { mutableStateOf(false) }
 

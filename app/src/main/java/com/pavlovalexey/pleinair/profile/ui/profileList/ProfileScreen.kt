@@ -20,7 +20,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.pavlovalexey.pleinair.R
-import com.pavlovalexey.pleinair.profile.ui.ProfileViewModel
 import com.pavlovalexey.pleinair.utils.uiComponents.BackgroundImage
 import com.pavlovalexey.pleinair.utils.uiComponents.CustomButtonOne
 
@@ -201,6 +200,7 @@ private fun showImageSelectionDialog(
     AlertDialog(
         onDismissRequest = onDismissRequest,
         title = { Text("Выберите аватарку") },
+        backgroundColor = MaterialTheme.colors.background,
         text = {
             Column {
                 options.forEachIndexed { index, option ->
@@ -231,7 +231,7 @@ private fun showImageSelectionDialog(
         confirmButton = { },
         dismissButton = {
             Button(onClick = onDismissRequest) {
-                Text("Cancel")
+                Text("❌")
             }
         }
     )
@@ -261,12 +261,12 @@ private fun showEditNameDialog(
                     onDismissRequest()
                 }
             }) {
-                Text("Сохранить")
+                Text("✔️")
             }
         },
         dismissButton = {
             Button(onClick = onDismissRequest) {
-                Text("Отмена")
+                Text("❌")
             }
         }
     )
