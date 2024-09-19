@@ -15,6 +15,7 @@ coil = "2.3.0"
 coilCompose = "2.3.0"
 comGoogleDaggerHiltAndroidGradlePlugin = "2.44"
 compiler = "4.16.0"
+compose = "1.0.0-alpha.1"
 constraintlayout = "2.1.4"
 converterGson = "2.9.0"
 coreKtxVersion = "1.10.1"
@@ -83,6 +84,7 @@ lifecycleRuntimeKtxVersion = "2.6.1"
 lifecycleViewmodelCompose = "2.8.5"
 mapsComposeVersion = "2.11.0"
 material = "1.12.0"
+materialIconsExtended = "1.7.2"
 materialVersion = "1.9.0"
 navigationCompose = "2.7.7"
 navigationComposeVersion = "2.7.1"
@@ -149,6 +151,7 @@ androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-
 androidx-lifecycle-viewmodel-compose-v285 = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleViewmodelCompose" }
 androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx" }
 androidx-material = { module = "androidx.compose.material:material", version.ref = "androidxMaterial" }
+androidx-material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "materialIconsExtended" }
 androidx-material-v150 = { module = "androidx.compose.material:material", version.ref = "androidxMaterialVersion" }
 androidx-material-v171 = { module = "androidx.compose.material:material", version.ref = "androidxComposeMaterialMaterial" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
@@ -178,6 +181,7 @@ com-google-firebase-firebase-analytics2 = { module = "com.google.firebase:fireba
 com-google-firebase-firebase-auth = { module = "com.google.firebase:firebase-auth" }
 com-google-firebase-firebase-auth2 = { module = "com.google.firebase:firebase-auth" }
 compiler = { module = "com.github.bumptech.glide:ksp", version.ref = "compiler" }
+compose = { module = "com.github.bumptech.glide:compose", version.ref = "compose" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
 dagger-compiler = { module = "com.google.dagger:dagger-compiler", version.ref = "daggerCompiler" }
 dagger-hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroidCompilerVersion" }

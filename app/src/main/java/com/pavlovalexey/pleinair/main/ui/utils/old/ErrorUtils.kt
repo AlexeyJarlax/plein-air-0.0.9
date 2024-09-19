@@ -1,4 +1,4 @@
-package com.pavlovalexey.pleinair.utils.old
+package com.pavlovalexey.pleinair.main.ui.utils.old
 
 //****************************************** объекты заглушки на ошибки или остутствии результата поиска
 //INTERNET_EMPTY = проблемы с интернетом при поиске по АПИ
@@ -16,7 +16,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.pavlovalexey.pleinair.R
-import com.pavlovalexey.pleinair.utils.AppPreferencesKeys
+import com.pavlovalexey.pleinair.main.ui.utils.AppPreferencesKeys
 
 object ErrorUtils {
 

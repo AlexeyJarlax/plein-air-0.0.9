@@ -123,6 +123,7 @@ dependencies {
     // glide для пикч
     implementation(libs.glide)
     ksp(libs.compiler)
+    implementation (libs.compose) // glide + compose
 
 ////////// ТЕСТИРОВАНИЕ
 
@@ -169,6 +170,7 @@ dependencies {
     implementation(libs.coil.compose)
     implementation (libs.android.maps.compose)
     implementation (libs.play.services.location)
+    implementation (libs.androidx.material.icons.extended)
 
     // Jetpack DataStore
     implementation(libs.androidx.datastore.preferences)
@@ -206,7 +208,7 @@ dependencies {
     implementation(libs.play.services.location)
     implementation(libs.play.services.maps)
     implementation(libs.flogger)
-    implementation(libs.flogger.system.backend) // System backend
-    implementation(libs.flogger.log4j2.backend) // Log4j2 backend (опционально)
+    implementation(libs.flogger.system.backend)
+    implementation(libs.flogger.log4j2.backend)
 
 }

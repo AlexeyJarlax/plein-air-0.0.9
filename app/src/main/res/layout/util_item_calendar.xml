@@ -9,15 +9,6 @@
     android:orientation="horizontal"
     android:paddingStart="@dimen/dp12">
 
-<!--    <ImageView-->
-<!--        android:id="@+id/artwork_image_view"-->
-<!--        style="@style/Placeholder"-->
-<!--        android:layout_width="@dimen/dp60"-->
-<!--        android:layout_height="@dimen/dp60"-->
-<!--        android:scaleType="centerCrop"-->
-<!--        android:src="@drawable/ic_launcher_foreground"-->
-<!--        tools:src="@drawable/ic_launcher_foreground" />-->
-
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/artwork_image_view"
         android:layout_width="@dimen/dp60"

@@ -1,4 +1,4 @@
-package com.pavlovalexey.pleinair.utils.firebase
+package com.pavlovalexey.pleinair.main.ui.utils.firebase
 
 import android.content.Context
 import android.content.Intent

@@ -10,7 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -20,7 +20,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.google.android.gms.common.SignInButton
 import com.pavlovalexey.pleinair.R
-import com.pavlovalexey.pleinair.main.ui.components.CustomButtonOne
+import com.pavlovalexey.pleinair.main.ui.uiComponents.CustomButtonOne
 
 @Composable
 fun AuthScreen(
@@ -90,6 +90,9 @@ fun AuthScreen(
                 onClick = onCancel,
                 text = stringResource(R.string.cancel),
                 iconResId = R.drawable.door_open_30dp,
+//                modifier = Modifier.background(Color.Transparent),
+                textColor = Color.Red, // Пример цвета текста
+                iconColor = Color.Red
             )
         }
     }

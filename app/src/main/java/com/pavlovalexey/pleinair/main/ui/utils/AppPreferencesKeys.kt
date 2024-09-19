@@ -1,4 +1,4 @@
-package com.pavlovalexey.pleinair.utils
+package com.pavlovalexey.pleinair.main.ui.utils
 
 internal object AppPreferencesKeys { // глобальные объекты
 

@@ -16,7 +16,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import androidx.compose.runtime.State
 import androidx.lifecycle.ViewModel
-import com.pavlovalexey.pleinair.utils.firebase.FirebaseUserManager
+import com.pavlovalexey.pleinair.main.ui.utils.firebase.FirebaseUserManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 
 @HiltViewModel

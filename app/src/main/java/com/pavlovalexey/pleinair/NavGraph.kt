@@ -7,6 +7,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.pavlovalexey.pleinair.calendar.ui.calendar.EventListScreen
 import com.pavlovalexey.pleinair.main.ui.authScreen.AuthScreen
 import com.pavlovalexey.pleinair.main.ui.termsScreen.TermsScreen
 import com.pavlovalexey.pleinair.profile.ui.MyLocationScreen
@@ -74,6 +75,10 @@ fun NavGraph(navController: NavHostController, activity: Activity, modifier: Mod
                     }
                 }
             )
+        }
+
+        composable("events") {
+            EventListScreen()
         }
 
         composable("settings") {

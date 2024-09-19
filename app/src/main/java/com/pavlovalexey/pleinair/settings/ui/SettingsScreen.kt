@@ -5,7 +5,6 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.widget.Toast
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -21,11 +20,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pavlovalexey.pleinair.R
-import com.pavlovalexey.pleinair.main.ui.components.CustomButtonOne
+import com.pavlovalexey.pleinair.main.ui.uiComponents.CustomButtonOne
 import androidx.compose.ui.platform.LocalContext
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
-import com.pavlovalexey.pleinair.main.ui.components.CustomSwitch
+import com.pavlovalexey.pleinair.main.ui.uiComponents.BackgroundImage
 
 @Composable
 fun SettingsScreen(
@@ -36,7 +33,6 @@ fun SettingsScreen(
     val isLoading by viewModel.isLoading.observeAsState(initial = false)
     val context = LocalContext.current as Activity
 
-    // Collecting events from view model
     val eventFlow = viewModel.eventFlow.collectAsState(initial = null)
 
     eventFlow.value?.let { event ->
@@ -54,14 +50,7 @@ fun SettingsScreen(
         modifier = Modifier
             .fillMaxSize()
     ) {
-        Image(
-            painter = painterResource(R.drawable.back_lay),
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .fillMaxSize()
-                .alpha(0.5f)
-        )
+        BackgroundImage(imageResId = R.drawable.back_lay)
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -74,26 +63,26 @@ fun SettingsScreen(
                 color = Color.Black,
                 modifier = Modifier.padding(bottom = 16.dp)
             )
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(text = "Темный режим", modifier = Modifier.weight(1f))
-                CustomSwitch(
-                    checked = isNightMode,
-                    onCheckedChange = { viewModel.changeNightMode(it) }
-                )
-            }
+//            Row(
+//                verticalAlignment = Alignment.CenterVertically,
+//                modifier = Modifier.fillMaxWidth()
+//            ) {
+//                Text(text = "Темный режим", modifier = Modifier.weight(1f))
+//                CustomSwitch(
+//                    checked = isNightMode,
+//                    onCheckedChange = { viewModel.changeNightMode(it) }
+//                )
+//            }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(10.dp))
             CustomButtonOne(
                 onClick = { viewModel.shareApp() },
-                text = stringResource(R.string.share_app_text),
+                text = stringResource(R.string.share_app_title),
                 iconResId = R.drawable.share_30dp,
                 modifier = Modifier.fillMaxWidth()
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(10.dp))
 
             CustomButtonOne(
                 onClick = { viewModel.goToHelp() },
@@ -102,7 +91,7 @@ fun SettingsScreen(
                 modifier = Modifier.fillMaxWidth()
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(10.dp))
 
             CustomButtonOne(
                 onClick = { viewModel.seeUserAgreement() },
@@ -111,7 +100,7 @@ fun SettingsScreen(
                 modifier = Modifier.fillMaxWidth()
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(10.dp))
 
             CustomButtonOne(
                 onClick = { viewModel.seePrivacyPolicy() },
@@ -120,7 +109,7 @@ fun SettingsScreen(
                 modifier = Modifier.fillMaxWidth()
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(10.dp))
 
             CustomButtonOne(
                 onClick = {

@@ -8,7 +8,6 @@ package com.pavlovalexey.pleinair.main.ui
  * 3 Этап - MainActivity и фрагменты по всему функционалу приложения с навигацией через НавГраф и BottomNavBar
  */
 
-import android.app.Activity
 import android.os.Bundle
 import android.view.View
 import android.widget.ProgressBar
@@ -18,8 +17,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.compose.rememberNavController
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -41,10 +40,9 @@ import com.pavlovalexey.pleinair.PleinairTheme
 import com.pavlovalexey.pleinair.main.ui.authScreen.AuthScreen
 import com.pavlovalexey.pleinair.main.ui.authScreen.AuthViewModel
 import com.pavlovalexey.pleinair.settings.ui.SettingsViewModel
-import com.pavlovalexey.pleinair.utils.firebase.LoginAndUserUtils
+import com.pavlovalexey.pleinair.main.ui.utils.firebase.LoginAndUserUtils
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
-
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity(), OnMapReadyCallback {
@@ -64,24 +62,28 @@ class MainActivity : ComponentActivity(), OnMapReadyCallback {
     private lateinit var storage: FirebaseStorage
     private lateinit var mMap: GoogleMap
     private lateinit var progressBar: ProgressBar
-
     private var selectedLocation: LatLng? = null
-    private val defaultLocation =
-        LatLng(59.9500019, 30.3166718)    // Координаты Петропавловской крепости
+    private val defaultLocation = LatLng(59.9500019, 30.3166718)    // Координаты Петропавловской крепости
+
+    private lateinit var authViewModel: AuthViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         googleSignInClient = GoogleSignIn.getClient(this, GoogleSignInOptions.DEFAULT_SIGN_IN)
 
+        // Инициализируем ViewModel без контекста Compose
+        authViewModel = ViewModelProvider(this).get(AuthViewModel::class.java)
+
         setContent {
             val navController = rememberNavController()
-            val authViewModel: AuthViewModel = hiltViewModel()
             val settingsViewModel: SettingsViewModel = hiltViewModel()
             val isNightMode by settingsViewModel.isNightMode.observeAsState(initial = false)
+            settingsViewModel.changeNightMode(isNightMode)
             val authState by authViewModel.authState.collectAsState()
 
-            PleinairTheme(darkTheme = isNightMode) {
+            PleinairTheme() {
+
                 if (authState.isAuthenticated) {
                     MainScreen(navController = navController)
                 } else {
@@ -100,12 +102,27 @@ class MainActivity : ComponentActivity(), OnMapReadyCallback {
         setupOnlineStatusListener()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        resetAuthState()
+    }
+
+    private fun restartActivity() {
+        val intent = intent
+        finish()
+        startActivity(intent)
+    }
+
+    private fun resetAuthState() {
+        // Use the ViewModelProvider initialized in onCreate
+        authViewModel.resetAuthState()
+        googleSignInClient.signOut()
+    }
+
     @Composable
     private fun logoutAndRevokeAccess() {
-        val authViewModel: AuthViewModel = hiltViewModel()
         authViewModel.signOut()
         googleSignInClient.revokeAccess().addOnCompleteListener {
-            // перезапуск активити или навигация на экран авторизации
             finish()
             startActivity(intent)
         }
@@ -136,12 +153,10 @@ class MainActivity : ComponentActivity(), OnMapReadyCallback {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                // Ошибка обработки
+                // Handle error
             }
         })
     }
-
-
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap

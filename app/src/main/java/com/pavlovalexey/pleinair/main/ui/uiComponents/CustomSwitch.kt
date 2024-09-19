@@ -1,19 +1,13 @@
-package com.pavlovalexey.pleinair.main.ui.components
+package com.pavlovalexey.pleinair.main.ui.uiComponents
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
-import com.pavlovalexey.pleinair.MyBlueLight
-import com.pavlovalexey.pleinair.R
-import kotlin.math.exp
 
 @Composable
 fun CustomSwitch(

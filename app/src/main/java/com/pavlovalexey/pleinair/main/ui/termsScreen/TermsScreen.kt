@@ -5,7 +5,6 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -22,11 +21,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pavlovalexey.pleinair.R
-import com.pavlovalexey.pleinair.main.ui.components.CustomButtonOne
-import com.pavlovalexey.pleinair.main.ui.components.CustomCheckbox
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-
+import com.pavlovalexey.pleinair.main.ui.uiComponents.CustomButtonOne
+import com.pavlovalexey.pleinair.main.ui.uiComponents.CustomCheckbox
 
 @Composable
 fun TermsScreen(
@@ -40,7 +36,7 @@ fun TermsScreen(
     var isAlreadySigned by remember { mutableStateOf(false) }
 
     LaunchedEffect(viewModel) {
-        isAlreadySigned = viewModel.checkIfSigned(context)
+        isAlreadySigned = viewModel.checkIfSigned()
         if (isAlreadySigned) {
             onContinue()
         }
@@ -50,61 +46,45 @@ fun TermsScreen(
     val scrollState = rememberScrollState()
 
     Box(
-        modifier = Modifier
-            .fillMaxSize()
+        modifier = Modifier.fillMaxSize()
     ) {
         Image(
             painter = painterResource(R.drawable.back_lay),
             contentDescription = null,
             contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .fillMaxSize()
-                .alpha(0.4f)
+            modifier = Modifier.fillMaxSize().alpha(0.4f)
         )
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp)
-                .verticalScroll(scrollState),
+            modifier = Modifier.fillMaxSize().padding(16.dp).verticalScroll(scrollState),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(
                     text = viewModel.termsOfPrivacy,
                     fontSize = 21.sp,
                     color = if (isSystemInDarkTheme()) Color.White else Color.Black,
-                    modifier = Modifier
-                        .padding(bottom = 8.dp)
-                        .fillMaxWidth(),
+                    modifier = Modifier.padding(bottom = 8.dp).fillMaxWidth(),
                     textAlign = TextAlign.Center
                 )
                 Text(
                     text = viewModel.privacyPolicyContent,
                     color = if (isSystemInDarkTheme()) Color.White else Color.Black,
                     fontSize = 16.sp,
-                    modifier = Modifier
-                        .padding(bottom = 16.dp)
-                        .fillMaxWidth(),
+                    modifier = Modifier.padding(bottom = 16.dp).fillMaxWidth(),
                     textAlign = TextAlign.Center
                 )
                 Text(
                     text = viewModel.termsOfAgreement,
                     color = if (isSystemInDarkTheme()) Color.White else Color.Black,
                     fontSize = 21.sp,
-                    modifier = Modifier
-                        .padding(bottom = 8.dp)
-                        .fillMaxWidth(),
+                    modifier = Modifier.padding(bottom = 8.dp).fillMaxWidth(),
                     textAlign = TextAlign.Center
                 )
                 Text(
                     text = viewModel.userAgreementContent,
                     color = if (isSystemInDarkTheme()) Color.White else Color.Black,
                     fontSize = 16.sp,
-                    modifier = Modifier
-                        .padding(bottom = 16.dp)
-                        .fillMaxWidth(),
+                    modifier = Modifier.padding(bottom = 16.dp).fillMaxWidth(),
                     textAlign = TextAlign.Center
                 )
                 Row(
@@ -144,28 +124,23 @@ fun TermsScreen(
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Bottom,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(6.dp)
+                modifier = Modifier.fillMaxSize().padding(6.dp)
             ) {
-                Button(
-                    onClick = {
-                        viewModel.markAsSigned(context)
-                        onContinue()
-                    },
-                    enabled = isButtonEnabled,
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = ButtonDefaults.buttonColors(backgroundColor = if (isButtonEnabled) Color.Blue else Color.Gray)
-                ) {
-                    Text(text = stringResource(R.string.resume))
+                if (isButtonEnabled) {
+                    CustomButtonOne(
+                        onClick = {
+                            viewModel.markAsSigned(true)
+                            onContinue()
+                        },
+                        text = stringResource(R.string.resume),
+                        iconResId = R.drawable.circle_down_30dp,
+                    )
                 }
-                Button(
+                CustomButtonOne(
                     onClick = onCancel,
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = ButtonDefaults.buttonColors(backgroundColor = Color.DarkGray)
-                ) {
-                    Text(text = stringResource(R.string.cancel))
-                }
+                    text = stringResource(R.string.cancel),
+                    iconResId = R.drawable.door_open_30dp // Замените на нужный ресурс
+                )
             }
         }
     }

@@ -2,12 +2,16 @@ package com.pavlovalexey.pleinair.main.ui.termsScreen
 
 import android.app.Activity
 import android.content.Context
+import android.content.SharedPreferences
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pavlovalexey.pleinair.R
+import com.pavlovalexey.pleinair.main.ui.utils.AppPreferencesKeys
+import com.pavlovalexey.pleinair.main.ui.utils.AppPreferencesKeys.PREFS_NAME
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -20,9 +24,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TermsViewModel @Inject constructor(
-    @ApplicationContext private val context: Context
+    @ApplicationContext private val context: Context,
 ) : ViewModel() {
 
+    @Inject
+    lateinit var sharedPreferences: SharedPreferences
     val currentDate = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(Date())
     val termsOfPrivacy = context.getString(R.string.terms_of_privacy, context.getString(R.string.pleinair), currentDate)
     val termsOfAgreement = context.getString(R.string.terms_of_agreement, context.getString(R.string.pleinair), currentDate)
@@ -76,16 +82,15 @@ class TermsViewModel @Inject constructor(
         isTermsLoaded = privacyPolicyContent.length > 100 && userAgreementContent.length > 100
     }
 
-    fun checkIfSigned(context: Context): Boolean {
-        val prefs = context.getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE)
-        return prefs.getBoolean("isSigned", false)
-    }
-
-    fun markAsSigned(context: Context) {
-        val prefs = context.getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE)
-        with(prefs.edit()) {
-            putBoolean("isSigned", true)
+    fun markAsSigned(accepted: Boolean) {
+        Log.d("TermsActivity", "Saving terms accepted: $accepted")
+        with(sharedPreferences.edit()) {
+            putBoolean("all_terms_accepted", accepted)
             apply()
         }
+    }
+
+    fun checkIfSigned(): Boolean {
+        return sharedPreferences.getBoolean("all_terms_accepted", false)
     }
 }

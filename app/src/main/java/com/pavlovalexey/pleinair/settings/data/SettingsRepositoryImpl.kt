@@ -11,7 +11,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.pavlovalexey.pleinair.R
 import com.pavlovalexey.pleinair.settings.domain.SettingsRepository
-import com.pavlovalexey.pleinair.utils.AppPreferencesKeys.KEY_NIGHT_MODE
+import com.pavlovalexey.pleinair.main.ui.utils.AppPreferencesKeys.KEY_NIGHT_MODE
 import de.cketti.mailto.EmailIntentBuilder
 import java.io.File
 import javax.inject.Inject

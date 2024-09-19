@@ -1,4 +1,4 @@
-package com.pavlovalexey.pleinair.utils.map
+package com.pavlovalexey.pleinair.main.ui.utils.map
 
 //import android.app.Activity
 //import android.content.Intent

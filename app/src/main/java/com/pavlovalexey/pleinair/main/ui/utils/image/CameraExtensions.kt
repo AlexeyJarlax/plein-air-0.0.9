@@ -1,4 +1,4 @@
-package com.pavlovalexey.pleinair.utils.image
+package com.pavlovalexey.pleinair.main.ui.utils.image
 
 import android.app.Activity.RESULT_OK
 import android.app.AlertDialog

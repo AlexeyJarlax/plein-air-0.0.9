@@ -1,4 +1,4 @@
-package com.pavlovalexey.pleinair.utils.ui
+package com.pavlovalexey.pleinair.main.ui.utils.ui
 
 import android.view.View
 import android.widget.ProgressBar

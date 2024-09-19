@@ -7,15 +7,6 @@ import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
-import androidx.compose.foundation.layout.Column
-import androidx.compose.material.*
-import androidx.compose.runtime.*
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.runtime.livedata.observeAsState
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import com.pavlovalexey.pleinair.main.ui.components.CustomSwitch
-import com.pavlovalexey.pleinair.settings.ui.SettingsViewModelInterface
 
 // моя палитра:
 val MyBlack = Color(0xFF1C1E27)
@@ -52,6 +43,12 @@ fun PleinairTheme(
         colors = colors,
         typography = Typography(
             body1 = MaterialTheme.typography.body1.copy(
+                color = if (darkTheme) MyBlueLight else MyBlack
+            ),
+            h6 = MaterialTheme.typography.h6.copy(
+                color = if (darkTheme) MyBlueLight else MyBlack
+            ),
+            body2 = MaterialTheme.typography.body2.copy(
                 color = if (darkTheme) MyBlueLight else MyBlack
             )
         ),

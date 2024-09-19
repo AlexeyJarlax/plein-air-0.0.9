@@ -10,7 +10,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
-import com.pavlovalexey.pleinair.utils.firebase.LoginAndUserUtils
+import com.pavlovalexey.pleinair.main.ui.utils.firebase.LoginAndUserUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -67,6 +67,10 @@ class AuthViewModel @Inject constructor(
     fun signOut() {
         auth.signOut()
         loginAndUserUtils.logout()
+        _authState.value = AuthState(isAuthenticated = false)
+    }
+
+    fun resetAuthState() {
         _authState.value = AuthState(isAuthenticated = false)
     }
 

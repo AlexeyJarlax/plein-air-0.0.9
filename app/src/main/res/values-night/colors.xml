@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    НОВЫЕ
+    <color name="my_prime_day">#9FBBF3</color> // MyBlueLight else MyBlack
+    <color name="my_prime_background">#252833</color> // white else MyBlack
+
     <!-- НАБОР ЦВЕТОВ ИЗ figma -->
     <color name="yp_blue_light">#9FBBF3</color>              <!-- ╔╗╔╗ ╔══╗ ╔╗╔╗ ╔╗    -->
     <color name="yp_blue">#3772E7</color>                    <!-- ║║║║ ║╔╗║ ║║║║ ║║    -->

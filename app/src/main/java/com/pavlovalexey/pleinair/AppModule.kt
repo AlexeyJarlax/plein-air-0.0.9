@@ -1,6 +1,5 @@
 package com.pavlovalexey.pleinair
 
-import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -11,14 +10,13 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.pavlovalexey.pleinair.calendar.adapter.EventAdapter
 import com.pavlovalexey.pleinair.calendar.data.EventRepository
-import com.pavlovalexey.pleinair.calendar.ui.calendar.CalendarViewModel
 import com.pavlovalexey.pleinair.settings.data.SettingsRepositoryImpl
 import com.pavlovalexey.pleinair.settings.domain.SettingsInteractor
 import com.pavlovalexey.pleinair.settings.domain.SettingsInteractorImpl
 import com.pavlovalexey.pleinair.settings.domain.SettingsRepository
-import com.pavlovalexey.pleinair.utils.AppPreferencesKeys
-import com.pavlovalexey.pleinair.utils.firebase.FirebaseUserManager
-import com.pavlovalexey.pleinair.utils.firebase.LoginAndUserUtils
+import com.pavlovalexey.pleinair.main.ui.utils.AppPreferencesKeys
+import com.pavlovalexey.pleinair.main.ui.utils.firebase.FirebaseUserManager
+import com.pavlovalexey.pleinair.main.ui.utils.firebase.LoginAndUserUtils
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -97,26 +95,6 @@ object AppModule {
     @Singleton
     fun provideEventAdapter(): EventAdapter {
         return EventAdapter()
-    }
-
-    ////////// ViewModel
-//    @Provides
-//    @Singleton
-//    fun provideProfileViewModel(
-//        firebaseUserManager: FirebaseUserManager,
-//        loginAndUserUtils: LoginAndUserUtils,
-//        auth: FirebaseAuth,
-//        sharedPreferences: SharedPreferences
-//    ): ProfileViewModel {
-//        return ProfileViewModel(firebaseUserManager, loginAndUserUtils, auth, sharedPreferences)
-//    }
-    @Provides
-    @Singleton
-    fun provideCalendarViewModel(
-        firebaseAuth: FirebaseAuth,
-        firebaseFirestore: FirebaseFirestore
-    ): CalendarViewModel {
-        return CalendarViewModel(firebaseAuth, firebaseFirestore)
     }
 
 ////////// Utils

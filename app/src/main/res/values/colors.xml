@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    НОВЫЕ
+    <color name="my_prime_day">#252833</color> // MyBlack else MyBlueLight
+    <color name="my_prime_background">#F0F2F8</color> // white else MyBlack
+
     <!-- НАБОР ЦВЕТОВ ИЗ figma -->
     <color name="yp_blue_light">#9FBBF3</color>              <!--  ███   ███  █  █  █    -->
     <color name="yp_blue">#3772E7</color>                    <!--  █ █   █    █  █  █    -->
@@ -36,7 +41,8 @@
     <!-- цвет progress bar -->
     <color name="yp_blue_and_yp_blue">@color/yp_blue</color>
 
-    НОВЫЕ
     <color name="my_black">#1C1E27</color>
     <color name="my_blue_light">#9FBBF3</color>
+
+
 </resources>

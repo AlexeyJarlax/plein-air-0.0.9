@@ -1,4 +1,4 @@
-package com.pavlovalexey.pleinair.utils.timeAndData
+package com.pavlovalexey.pleinair.main.ui.utils.timeAndData
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog

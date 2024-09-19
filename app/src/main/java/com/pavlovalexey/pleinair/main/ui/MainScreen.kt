@@ -18,7 +18,7 @@ fun MainScreen(navController: NavHostController) {
     val currentRoute = navBackStackEntry?.destination?.route
 
     // Определяем, когда показывать нижнюю панель
-    val showBottomNav = currentRoute == "profile" || currentRoute == "settings"
+    val showBottomNav = currentRoute == "profile" || currentRoute == "settings"|| currentRoute == "events"
 
     Scaffold(
         bottomBar = {

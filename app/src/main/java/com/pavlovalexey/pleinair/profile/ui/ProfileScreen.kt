@@ -1,7 +1,6 @@
 package com.pavlovalexey.pleinair.profile.ui
 
 import android.content.Intent
-import android.graphics.Bitmap
 import android.provider.MediaStore
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResultLauncher
@@ -25,7 +24,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.pavlovalexey.pleinair.R
-import com.pavlovalexey.pleinair.main.ui.components.CustomButtonOne
+import com.pavlovalexey.pleinair.main.ui.uiComponents.BackgroundImage
+import com.pavlovalexey.pleinair.main.ui.uiComponents.CustomButtonOne
 
 @Composable
 fun ProfileScreen(
@@ -34,7 +34,8 @@ fun ProfileScreen(
     onMyLocation: () -> Unit,
     onLogout: () -> Unit,
     onExit: () -> Unit,
-) {
+
+    ) {
     val user by viewModel.user.observeAsState()
     val selectedArtStyles by viewModel.selectedArtStyles.observeAsState(emptySet())
     val bitmap by viewModel.bitmap.observeAsState()
@@ -61,14 +62,7 @@ fun ProfileScreen(
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
-        Image(
-            painter = painterResource(R.drawable.back_lay),
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .fillMaxSize()
-                .alpha(0.5f)
-        )
+        BackgroundImage(imageResId = R.drawable.back_lay)
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -76,16 +70,20 @@ fun ProfileScreen(
         ) {
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Profile Image
             ProfileImage(
                 imageUrl = user?.profileImageUrl,
-                onClick = { showImageSelectionDialog = true }
+                onClick = { showImageSelectionDialog = true },
+//                modifier = Modifier
+//                    .size(100.dp)
+//                    .clip(CircleShape)
+//                    .background(MaterialTheme.colors.primary)
+//                    .border(2.dp, MaterialTheme.colors.primaryVariant, CircleShape)
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // User Name
-            Text(
+
+            Text( // User Name
                 text = user?.name ?: "User",
                 style = MaterialTheme.typography.h5,
                 modifier = Modifier.clickable {

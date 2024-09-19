@@ -1,4 +1,4 @@
-package com.pavlovalexey.pleinair.utils.firebase
+package com.pavlovalexey.pleinair.main.ui.utils.firebase
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -13,7 +13,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.GeoPoint
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
-import com.pavlovalexey.pleinair.utils.image.ImageUtils
+import com.pavlovalexey.pleinair.main.ui.utils.image.ImageUtils
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
