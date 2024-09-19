@@ -1,4 +1,4 @@
-package com.pavlovalexey.pleinair.event.ui.event
+package com.pavlovalexey.pleinair.event.model
 
 data class NewEventUiState(
     val city: String = "",

@@ -1,16 +1,13 @@
-package com.pavlovalexey.pleinair.event.ui.event
+package com.pavlovalexey.pleinair.event.ui.newEvent
 
 import android.app.Application
-import android.content.SharedPreferences
-import android.graphics.Bitmap
-import android.net.Uri
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pavlovalexey.pleinair.event.data.EventRepository
 import com.pavlovalexey.pleinair.event.model.Event
+import com.pavlovalexey.pleinair.event.model.NewEventUiState
 import com.pavlovalexey.pleinair.utils.firebase.FirebaseUserManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch

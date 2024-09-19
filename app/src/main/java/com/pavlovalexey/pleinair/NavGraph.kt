@@ -8,14 +8,13 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.pavlovalexey.pleinair.event.ui.calendar.EventListScreen
-import com.pavlovalexey.pleinair.event.ui.event.NewEventScreen
-import com.pavlovalexey.pleinair.event.ui.event.NewEventViewModel
+import com.pavlovalexey.pleinair.event.ui.eventList.EventListScreen
+import com.pavlovalexey.pleinair.event.ui.newEvent.NewEventScreen
 import com.pavlovalexey.pleinair.event.ui.eventMap.EventMapScreen
 import com.pavlovalexey.pleinair.main.ui.authScreen.AuthScreen
 import com.pavlovalexey.pleinair.main.ui.termsScreen.TermsScreen
 import com.pavlovalexey.pleinair.profile.ui.MyLocationScreen
-import com.pavlovalexey.pleinair.profile.ui.ProfileScreen
+import com.pavlovalexey.pleinair.profile.ui.profileList.ProfileScreen
 import com.pavlovalexey.pleinair.settings.ui.SettingsScreen
 
 @Composable

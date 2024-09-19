@@ -1,37 +1,24 @@
-package com.pavlovalexey.pleinair.event.ui.event
+package com.pavlovalexey.pleinair.event.ui.newEvent
 
 import android.app.DatePickerDialog
 import androidx.compose.runtime.Composable
-import android.widget.Toast
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccessTime
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.CalendarToday
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavHostController
 import com.pavlovalexey.pleinair.R
-import com.pavlovalexey.pleinair.event.model.Event
-import com.pavlovalexey.pleinair.utils.uiComponents.BackgroundImage
+import com.pavlovalexey.pleinair.event.model.NewEventUiState
 import com.pavlovalexey.pleinair.utils.uiComponents.CustomButtonOne
-import kotlinx.coroutines.launch
 import java.time.LocalDate
 
 @Composable

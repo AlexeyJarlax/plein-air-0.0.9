@@ -8,7 +8,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
-import com.pavlovalexey.pleinair.event.adapter.EventAdapter
 import com.pavlovalexey.pleinair.event.data.EventRepository
 import com.pavlovalexey.pleinair.settings.data.SettingsRepositoryImpl
 import com.pavlovalexey.pleinair.settings.domain.SettingsInteractor
@@ -91,11 +90,11 @@ object AppModule {
     }
 
     ////////// Adapter
-    @Provides
-    @Singleton
-    fun provideEventAdapter(): EventAdapter {
-        return EventAdapter()
-    }
+//    @Provides
+//    @Singleton
+//    fun provideEventAdapter(): EventAdapter {
+//        return EventAdapter()
+//    }
 
 ////////// Utils
     @Provides

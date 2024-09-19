@@ -1,4 +1,4 @@
-package com.pavlovalexey.pleinair.event.ui.calendar
+package com.pavlovalexey.pleinair.event.ui.eventList
 
 import androidx.lifecycle.*
 import com.google.firebase.firestore.FirebaseFirestore

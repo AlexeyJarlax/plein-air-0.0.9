@@ -1,4 +1,4 @@
-package com.pavlovalexey.pleinair.event.ui.event
+package com.pavlovalexey.pleinair.event.ui.newEvent
 
 sealed class CreationStatus {
     data object Loading : CreationStatus()
