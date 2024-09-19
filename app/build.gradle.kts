@@ -168,9 +168,10 @@ dependencies {
     implementation(libs.runtime.livedata)
     implementation(libs.coil)
     implementation(libs.coil.compose)
-    implementation (libs.android.maps.compose)
-    implementation (libs.play.services.location)
-    implementation (libs.androidx.material.icons.extended)
+    implementation(libs.android.maps.compose)
+    implementation(libs.play.services.location)
+    implementation(libs.androidx.material.icons.extended)
+    implementation(libs.maps.compose.v272)
 
     // Jetpack DataStore
     implementation(libs.androidx.datastore.preferences)

@@ -21,8 +21,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pavlovalexey.pleinair.R
-import com.pavlovalexey.pleinair.main.ui.uiComponents.CustomButtonOne
-import com.pavlovalexey.pleinair.main.ui.uiComponents.CustomCheckbox
+import com.pavlovalexey.pleinair.utils.uiComponents.CustomButtonOne
+import com.pavlovalexey.pleinair.utils.uiComponents.CustomCheckbox
 
 @Composable
 fun TermsScreen(

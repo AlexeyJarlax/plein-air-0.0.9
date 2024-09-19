@@ -7,7 +7,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.pavlovalexey.pleinair.calendar.ui.calendar.EventListScreen
+import androidx.navigation.navArgument
+import com.pavlovalexey.pleinair.event.ui.calendar.EventListScreen
+import com.pavlovalexey.pleinair.event.ui.event.NewEventScreen
+import com.pavlovalexey.pleinair.event.ui.event.NewEventViewModel
+import com.pavlovalexey.pleinair.event.ui.eventMap.EventMapScreen
 import com.pavlovalexey.pleinair.main.ui.authScreen.AuthScreen
 import com.pavlovalexey.pleinair.main.ui.termsScreen.TermsScreen
 import com.pavlovalexey.pleinair.profile.ui.MyLocationScreen
@@ -77,8 +81,27 @@ fun NavGraph(navController: NavHostController, activity: Activity, modifier: Mod
             )
         }
 
-        composable("events") {
-            EventListScreen()
+        composable("event_list") {
+            EventListScreen(navController)
+        }
+        composable("new_event") {
+            NewEventScreen(navController)
+        }
+        composable(
+            "map?city={city}",
+            arguments = listOf(navArgument("city") { defaultValue = "" })
+        ) { backStackEntry ->
+            val city = backStackEntry.arguments?.getString("city") ?: ""
+            EventMapScreen(
+                navController = navController,
+                viewModel = hiltViewModel(),
+                city = city,
+                onLocationSelected = { lat, lng ->
+                    // Return the selected coordinates to NewEventScreen
+                    navController.previousBackStackEntry?.savedStateHandle?.set("location", Pair(lat, lng))
+                    navController.popBackStack()
+                }
+            )
         }
 
         composable("settings") {

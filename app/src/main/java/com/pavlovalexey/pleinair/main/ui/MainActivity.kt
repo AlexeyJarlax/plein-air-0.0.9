@@ -40,7 +40,7 @@ import com.pavlovalexey.pleinair.PleinairTheme
 import com.pavlovalexey.pleinair.main.ui.authScreen.AuthScreen
 import com.pavlovalexey.pleinair.main.ui.authScreen.AuthViewModel
 import com.pavlovalexey.pleinair.settings.ui.SettingsViewModel
-import com.pavlovalexey.pleinair.main.ui.utils.firebase.LoginAndUserUtils
+import com.pavlovalexey.pleinair.utils.firebase.LoginAndUserUtils
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 

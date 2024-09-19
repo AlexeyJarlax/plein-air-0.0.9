@@ -17,9 +17,9 @@ import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.model.LatLng
 import com.pavlovalexey.pleinair.profile.model.User
 import com.pavlovalexey.pleinair.profile.UserRepository
-import com.pavlovalexey.pleinair.main.ui.utils.firebase.FirebaseUserManager
-import com.pavlovalexey.pleinair.main.ui.utils.firebase.LoginAndUserUtils
-import com.pavlovalexey.pleinair.main.ui.utils.image.ImageUtils
+import com.pavlovalexey.pleinair.utils.firebase.FirebaseUserManager
+import com.pavlovalexey.pleinair.utils.firebase.LoginAndUserUtils
+import com.pavlovalexey.pleinair.utils.image.ImageUtils
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch

@@ -1,17 +1,17 @@
 package com.pavlovalexey.pleinair.main.ui
 
-import androidx.compose.material.BottomNavigation
-import androidx.compose.material.BottomNavigationItem
-import androidx.compose.material.Icon
-import androidx.compose.material.Text
+import android.app.Activity
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Event
+import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.ui.graphics.Color
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -23,13 +23,26 @@ fun BottomNavBar(navController: NavHostController) {
     val currentRoute = navBackStackEntry?.destination?.route
 
     val primaryDayColor = colorResource(id = R.color.my_prime_day)
-    val primeBackground = colorResource(id = R.color.my_prime_background)
+    val primeBackground = colorResource(id = R.color.my_secondary_background)
 
-    // Установите фоновый цвет с желаемой прозрачностью
-    val backgroundColor = primeBackground.copy(alpha = 0.1f)
+    val backgroundColor = primeBackground.copy(alpha = 1f)
+
+    var showExitDialog by remember { mutableStateOf(false) }
+
+    val activity = LocalContext.current as Activity
+
+    if (showExitDialog) {
+        ExitConfirmationDialog(
+            onDismiss = { showExitDialog = false },
+            onConfirm = {
+                showExitDialog = false
+                activity.finish()
+            }
+        )
+    }
 
     BottomNavigation(
-        backgroundColor = backgroundColor // Установка фонового цвета с прозрачностью
+        backgroundColor = backgroundColor
     ) {
         BottomNavigationItem(
             icon = {
@@ -41,7 +54,7 @@ fun BottomNavBar(navController: NavHostController) {
             },
             label = {
                 Text(
-                    "Profile",
+                    "Профиль",
                     color = primaryDayColor // Цвет текста
                 )
             },
@@ -58,19 +71,19 @@ fun BottomNavBar(navController: NavHostController) {
             icon = {
                 Icon(
                     Icons.Filled.Event,
-                    contentDescription = "Events",
+                    contentDescription = "События",
                     tint = primaryDayColor // Цвет иконки
                 )
             },
             label = {
                 Text(
-                    "Events",
+                    "События",
                     color = primaryDayColor // Цвет текста
                 )
             },
-            selected = currentRoute == "events",
+            selected = currentRoute == "event_list",
             onClick = {
-                navController.navigate("events") {
+                navController.navigate("event_list") {
                     popUpTo(navController.graph.startDestinationId) { saveState = true }
                     launchSingleTop = true
                     restoreState = true
@@ -81,13 +94,13 @@ fun BottomNavBar(navController: NavHostController) {
             icon = {
                 Icon(
                     Icons.Filled.Settings,
-                    contentDescription = "Settings",
+                    contentDescription = "Настройки",
                     tint = primaryDayColor // Цвет иконки
                 )
             },
             label = {
                 Text(
-                    "Settings",
+                    "Настройки",
                     color = primaryDayColor // Цвет текста
                 )
             },
@@ -100,5 +113,49 @@ fun BottomNavBar(navController: NavHostController) {
                 }
             }
         )
+        BottomNavigationItem(
+            icon = {
+                Icon(
+                    Icons.Filled.ExitToApp,
+                    contentDescription = "Выход",
+                    tint = primaryDayColor // Цвет иконки
+                )
+            },
+            label = {
+                Text(
+                    "Выход",
+                    color = primaryDayColor // Цвет текста
+                )
+            },
+            selected = false,
+            onClick = {
+                showExitDialog = true
+            }
+        )
     }
+}
+
+@Composable
+fun ExitConfirmationDialog(onDismiss: () -> Unit, onConfirm: () -> Unit) {
+    AlertDialog(
+        onDismissRequest = { onDismiss() },
+        title = { Text(text = "Подтверждение выхода") },
+        text = { Text(text = "Вы уверены, что хотите выйти?") },
+        confirmButton = {
+            Button(
+                onClick = { onConfirm() }
+            ) {
+                Text("✔")
+            }
+        },
+        dismissButton = {
+            Button(
+                onClick = { onDismiss() }
+            ) {
+                Text("❌")
+            }
+        },
+        backgroundColor = Color.White,
+        contentColor = Color.Black
+    )
 }

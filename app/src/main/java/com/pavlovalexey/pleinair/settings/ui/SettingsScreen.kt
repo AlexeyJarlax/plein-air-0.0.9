@@ -20,9 +20,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pavlovalexey.pleinair.R
-import com.pavlovalexey.pleinair.main.ui.uiComponents.CustomButtonOne
+import com.pavlovalexey.pleinair.utils.uiComponents.CustomButtonOne
 import androidx.compose.ui.platform.LocalContext
-import com.pavlovalexey.pleinair.main.ui.uiComponents.BackgroundImage
+import com.pavlovalexey.pleinair.utils.uiComponents.BackgroundImage
 
 @Composable
 fun SettingsScreen(

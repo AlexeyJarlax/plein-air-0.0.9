@@ -20,7 +20,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.google.android.gms.common.SignInButton
 import com.pavlovalexey.pleinair.R
-import com.pavlovalexey.pleinair.main.ui.uiComponents.CustomButtonOne
+import com.pavlovalexey.pleinair.utils.uiComponents.CustomButtonOne
 
 @Composable
 fun AuthScreen(

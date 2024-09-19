@@ -24,8 +24,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.pavlovalexey.pleinair.R
-import com.pavlovalexey.pleinair.main.ui.uiComponents.BackgroundImage
-import com.pavlovalexey.pleinair.main.ui.uiComponents.CustomButtonOne
+import com.pavlovalexey.pleinair.utils.uiComponents.BackgroundImage
+import com.pavlovalexey.pleinair.utils.uiComponents.CustomButtonOne
 
 @Composable
 fun ProfileScreen(
@@ -73,11 +73,6 @@ fun ProfileScreen(
             ProfileImage(
                 imageUrl = user?.profileImageUrl,
                 onClick = { showImageSelectionDialog = true },
-//                modifier = Modifier
-//                    .size(100.dp)
-//                    .clip(CircleShape)
-//                    .background(MaterialTheme.colors.primary)
-//                    .border(2.dp, MaterialTheme.colors.primaryVariant, CircleShape)
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -102,14 +97,14 @@ fun ProfileScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            CustomButtonOne(
+            CustomButtonOne(  // Choose Location Button
                 onClick = onMyLocation,
                 text = stringResource(R.string.location),
                 iconResId = R.drawable.location_on_50dp,
                 modifier = Modifier.fillMaxWidth()
             )
 
-            CustomButtonOne(
+            CustomButtonOne( // account Button
                 onClick = {
                     viewModel.logout()
                     onLogout()

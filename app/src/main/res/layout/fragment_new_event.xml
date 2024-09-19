@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/yp_white_and_yp_black"
     android:orientation="vertical"
-    tools:context=".calendar.ui.event.NewEventFragment">
+    tools:context=".event.ui.event.NewEventFragment">
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"

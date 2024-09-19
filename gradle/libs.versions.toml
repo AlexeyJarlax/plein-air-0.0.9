@@ -82,6 +82,7 @@ lifecycleLivedataKtx = "2.8.3"
 lifecycleRuntimeKtx = "2.8.4"
 lifecycleRuntimeKtxVersion = "2.6.1"
 lifecycleViewmodelCompose = "2.8.5"
+mapsCompose = "2.7.2"
 mapsComposeVersion = "2.11.0"
 material = "1.12.0"
 materialIconsExtended = "1.7.2"
@@ -242,6 +243,7 @@ kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-c
 kotlinx-coroutines-core-v173 = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesCoreVersion" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycleRuntimeKtx" }
+maps-compose-v272 = { module = "com.google.maps.android:maps-compose", version.ref = "mapsCompose" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 androidx-runtime-android = { group = "androidx.compose.runtime", name = "runtime-android", version.ref = "runtimeAndroid" }
 material-v190 = { module = "com.google.android.material:material", version.ref = "materialVersion" }
