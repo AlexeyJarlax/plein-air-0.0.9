@@ -4,7 +4,7 @@
     НОВЫЕ
     <color name="my_prime_day">#9FBBF3</color> // MyBlueLight else MyBlack
     <color name="my_prime_background">#252833</color> // white else MyBlack
-    <color name="my_secondary_background">#007A85</color>
+    <color name="my_secondary_background">#008F9C</color>
 
     <!-- НАБОР ЦВЕТОВ ИЗ figma -->
     <color name="yp_blue_light">#9FBBF3</color>              <!-- ╔╗╔╗ ╔══╗ ╔╗╔╗ ╔╗    -->

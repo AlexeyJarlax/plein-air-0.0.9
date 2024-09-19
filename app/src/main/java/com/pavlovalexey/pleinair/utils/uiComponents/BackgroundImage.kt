@@ -11,7 +11,7 @@ import androidx.compose.ui.draw.alpha
 @Composable
 fun BackgroundImage(
     imageResId: Int,
-
+    alpha: Float = 0.8f
 ) {
     Image(
         painter = painterResource(imageResId),
@@ -19,5 +19,6 @@ fun BackgroundImage(
         contentScale = ContentScale.Crop,
         modifier = Modifier
             .fillMaxSize()
+            .alpha(alpha)
     )
 }

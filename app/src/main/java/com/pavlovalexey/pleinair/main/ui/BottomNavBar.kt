@@ -145,7 +145,7 @@ fun ExitConfirmationDialog(onDismiss: () -> Unit, onConfirm: () -> Unit) {
             Button(
                 onClick = { onConfirm() }
             ) {
-                Text("✔")
+                Text("✔️")
             }
         },
         dismissButton = {
