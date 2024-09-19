@@ -2,12 +2,11 @@ plugins {
     id("com.android.application")
     id("com.google.dagger.hilt.android")
     id("org.jetbrains.kotlin.android")
-    kotlin("plugin.serialization") version "2.0.0"
-    id("kotlin-kapt") // плагин kotlin-kapt для работы зависимостей kapt("
+    id("kotlin-kapt") // Плагин kotlin-kapt для работы с Kapt
     id("com.google.devtools.ksp")
     id("com.google.gms.google-services")
+    id("org.jetbrains.kotlin.plugin.compose") // Плагин компилятора Compose
 }
-
 
 android {
     namespace = "com.pavlovalexey.pleinair"
@@ -34,24 +33,28 @@ android {
         }
         debug {
             isMinifyEnabled = false
-            // applicationIdSuffix = ".debug" не делаю суфикс, чтобы файл нашелся файрбазой
-            // Включаем отладку
-//            isDebuggable = true
         }
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17 // более новая сборка виртуальной машины: 17
-        targetCompatibility = JavaVersion.VERSION_17 // более новая сборка виртуальной машины: 17
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
         encoding = "UTF-8"
     }
+
     kotlinOptions {
-        jvmTarget = "17" // более новая сборка виртуальной машины: 17
+        jvmTarget = "17"
+        languageVersion = "1.9" // Добавляем язык 1.9
     }
 
     buildFeatures {
         viewBinding = true
         dataBinding = true
+        compose = true // Включаем поддержку Compose
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.15" // Версия компилятора Compose
     }
 
     packagingOptions {
@@ -62,7 +65,6 @@ android {
 
     hilt {
         enableAggregatingTask = true
-//        enableExperimentalClasspathAggregation = true для ускорения много модульных проектов
     }
 
     kapt {
@@ -70,8 +72,11 @@ android {
     }
 }
 
-dependencies {
+composeCompiler {
+    reportsDestination = layout.buildDirectory.dir("compose_compiler") // Директория для отчетов
+}
 
+dependencies {
 ////////// БАЗОВЫЕ
 
     // Расширения Kotlin для работы с Activity.
@@ -110,10 +115,15 @@ dependencies {
 
     // Библиотека для создания функций отправки в Intents с помощью mailto: URI
     implementation(libs.email.intent.builder)
+/////////////////////////////////////////////////////////////  новые зависимости
+
+
+///////////////////////////////////////////////////////////// новые зависимости
 
     // glide для пикч
     implementation(libs.glide)
     ksp(libs.compiler)
+    implementation (libs.compose) // glide + compose
 
 ////////// ТЕСТИРОВАНИЕ
 
@@ -126,11 +136,6 @@ dependencies {
 
 ////////// ПРОДВИНУТЫЕ
 
-    // Библиотека для управления зависимостями koin и Dagger Hilt  //  implementation("androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03") больше не поддерживается, не добавлять!
-    implementation(libs.hilt.android)
-    kapt(libs.dagger.hilt.compiler)
-    implementation(libs.hilt.android)
-
     // Расширения Kotlin для работы с жизненным циклом компонентов.
     implementation(libs.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.lifecycle.livedata.ktx)
@@ -141,11 +146,35 @@ dependencies {
     // Компонент ViewPager2 для реализации горизонтальных и вертикальных листалок.
     implementation(libs.androidx.viewpager2)
 
-    // Jetpack Navigation Component
-//    implementation(libs.androidx.navigation.fragment.ktx)
-//    implementation(libs.androidx.navigation.ui.ktx)
-//    implementation(libs.androidx.fragment.ktx.v181)
-//    implementation(libs.androidx.hilt.navigation.compose)
+    // Библиотека для управления зависимостями koin и Dagger Hilt  //  implementation("androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03") больше не поддерживается, не добавлять!
+    implementation(libs.hilt.android)
+    kapt(libs.dagger.hilt.compiler)
+    implementation(libs.hilt.android)
+    implementation (libs.androidx.lifecycle.viewmodel.compose.v285)
+//    kapt ("com.google.dagger:hilt-android-compiler:2.44")
+    implementation (libs.hilt.navigation.compose.v100)
+
+    // Jetpack Compose
+    implementation(libs.androidx.ui.v171)
+    implementation(libs.androidx.material.v171)
+    implementation(libs.androidx.ui.tooling.preview.v171)
+    implementation(libs.androidx.activity.compose.v192)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.material)
+    implementation(libs.navigation.compose)
+    implementation(libs.dagger.hilt.android.gradle.plugin.v244)
+    implementation(libs.androidx.navigation.testing)
+    implementation(libs.androidx.material3.android)
+    implementation(libs.runtime.livedata)
+    implementation(libs.coil)
+    implementation(libs.coil.compose)
+    implementation(libs.android.maps.compose)
+    implementation(libs.play.services.location)
+    implementation(libs.androidx.material.icons.extended)
+    implementation(libs.maps.compose.v272)
+
+    // Jetpack DataStore
+    implementation(libs.androidx.datastore.preferences)
 
     // корутин
     implementation(libs.kotlinx.coroutines.android.v180)
@@ -173,9 +202,6 @@ dependencies {
     implementation(libs.firebase.database)
     implementation(libs.firebase.core)
 
-    // Jetpack Compose
-    implementation(libs.androidx.material)
-
     //изображения
     implementation(libs.picasso)
 
@@ -183,7 +209,7 @@ dependencies {
     implementation(libs.play.services.location)
     implementation(libs.play.services.maps)
     implementation(libs.flogger)
-    implementation(libs.flogger.system.backend) // System backend
-    implementation(libs.flogger.log4j2.backend) // Log4j2 backend (опционально)
+    implementation(libs.flogger.system.backend)
+    implementation(libs.flogger.log4j2.backend)
 
 }

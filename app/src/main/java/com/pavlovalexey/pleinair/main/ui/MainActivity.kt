@@ -1,108 +1,131 @@
 package com.pavlovalexey.pleinair.main.ui
 
-/** Приложение построено как синглАктивити на фрагментах с отправной точкой MainActivity.
- * TermsActivity и AuthActivity выделены как отдельные активити чтобы безопасно изолировать
- * неавторизованных / несогластных пользователей от основной структуры фрагментов.
- * 1 Этап - подписание соглашений в TermsActivity
- * 2 Этап - авторизация в AuthActivity
- * 3 Этап - MainActivity и фрагменты по всему функционалу приложения с с навигацией через НавГраф
+/** Приложение построено как синглактивити на фрагментах с вью моделями и отправной точкой MainActivity.
+ * Вместо xml применил Jetpack Compose — фреймворк для создания UI на Android, основанный на декларативном подходе.
+ *
+ * 1 Этап - подписание соглашений в TermsScreen
+ * 2 Этап - авторизация в AuthScreen
+ * 3 Этап - MainActivity и фрагменты по всему функционалу приложения с навигацией через НавГраф и BottomNavBar
  */
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.ProgressBar
-import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.setupWithNavController
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.compose.rememberNavController
+import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ServerValue
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
-import com.pavlovalexey.pleinair.R
-import com.pavlovalexey.pleinair.auth.ui.AuthActivity
-import com.pavlovalexey.pleinair.databinding.ActivityMainBinding
-import com.pavlovalexey.pleinair.profile.ui.UserMapFragment
+import com.pavlovalexey.pleinair.PleinairTheme
+import com.pavlovalexey.pleinair.main.ui.authScreen.AuthScreen
+import com.pavlovalexey.pleinair.main.ui.authScreen.AuthViewModel
+import com.pavlovalexey.pleinair.settings.ui.SettingsViewModel
 import com.pavlovalexey.pleinair.utils.firebase.LoginAndUserUtils
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity(), UserMapFragment.OnLocationSelectedListener, OnMapReadyCallback {
+class MainActivity : ComponentActivity(), OnMapReadyCallback {
 
-    @Inject lateinit var auth: FirebaseAuth
-    @Inject lateinit var firestore: FirebaseFirestore
-    @Inject lateinit var googleSignInClient: GoogleSignInClient
-    @Inject lateinit var loginAndUserUtils: LoginAndUserUtils
+    @Inject
+    lateinit var auth: FirebaseAuth
 
-    private lateinit var binding: ActivityMainBinding
+    @Inject
+    lateinit var firestore: FirebaseFirestore
+
+    @Inject
+    lateinit var googleSignInClient: GoogleSignInClient
+
+    @Inject
+    lateinit var loginAndUserUtils: LoginAndUserUtils
+
     private lateinit var storage: FirebaseStorage
     private lateinit var mMap: GoogleMap
     private lateinit var progressBar: ProgressBar
-
     private var selectedLocation: LatLng? = null
     private val defaultLocation = LatLng(59.9500019, 30.3166718)    // Координаты Петропавловской крепости
+
+    private lateinit var authViewModel: AuthViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-//        com.google.firebase.Firebase.initialize(this)
-//        firestore = com.google.firebase.Firebase.firestore
-//        auth = FirebaseAuth.getInstance()
-//        storage = com.google.firebase.Firebase.storage
-//        Firebase.appCheck.installAppCheckProviderFactory(
-//            PlayIntegrityAppCheckProviderFactory.getInstance(),
-//        )
-//
-//        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-//            .requestIdToken(getString(R.string.default_web_client_id))
-//            .requestEmail()
-//            .build()
-//        googleSignInClient = GoogleSignIn.getClient(this, gso)
-//
-        if (auth.currentUser == null) {
-            startActivity(Intent(this, AuthActivity::class.java))
-            finish()
-            return
-        }
+        googleSignInClient = GoogleSignIn.getClient(this, GoogleSignInOptions.DEFAULT_SIGN_IN)
 
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        hideSystemUI()
-        progressBar = findViewById(R.id.loading_indicator)
+        // Инициализируем ViewModel без контекста Compose
+        authViewModel = ViewModelProvider(this).get(AuthViewModel::class.java)
 
-        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-        val navController = navHostFragment.navController
-        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
-        bottomNavigationView.setupWithNavController(navController)
-        bottomNavigationView.setBackgroundColor(ContextCompat.getColor(this, R.color.menu_background))
-        navController.addOnDestinationChangedListener { _, destination, _ ->
-            when (destination.id) {
-                R.id.mapFragment, R.id.userMapFragment, R.id.eventMapFragment -> {
-                    bottomNavigationView.visibility = View.GONE
-                }
-                else -> {
-                    bottomNavigationView.visibility = View.VISIBLE
+        setContent {
+            val navController = rememberNavController()
+            val settingsViewModel: SettingsViewModel = hiltViewModel()
+            val isNightMode by settingsViewModel.isNightMode.observeAsState(initial = false)
+            settingsViewModel.changeNightMode(isNightMode)
+            val authState by authViewModel.authState.collectAsState()
+
+            PleinairTheme() {
+
+                if (authState.isAuthenticated) {
+                    MainScreen(navController = navController)
+                } else {
+                    AuthScreen(
+                        navController = navController,
+                        onAuthSuccess = {
+                            navController.navigate("profile") {
+                                popUpTo("auth") { inclusive = true }
+                            }
+                        },
+                        onCancel = { finish() }
+                    )
                 }
             }
         }
-
         setupOnlineStatusListener()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        resetAuthState()
+    }
+
+    private fun restartActivity() {
+        val intent = intent
+        finish()
+        startActivity(intent)
+    }
+
+    private fun resetAuthState() {
+        // Use the ViewModelProvider initialized in onCreate
+        authViewModel.resetAuthState()
+        googleSignInClient.signOut()
+    }
+
+    @Composable
+    private fun logoutAndRevokeAccess() {
+        authViewModel.signOut()
+        googleSignInClient.revokeAccess().addOnCompleteListener {
+            finish()
+            startActivity(intent)
+        }
     }
 
     private fun setupOnlineStatusListener() {
@@ -130,31 +153,9 @@ class MainActivity : AppCompatActivity(), UserMapFragment.OnLocationSelectedList
             }
 
             override fun onCancelled(error: DatabaseError) {
-                // Ошибка обработки
+                // Handle error
             }
         })
-    }
-
-    override fun onLocationSelected(location: LatLng) {
-        selectedLocation = location
-        val user = auth.currentUser ?: return
-        val userId = user.uid
-        val userDocRef = firestore.collection("users").document(userId)
-
-        val updatedLocation = hashMapOf(
-            "latitude" to location.latitude,
-            "longitude" to location.longitude
-        )
-
-        userDocRef.update("location", updatedLocation)
-            .addOnSuccessListener {
-                Log.d(TAG, "User location updated to: $location")
-                Toast.makeText(this, "Координаты обновлены!", Toast.LENGTH_SHORT).show()
-            }
-            .addOnFailureListener { e ->
-                Log.w(TAG, "Error updating user location", e)
-                Toast.makeText(this, "Ошибка координат!", Toast.LENGTH_SHORT).show()
-            }
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
@@ -165,15 +166,7 @@ class MainActivity : AppCompatActivity(), UserMapFragment.OnLocationSelectedList
             selectedLocation = latLng
         }
         val initialPosition = selectedLocation ?: defaultLocation
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(initialPosition, 15f))
-    }
-
-    fun logoutAndRevokeAccess() {
-        loginAndUserUtils.logout()
-        googleSignInClient.revokeAccess().addOnCompleteListener {
-            startActivity(Intent(this, AuthActivity::class.java))
-            finish()
-        }
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(initialPosition, 12f))
     }
 
     private fun hideSystemUI() {

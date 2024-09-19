@@ -22,7 +22,7 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.pavlovalexey.pleinair.R
-import com.pavlovalexey.pleinair.calendar.model.Event
+import com.pavlovalexey.pleinair.event.model.Event
 import com.pavlovalexey.pleinair.databinding.FragmentMapBinding
 import com.pavlovalexey.pleinair.profile.model.User
 import com.pavlovalexey.pleinair.utils.image.CircleTransform
@@ -200,7 +200,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 val markerOptions = MarkerOptions()
                     .position(location)
                     .title(event.city)
-                    .snippet("${event.place} - ${event.date} ${event.time}")
+                    .snippet("- ${event.date} ${event.time}")
                     .icon(bitmap?.let { BitmapDescriptorFactory.fromBitmap(it) })
                 val marker = googleMap.addMarker(markerOptions)
                 marker?.tag = event // Связываем маркер с объектом Event

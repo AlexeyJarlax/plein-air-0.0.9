@@ -28,32 +28,18 @@
         android:roundIcon="@drawable/icon2"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/Theme.MyApp"
+        android:theme="@style/Theme.AppCompat.DayNight"
         tools:targetApi="tiramisu">
-
-        <activity
-            android:name=".auth.ui.AuthActivity"
-            android:exported="true"
-            android:windowSoftInputMode="adjustPan"
-            android:screenOrientation="fullSensor">
-        </activity>
-
-        <activity
-            android:name=".auth.ui.TermsActivity"
-            android:exported="true"
-            android:windowSoftInputMode="adjustPan"
-            android:screenOrientation="fullSensor">
-        <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
-        </activity>
 
         <activity
             android:name=".main.ui.MainActivity"
             android:exported="true"
             android:windowSoftInputMode="adjustPan"
             android:screenOrientation="fullSensor">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
 
         <meta-data

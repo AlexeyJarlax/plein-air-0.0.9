@@ -14,6 +14,8 @@ import android.graphics.RectF
 import android.graphics.Shader
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asImageBitmap
 import kotlin.random.Random
 
 object ImageUtils {
@@ -147,7 +149,7 @@ object ImageUtils {
         return output
     }
 
-    fun decodeSampledBitmapFromUri(imagePath: String): Bitmap? {
+    fun decodeSampledBitmapFromUri(imagePath: String): ImageBitmap {
         val options = BitmapFactory.Options()
         options.inJustDecodeBounds = true
         BitmapFactory.decodeFile(imagePath, options)
@@ -155,6 +157,9 @@ object ImageUtils {
         options.inSampleSize = calculateInSampleSize(options, MAX_WIDTH, MAX_HEIGHT)
         options.inJustDecodeBounds = false
 
-        return BitmapFactory.decodeFile(imagePath, options)
+        val bitmap = BitmapFactory.decodeFile(imagePath, options)
+        return bitmap.asImageBitmap()
     }
+
+
 }
