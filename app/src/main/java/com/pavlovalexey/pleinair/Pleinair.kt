@@ -1,6 +1,7 @@
 package com.pavlovalexey.pleinair
 
 import android.app.Application
+import com.google.android.gms.maps.MapsInitializer
 import com.google.firebase.FirebaseApp
 import com.pavlovalexey.pleinair.settings.domain.SettingsInteractor
 import dagger.hilt.android.HiltAndroidApp
@@ -15,6 +16,7 @@ class Pleinair : Application() {
     override fun onCreate() {
         super.onCreate()
         FirebaseApp.initializeApp(this)
+        MapsInitializer.initialize(this)
         applyDayNightTheme()
     }
 

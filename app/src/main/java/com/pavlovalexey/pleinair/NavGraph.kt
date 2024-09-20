@@ -10,9 +10,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.pavlovalexey.pleinair.event.ui.eventList.EventListScreen
 import com.pavlovalexey.pleinair.event.ui.newEvent.NewEventScreen
-import com.pavlovalexey.pleinair.event.ui.eventMap.EventMapScreen
+import com.pavlovalexey.pleinair.event.ui.eventLocation.EventLocationScreen
 import com.pavlovalexey.pleinair.main.ui.authScreen.AuthScreen
 import com.pavlovalexey.pleinair.main.ui.termsScreen.TermsScreen
+import com.pavlovalexey.pleinair.map.ui.MapScreen
 import com.pavlovalexey.pleinair.profile.ui.myLocation.MyLocationScreen
 import com.pavlovalexey.pleinair.profile.ui.profileList.ProfileScreen
 import com.pavlovalexey.pleinair.settings.ui.SettingsScreen
@@ -56,7 +57,7 @@ fun NavGraph(navController: NavHostController, activity: Activity, modifier: Mod
         composable("profile") {
             ProfileScreen(
                 viewModel = hiltViewModel(),
-                onNavigateToUserMap = { navController.navigate("userMap") },
+                onNavigateToUserMap = { navController.navigate("myLocation") },
                 onMyLocation = {
                     navController.navigate("myLocation")
                 },
@@ -86,20 +87,26 @@ fun NavGraph(navController: NavHostController, activity: Activity, modifier: Mod
         composable("new_event") {
             NewEventScreen(navController)
         }
+
         composable(
-            "map?city={city}",
+            "event_location?city={city}",
             arguments = listOf(navArgument("city") { defaultValue = "" })
         ) { backStackEntry ->
             val city = backStackEntry.arguments?.getString("city") ?: ""
-            EventMapScreen(
+            EventLocationScreen(
                 navController = navController,
                 viewModel = hiltViewModel(),
                 city = city,
                 onLocationSelected = { lat, lng ->
-                    // Return the selected coordinates to NewEventScreen
                     navController.previousBackStackEntry?.savedStateHandle?.set("location", Pair(lat, lng))
                     navController.popBackStack()
                 }
+            )
+        }
+
+        composable("map") {
+            MapScreen(
+                viewModel = hiltViewModel()
             )
         }
 

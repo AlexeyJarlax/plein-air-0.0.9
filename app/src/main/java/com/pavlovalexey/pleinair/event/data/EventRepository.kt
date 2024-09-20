@@ -31,36 +31,4 @@ class EventRepository @Inject constructor(
         val eventRef = firebase.collection("events").document(eventId)
         eventRef.update("profileImageUrl", imageUrl).await()
     }
-
-    // Исправление: добавлен тип параметра eventId
-    suspend fun createEvent(eventId: String): String {
-        val userId = sharedPreferences.getString("userId", "") ?: ""
-        val profileImageUrl = sharedPreferences.getString("profileEventImageUrl", "") ?: ""
-        val city = sharedPreferences.getString("eventCity", "") ?: ""
-        val date = sharedPreferences.getString("eventDate", "") ?: ""
-        val time = sharedPreferences.getString("eventTime", "") ?: ""
-        val description = sharedPreferences.getString("eventDescription", "") ?: ""
-        val latitude = sharedPreferences.getFloat("eventLatitude", 0f).toDouble()
-        val longitude = sharedPreferences.getFloat("eventLongitude", 0f).toDouble()
-
-        val event = Event(
-            id = eventId,
-            userId = userId,
-            profileImageUrl = profileImageUrl,
-            city = city,
-            date = date,
-            time = time,
-            description = description,
-            latitude = latitude,
-            longitude = longitude,
-            timestamp = System.currentTimeMillis()
-        )
-
-        return try {
-            val newEventId = addEvent(event)
-            newEventId
-        } catch (e: Exception) {
-            throw e
-        }
-    }
 }

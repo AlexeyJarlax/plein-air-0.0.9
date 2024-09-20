@@ -1,21 +1,20 @@
-package com.pavlovalexey.pleinair.main.ui
+package com.pavlovalexey.pleinair
 
 import android.app.Activity
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.DoorFront
 import androidx.compose.material.icons.filled.Event
 import androidx.compose.material.icons.filled.ExitToApp
+import androidx.compose.material.icons.filled.Map
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.*
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.pavlovalexey.pleinair.R
 
 @Composable
 fun BottomNavBar(navController: NavHostController) {
@@ -49,13 +48,13 @@ fun BottomNavBar(navController: NavHostController) {
                 Icon(
                     Icons.Filled.AccountCircle,
                     contentDescription = "Profile",
-                    tint = primaryDayColor // Цвет иконки
+                    tint = primaryDayColor
                 )
             },
             label = {
                 Text(
-                    "Профиль",
-                    color = primaryDayColor // Цвет текста
+                    "Лик",
+                    color = primaryDayColor
                 )
             },
             selected = currentRoute == "profile",
@@ -67,18 +66,19 @@ fun BottomNavBar(navController: NavHostController) {
                 }
             }
         )
+
         BottomNavigationItem(
             icon = {
                 Icon(
                     Icons.Filled.Event,
                     contentDescription = "События",
-                    tint = primaryDayColor // Цвет иконки
+                    tint = primaryDayColor
                 )
             },
             label = {
                 Text(
-                    "События",
-                    color = primaryDayColor // Цвет текста
+                    "Действа",
+                    color = primaryDayColor
                 )
             },
             selected = currentRoute == "event_list",
@@ -90,18 +90,43 @@ fun BottomNavBar(navController: NavHostController) {
                 }
             }
         )
+
+        BottomNavigationItem(
+            icon = {
+                Icon(
+                    Icons.Filled.Map,
+                    contentDescription = "Карта",
+                    tint = primaryDayColor
+                )
+            },
+            label = {
+                Text(
+                    "Карта",
+                    color = primaryDayColor
+                )
+            },
+            selected = currentRoute == "map",
+            onClick = {
+                navController.navigate("map") {
+                    popUpTo(navController.graph.startDestinationId) { saveState = true }
+                    launchSingleTop = true
+                    restoreState = true
+                }
+            }
+        )
+
         BottomNavigationItem(
             icon = {
                 Icon(
                     Icons.Filled.Settings,
                     contentDescription = "Настройки",
-                    tint = primaryDayColor // Цвет иконки
+                    tint = primaryDayColor
                 )
             },
             label = {
                 Text(
-                    "Настройки",
-                    color = primaryDayColor // Цвет текста
+                    "Уставы",
+                    color = primaryDayColor
                 )
             },
             selected = currentRoute == "settings",
@@ -113,18 +138,19 @@ fun BottomNavBar(navController: NavHostController) {
                 }
             }
         )
+
         BottomNavigationItem(
             icon = {
                 Icon(
-                    Icons.Filled.ExitToApp,
+                    Icons.Filled.DoorFront,
                     contentDescription = "Выход",
-                    tint = primaryDayColor // Цвет иконки
+                    tint = primaryDayColor
                 )
             },
             label = {
                 Text(
-                    "Выход",
-                    color = primaryDayColor // Цвет текста
+                    "Исход",
+                    color = primaryDayColor
                 )
             },
             selected = false,
