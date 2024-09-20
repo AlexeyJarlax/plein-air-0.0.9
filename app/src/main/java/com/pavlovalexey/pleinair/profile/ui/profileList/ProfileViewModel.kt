@@ -47,7 +47,12 @@ class ProfileViewModel @Inject constructor(
     val bitmap: LiveData<Bitmap?> get() = _bitmap
 
     init {
-        loadUser()
+        val userId = auth.currentUser?.uid
+        if (userId != null) {
+            loadUser()
+        } else {
+            logout()
+        }
     }
 
     private fun loadUser() {
@@ -216,42 +221,10 @@ class ProfileViewModel @Inject constructor(
         )
     }
 
-    fun updateUserLocation(location: LatLng, onSuccess: () -> Unit) {
-        val userId = auth.currentUser?.uid ?: return
-        firebaseUserManager.updateUserLocation(
-            userId,
-            location,
-            "users",
-            onSuccess = onSuccess,
-            onFailure = { e ->
-                Log.w("ProfileViewModel", "Error updating user location", e)
-            }
-        )
-    }
-
-    fun updateSelectedStyles(styles: Set<String>, onSuccess: () -> Unit) {
-        val userId = auth.currentUser?.uid ?: return
-        firebaseUserManager.updateSelectedStyles(
-            userId,
-            styles,
-            onSuccess = {
-                _selectedArtStyles.value = styles
-                onSuccess()
-            },
-            onFailure = { e ->
-                Log.w("ProfileViewModel", "Error updating art styles", e)
-            }
-        )
-    }
-
     private fun saveProfileImageUrl(url: String) {
         with(sharedPreferences.edit()) {
             putString("profileImageUrl", url)
             apply()
         }
-    }
-
-    fun onImageSelected(bitmap: Bitmap) {
-        _bitmap.value = bitmap
     }
 }

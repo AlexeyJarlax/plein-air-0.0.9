@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.google.android.gms.maps.model.LatLng
+import com.google.firebase.firestore.GeoPoint
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
@@ -32,7 +33,7 @@ import com.pavlovalexey.pleinair.utils.uiComponents.CustomButtonOne
 fun MyLocationScreen(
     navController: NavController,
     viewModel: MyLocationViewModel = hiltViewModel(),
-    onLocationSelected: (LatLng) -> Unit
+    onLocationSelected: (GeoPoint) -> Unit
 ) {
     val context = LocalContext.current
     val locationEnabled by viewModel.locationEnabled
@@ -79,14 +80,15 @@ fun MyLocationScreen(
                 )
             }
         }
-    ){
+    )
+    {
         if (locationEnabled) {
             GoogleMap(
                 modifier = Modifier.fillMaxSize(),
                 cameraPositionState = cameraPositionState,
-                onMapClick = { latLng ->
-                    selectedLocation = latLng
-                    viewModel.updateUserLocation(latLng)
+                onMapClick = { geoPoint ->
+                    selectedLocation = geoPoint
+                    viewModel.updateUserLocation(geoPoint)
                 }
             ) {
                 selectedLocation?.let {

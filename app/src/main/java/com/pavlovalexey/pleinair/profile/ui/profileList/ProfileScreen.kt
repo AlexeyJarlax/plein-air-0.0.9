@@ -4,6 +4,7 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.provider.MediaStore
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -40,18 +41,23 @@ fun ProfileScreen(
 
     ) {
     val user by viewModel.user.observeAsState()
-    LaunchedEffect(user) {
-        Log.d("=== ProfileScreen", "=== Текущий пользователь: $user")
-    }
     val selectedArtStyles by viewModel.selectedArtStyles.observeAsState(emptySet())
     val bitmap by viewModel.bitmap.observeAsState()
-
     var showDescriptionDialog by remember { mutableStateOf(false) }
     var showImageSelectionDialog by remember { mutableStateOf(false) }
     var showEditNameDialog by remember { mutableStateOf(false) }
     var newDescription by remember { mutableStateOf("") }
-
     val context = LocalContext.current
+
+    LaunchedEffect(user) {
+        if (user == null) { // прогоняю неавторизованного
+            Toast.makeText(context, "Требуется авторизация", Toast.LENGTH_SHORT).show()
+            viewModel.logout()
+            onLogout()
+        } else {
+            Log.d("ProfileScreen", "=== Текущий пользователь: $user")
+        }
+    }
 
     val cameraLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()

@@ -16,9 +16,11 @@ class UserRepository @Inject constructor(
                 .document(userId)
                 .get()
                 .await()
-            documentSnapshot.toObject(User::class.java)
+            val user = documentSnapshot.toObject(User::class.java)
+            Log.d(TAG, "=== Пользователь успешно получен: $user")
+            user
         } catch (e: Exception) {
-            Log.e(TAG, "Ошибка при получении пользователя", e)
+            Log.e(TAG, "=== Ошибка при получении пользователя", e)
             null
         }
     }

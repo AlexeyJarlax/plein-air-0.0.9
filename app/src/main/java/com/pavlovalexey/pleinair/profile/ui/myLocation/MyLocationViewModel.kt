@@ -13,6 +13,7 @@ import com.google.maps.android.compose.CameraPositionState
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import androidx.compose.runtime.State
+import com.google.firebase.firestore.GeoPoint
 import com.pavlovalexey.pleinair.utils.firebase.FirebaseUserManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 
@@ -66,13 +67,14 @@ class MyLocationViewModel @Inject constructor(
         }
     }
 
-    fun updateUserLocation(location: LatLng) {
+    fun updateUserLocation(location: GeoPoint) {
         val userId = firebaseUserManager.getCurrentUserId()
+        val geoPoint = GeoPoint(location.latitude, location.longitude)
         if (userId.isNotEmpty()) {
             viewModelScope.launch {
                 firebaseUserManager.updateUserLocation(
                     userId = userId,
-                    location = location,
+                    location = geoPoint,
                     collectionName = "users",
                     onSuccess = {
                         // Успешно обновлено

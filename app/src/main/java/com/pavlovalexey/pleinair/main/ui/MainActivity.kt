@@ -71,8 +71,6 @@ class MainActivity : ComponentActivity(), OnMapReadyCallback {
         super.onCreate(savedInstanceState)
 
         googleSignInClient = GoogleSignIn.getClient(this, GoogleSignInOptions.DEFAULT_SIGN_IN)
-
-        // Инициализируем ViewModel без контекста Compose
         authViewModel = ViewModelProvider(this).get(AuthViewModel::class.java)
 
         setContent {
@@ -80,24 +78,38 @@ class MainActivity : ComponentActivity(), OnMapReadyCallback {
             val settingsViewModel: SettingsViewModel = hiltViewModel()
             val isNightMode by settingsViewModel.isNightMode.observeAsState(initial = false)
             settingsViewModel.changeNightMode(isNightMode)
+
+            // проверка на авторизованного
             val authState by authViewModel.authState.collectAsState()
-
-            PleinairTheme() {
-
-                if (authState.isAuthenticated) {
-                    MainScreen(navController = navController)
-                } else {
-                    AuthScreen(
-                        navController = navController,
-                        onAuthSuccess = {
-                            navController.navigate("profile") {
-                                popUpTo("auth") { inclusive = true }
-                            }
-                        },
-                        onCancel = { finish() }
-                    )
-                }
+            if (authState.isAuthenticated && auth.currentUser != null) {
+                MainScreen(navController = navController)
+            } else {
+                AuthScreen(
+                    navController = navController,
+                    onAuthSuccess = {
+                        navController.navigate("profile") {
+                            popUpTo("auth") { inclusive = true }
+                        }
+                    },
+                    onCancel = { finish() }
+                )
             }
+
+//            PleinairTheme() {
+//                if (authState.isAuthenticated) {
+//                    MainScreen(navController = navController)
+//                } else {
+//                    AuthScreen(
+//                        navController = navController,
+//                        onAuthSuccess = {
+//                            navController.navigate("profile") {
+//                                popUpTo("auth") { inclusive = true }
+//                            }
+//                        },
+//                        onCancel = { finish() }
+//                    )
+//                }
+//            }
         }
         setupOnlineStatusListener()
     }

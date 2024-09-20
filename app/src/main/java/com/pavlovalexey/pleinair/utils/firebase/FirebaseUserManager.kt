@@ -67,7 +67,7 @@ class FirebaseUserManager @Inject constructor(
     }
 
 
-    fun updateUserLocation(userId: String, location: LatLng, collectionName: String, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {  // работает на User и Event
+    fun updateUserLocation(userId: String, location: GeoPoint, collectionName: String, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {  // работает на User и Event
         firestore.collection(collectionName).document(userId)
             .update("location", GeoPoint(location.latitude, location.longitude))
             .addOnSuccessListener {
