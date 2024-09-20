@@ -79,7 +79,7 @@ fun SettingsScreen(
             CustomButtonOne(
                 onClick = { viewModel.goToHelp() },
                 text = stringResource(R.string.write_to_support),
-                iconResId = R.drawable.ic_btn_support,
+                iconResId = R.drawable.support_agent_30dp,
                 modifier = Modifier.fillMaxWidth()
             )
 

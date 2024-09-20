@@ -63,7 +63,7 @@ fun MyLocationScreen(
             ) {
                 CustomButtonOne(
                     text = stringResource(R.string.geo_mark),
-                    iconResId = R.drawable.ic_launcher_foreground,
+                    iconResId = R.drawable.palette_30dp,
                     textColor = MaterialTheme.colors.primary,
                     iconColor = MaterialTheme.colors.primary,
                     modifier = Modifier.fillMaxWidth(),
