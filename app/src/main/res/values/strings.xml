@@ -81,4 +81,11 @@
     <string name="geo_mark">Выставить геометку</string>
     <string name="change_name">Изменить имя</string>
     <string name="new_name">Новое имя</string>
+    <string name="confirmation">Подтверждение</string>
+    <string name="confirmation_for_pay_terminal">Пользователь перейдет на платежный терминал</string>
+    <string name="confirmation_for_delete">Будут удалены все данные пользователя и аккаунт в этом приложении. Вы уверены, что хотите продолжить?</string>
+    <string name="profile">Я</string>
+    <string name="event">Ивенты</string>
+    <string name="map">Карта</string>
+    <string name="settings">Опции</string>
 </resources>

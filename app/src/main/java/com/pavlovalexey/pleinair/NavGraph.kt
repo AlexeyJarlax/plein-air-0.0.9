@@ -88,13 +88,13 @@ fun NavGraph(navController: NavHostController, activity: Activity, modifier: Mod
             NewEventScreen(
                 navController,
                 onEventLocation = {
-                    navController.navigate("event_location")
+                    navController.navigate("event_location?city={city}")
                 },
             )
         }
 
         composable(
-            "event_location",
+            "event_location?city={city}",
             arguments = listOf(navArgument("city") { defaultValue = "" })
         ) { backStackEntry ->
             val city = backStackEntry.arguments?.getString("city") ?: ""

@@ -5,6 +5,7 @@ import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.BottomAppBar
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material3.Button
@@ -54,42 +55,49 @@ fun MyLocationScreen(
         requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
     }
 
-        Scaffold(
-            backgroundColor = Color.White,
-            bottomBar = {
-            CustomButtonOne(
-                text = stringResource(R.string.geo_mark),
-                iconResId = R.drawable.ic_launcher_foreground,
-                textColor = MaterialTheme.colors.primary,
-                iconColor = MaterialTheme.colors.primary,
-                modifier = Modifier.fillMaxWidth(),
-                onClick = {
+    Scaffold(
+        bottomBar = {
+            BottomAppBar(
+                backgroundColor = Color.White,
+                        modifier = Modifier.height(100.dp)
+            ) {
+                CustomButtonOne(
+                    text = stringResource(R.string.geo_mark),
+                    iconResId = R.drawable.ic_launcher_foreground,
+                    textColor = MaterialTheme.colors.primary,
+                    iconColor = MaterialTheme.colors.primary,
+                    modifier = Modifier.fillMaxWidth(),
+                    onClick = {
+                        selectedLocation?.let {
+                            onLocationSelected(it)
+                            navController.popBackStack()
+                        } ?: run {
+                            Toast.makeText(context, "Выберите местоположение", Toast.LENGTH_SHORT)
+                                .show()
+                        }
+                    }
+                )
+            }
+        }
+    ){
+        if (locationEnabled) {
+            GoogleMap(
+                modifier = Modifier.fillMaxSize(),
+                cameraPositionState = cameraPositionState,
+                onMapClick = { latLng ->
+                    selectedLocation = latLng
+                    viewModel.updateUserLocation(latLng)
+                }
+            ) {
                 selectedLocation?.let {
-                    onLocationSelected(it)
-                    navController.popBackStack()
-                } ?: run {
-                    Toast.makeText(context, "Выберите местоположение", Toast.LENGTH_SHORT).show()
+                    Marker(
+                        state = MarkerState(position = it)
+                    )
                 }
-                }
-            )
-        }) {
-            if (locationEnabled) {
-                GoogleMap(
-                    modifier = Modifier.fillMaxSize(),
-                    cameraPositionState = cameraPositionState,
-                    onMapClick = { latLng ->
-                        selectedLocation = latLng
-                        viewModel.updateUserLocation(latLng)
-                    }
-                ) {
-                    selectedLocation?.let {
-                        Marker(
-                            state = MarkerState(position = it)
-                        )
-                    }
-                }
-            } else {
-                Text(text = "Геолокация выключена")
-            }}
+            }
+        } else {
+            Text(text = "Геолокация выключена")
+        }
     }
+}
 

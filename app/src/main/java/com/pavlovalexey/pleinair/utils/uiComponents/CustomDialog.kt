@@ -1,24 +1,18 @@
 package com.pavlovalexey.pleinair.utils.uiComponents
 
-import android.content.Intent
-import android.provider.MediaStore
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.AlertDialog
-import androidx.compose.material.Button
-import androidx.compose.material.Text
-import androidx.compose.material.TextButton
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.BlendMode.Companion.Color
 import com.pavlovalexey.pleinair.R
+import androidx.compose.material.*
+import androidx.compose.runtime.*
+
 
 @Composable
 fun CustomYesOrNoDialog(
@@ -46,7 +40,7 @@ fun CustomYesOrNoDialog(
             }
         },
         backgroundColor = colorResource(id = R.color.my_very_blue),
-        contentColor = colorResource(id = R.color.my_normal_blue)
+        contentColor = colorResource(id = R.color.my_black)
     )
 }
 /** пример реализации:
@@ -92,7 +86,7 @@ fun CustomOptionDialog(
         },
         dismissButton = null, // Можно оставить кнопку "Закрыть" или убрать
         backgroundColor = colorResource(id = R.color.my_very_blue),
-        contentColor = colorResource(id = R.color.my_normal_blue)
+        contentColor = colorResource(id = R.color.my_black)
     )
 }
 
@@ -115,6 +109,60 @@ onOptionSelected = { selectedOption ->
         }
     }
     onDismissRequest()
+}
+)
+ */
+
+@Composable
+fun CustomTextInputDialog(
+    title: String,
+    initialText: String,
+    onDismiss: () -> Unit,
+    onConfirm: (String) -> Unit // Принимает новое значение текста
+) {
+    var text by remember { mutableStateOf(initialText) } // Для отслеживания введенного текста
+
+    AlertDialog(
+        onDismissRequest = { onDismiss() },
+        title = { Text(text = title, style = TextStyle(fontSize = 18.sp)) },
+        text = {
+            Column {
+                Text("Введите значение:", style = TextStyle(fontSize = 18.sp))
+                TextField(
+                    value = text,
+                    onValueChange = { text = it },
+                    modifier = Modifier.fillMaxWidth(),
+                    textStyle = TextStyle(fontSize = 18.sp)
+                )
+            }
+        },
+        confirmButton = {
+            Button(
+                onClick = { onConfirm(text) } // Возвращаем введенное значение через коллбэк
+            ) {
+                Text("✔️", style = TextStyle(fontSize = 18.sp))
+            }
+        },
+        dismissButton = {
+            Button(
+                onClick = { onDismiss() }
+            ) {
+                Text("❌", style = TextStyle(fontSize = 18.sp))
+            }
+        },
+        backgroundColor = colorResource(id = R.color.my_very_blue),
+        contentColor = colorResource(id = R.color.my_black)
+    )
+}
+/**
+CustomTextInputDialog(
+title = stringResource(id = R.string.change_name),
+initialText = currentName,
+onDismiss = onDismissRequest,
+onConfirm = { newName ->
+viewModel.updateUserName(newName) {
+onDismissRequest()
+}
 }
 )
  */

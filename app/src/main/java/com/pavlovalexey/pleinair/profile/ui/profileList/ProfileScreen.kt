@@ -23,6 +23,7 @@ import com.pavlovalexey.pleinair.R
 import com.pavlovalexey.pleinair.utils.uiComponents.BackgroundImage
 import com.pavlovalexey.pleinair.utils.uiComponents.CustomButtonOne
 import com.pavlovalexey.pleinair.utils.uiComponents.CustomOptionDialog
+import com.pavlovalexey.pleinair.utils.uiComponents.CustomTextInputDialog
 import com.pavlovalexey.pleinair.utils.uiComponents.CustomYesOrNoDialog
 
 @Composable
@@ -230,16 +231,14 @@ private fun showEditNameDialog(
     currentName: String,
     onDismissRequest: () -> Unit
 ) {
-    val newName by remember { mutableStateOf(currentName) }
-
-    CustomYesOrNoDialog(
-        stringResource(id = R.string.change_name),
-        stringResource(id = R.string.new_name),
-        onConfirm = {
+    CustomTextInputDialog(
+        title = stringResource(id = R.string.change_name),
+        initialText = currentName,
+        onDismiss = onDismissRequest,
+        onConfirm = { newName ->
             viewModel.updateUserName(newName) {
                 onDismissRequest()
             }
-        },
-        onDismiss = onDismissRequest
+        }
     )
 }

@@ -6,12 +6,14 @@ import com.google.android.gms.maps.model.LatLng
 import android.location.Geocoder
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.BottomAppBar
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -78,21 +80,26 @@ fun EventLocationScreen(
     Scaffold(
         backgroundColor = Color.White,
         bottomBar = {
-            CustomButtonOne(
-                text = stringResource(R.string.geo_mark),
-                iconResId = R.drawable.ic_launcher_foreground,
-                textColor = MaterialTheme.colors.primary,
-                iconColor = MaterialTheme.colors.primary,
-                modifier = Modifier.fillMaxWidth(),
-                onClick = {
-                    markerPosition?.let {
-                        onLocationSelected(it.latitude, it.longitude)
-                    } ?: run {
-                        Toast.makeText(context, "Выберите местоположение", Toast.LENGTH_SHORT)
-                            .show()
+            BottomAppBar(
+                backgroundColor = Color.White,
+                modifier = Modifier.height(100.dp)
+            ) {
+                CustomButtonOne(
+                    text = stringResource(R.string.geo_mark),
+                    iconResId = R.drawable.ic_launcher_foreground,
+                    textColor = MaterialTheme.colors.primary,
+                    iconColor = MaterialTheme.colors.primary,
+                    modifier = Modifier.fillMaxWidth(),
+                    onClick = {
+                        markerPosition?.let {
+                            onLocationSelected(it.latitude, it.longitude)
+                        } ?: run {
+                            Toast.makeText(context, "Выберите местоположение", Toast.LENGTH_SHORT)
+                                .show()
+                        }
                     }
-                }
-            )
+                )
+            }
         }
     ) { innerPadding ->
         GoogleMap(

@@ -90,12 +90,12 @@ fun NewEventScreen(
                     viewModel.createEvent(uiState.value)
                 },
                 onChooseLocation = {
-                    onEventLocation()
-//                    navController.navigate("event_location?city=${uiState.value.city}")
+//                    onEventLocation()
+                    navController.navigate("event_location?city=${uiState.value.city}")
                 },
                 onCitySelected = {
-                    onEventLocation()
-//                    navController.navigate("event_location?city=${uiState.value.city}")
+//                    onEventLocation()
+                    navController.navigate("event_location?city=${uiState.value.city}")
                 }
             )
         }

@@ -1,6 +1,7 @@
 package com.pavlovalexey.pleinair
 
 import android.app.Activity
+import androidx.compose.foundation.layout.height
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
@@ -9,10 +10,12 @@ import androidx.compose.material.icons.filled.Event
 import androidx.compose.material.icons.filled.Map
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.pavlovalexey.pleinair.utils.uiComponents.CustomYesOrNoDialog
@@ -25,7 +28,7 @@ fun BottomNavBar(navController: NavHostController) {
     val primaryDayColor = colorResource(id = R.color.my_prime_day)
     val primeBackground = colorResource(id = R.color.my_normal_blue)
 
-    val backgroundColor = primeBackground.copy(alpha = 0.9f)
+//    val backgroundColor = primeBackground.copy(alpha = 0.0f)
 
     var showExitDialog by remember { mutableStateOf(false) }
 
@@ -42,8 +45,12 @@ fun BottomNavBar(navController: NavHostController) {
     }
 
     BottomNavigation(
-        backgroundColor = backgroundColor
+//        backgroundColor = backgroundColor
     ) {
+        BottomAppBar(
+            backgroundColor =primeBackground.copy(alpha = 1f),
+            modifier = Modifier.height(80.dp)
+        ) {
         BottomNavigationItem(
             icon = {
                 Icon(
@@ -54,7 +61,7 @@ fun BottomNavBar(navController: NavHostController) {
             },
             label = {
                 Text(
-                    "Лик",
+                    stringResource(R.string.profile),
                     color = primaryDayColor
                 )
             },
@@ -78,7 +85,7 @@ fun BottomNavBar(navController: NavHostController) {
             },
             label = {
                 Text(
-                    "Действа",
+                    stringResource(R.string.event),
                     color = primaryDayColor
                 )
             },
@@ -102,7 +109,7 @@ fun BottomNavBar(navController: NavHostController) {
             },
             label = {
                 Text(
-                    "Карта",
+                    stringResource(R.string.map),
                     color = primaryDayColor
                 )
             },
@@ -126,7 +133,7 @@ fun BottomNavBar(navController: NavHostController) {
             },
             label = {
                 Text(
-                    "Уставы",
+                    stringResource(R.string.settings),
                     color = primaryDayColor
                 )
             },
@@ -150,7 +157,7 @@ fun BottomNavBar(navController: NavHostController) {
             },
             label = {
                 Text(
-                    "Исход",
+                    stringResource(R.string.exit),
                     color = primaryDayColor
                 )
             },
@@ -159,7 +166,7 @@ fun BottomNavBar(navController: NavHostController) {
                 showExitDialog = true
             }
         )
-    }
+    }}
 }
 
 @Composable
