@@ -6,6 +6,8 @@ import android.content.SharedPreferences
 import android.net.Uri
 import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
+import com.google.firebase.appcheck.internal.util.Logger.TAG
+import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
@@ -105,46 +107,64 @@ class SettingsRepositoryImpl @Inject constructor(
                 val items = listResult.items
                 for (item in items) {
                     item.delete().addOnSuccessListener {
-                        Log.d("DeleteUser", "Файл успешно удален из Firebase Storage: ${item.path}")
+                        Log.d("=== DeleteUser", "=== Файл успешно удален из Firebase Storage: ${item.path}")
                     }.addOnFailureListener { e ->
-                        Log.w("DeleteUser", "Ошибка при удалении файла из Firebase Storage: ${item.path}", e)
+                        Log.w("=== DeleteUser", "=== Ошибка при удалении файла из Firebase Storage: ${item.path}", e)
                     }
                 }
             }.addOnFailureListener { e ->
-                Log.w("DeleteUser", "Ошибка при получении списка файлов для удаления из Firebase Storage", e)
+                Log.w("=== DeleteUser", "=== Ошибка при получении списка файлов для удаления из Firebase Storage", e)
             }
+
+            // удаления коллекции с документами
+            val userDocRef = db.collection("users").document(userId)
+                userDocRef.delete()
+                    Log.d(TAG, "=== Данные пользователя успешно удалены из userDocRef.")
 
             // Удаление данных из Firestore и SharedPreferences
             db.collection("users").document(userId).delete().addOnSuccessListener {
-                Log.d("DeleteUser", "Данные пользователя успешно удалены из Firestore.")
+                Log.d("=== DeleteUser", "=== Данные пользователя успешно удалены из Firestore.")
                 sharedPreferences.edit().clear().apply()
-                Log.d("DeleteUser", "Данные пользователя успешно удалены из SharedPreferences.")
+                Log.d("=== DeleteUser", "=== Данные пользователя успешно удалены из SharedPreferences.")
 
                 // Удаление файлов из локального хранилища
                 val filesDir = context.filesDir
                 val file = File(filesDir, "profile_image_$userId.jpg")
                 if (file.exists()) {
                     if (file.delete()) {
-                        Log.d("DeleteUser", "Файл успешно удален из локального хранилища: ${file.path}")
+                        Log.d("=== DeleteUser", "=== Файл успешно удален из локального хранилища: ${file.path}")
                     } else {
-                        Log.w("DeleteUser", "Ошибка при удалении файла из локального хранилища: ${file.path}")
+                        Log.w("=== DeleteUser", "=== Ошибка при удалении файла из локального хранилища: ${file.path}")
                     }
                 } else {
-                    Log.d("DeleteUser", "Файл не найден в локальном хранилище: ${file.path}")
+                    Log.d("=== DeleteUser", "=== Файл не найден в локальном хранилище: ${file.path}")
                 }
 
                 // Удаление учетной записи из Firebase Authentication
-                currentUser.delete().addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        Log.d("DeleteUser", "Учетная запись пользователя успешно удалена.")
-                        onAccountDeleted()
-                    } else {
-                        Log.w("DeleteUser", "Ошибка при удалении учетной записи пользователя.", task.exception)
-                        onAccountDeleted()
+//                val user = FirebaseAuth.getInstance().currentUser
+                user?.let { currentUser ->
+                    // Получите учетные данные пользователя (например, email и пароль)
+                    val credential = EmailAuthProvider.getCredential("user@example.com", "password1234")
+
+                    // Повторная аутентификация
+                    currentUser.reauthenticate(credential).addOnCompleteListener { reauthTask ->
+                        if (reauthTask.isSuccessful) {
+                            // Продолжайте удаление пользователя
+                            currentUser.delete().addOnCompleteListener { deleteTask ->
+                                if (deleteTask.isSuccessful) {
+                                    Log.d("DeleteUser", "=== Учетная запись пользователя успешно удалена.")
+                                    onAccountDeleted()
+                                } else {
+                                    Log.w("=== DeleteUser", "=== Ошибка при удалении учетной записи пользователя.", deleteTask.exception)
+                                }
+                            }
+                        } else {
+                            Log.w("=== DeleteUser", "=== Ошибка при повторной аутентификации.", reauthTask.exception)
+                        }
                     }
                 }
             }.addOnFailureListener { e ->
-                Log.w("DeleteUser", "Ошибка при удалении данных пользователя из Firestore", e)
+                Log.w("=== DeleteUser", "=== Ошибка при удалении данных пользователя из Firestore", e)
                 onAccountDeleted()
             }
         } ?: run {

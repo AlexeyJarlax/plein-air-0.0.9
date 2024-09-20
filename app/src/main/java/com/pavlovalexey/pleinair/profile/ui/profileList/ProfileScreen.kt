@@ -1,10 +1,13 @@
 package com.pavlovalexey.pleinair.profile.ui.profileList
 
 import android.content.Intent
+import android.graphics.Bitmap
 import android.provider.MediaStore
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -13,6 +16,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -36,6 +40,9 @@ fun ProfileScreen(
 
     ) {
     val user by viewModel.user.observeAsState()
+    LaunchedEffect(user) {
+        Log.d("=== ProfileScreen", "=== Текущий пользователь: $user")
+    }
     val selectedArtStyles by viewModel.selectedArtStyles.observeAsState(emptySet())
     val bitmap by viewModel.bitmap.observeAsState()
 
@@ -71,13 +78,14 @@ fun ProfileScreen(
 
             ProfileImage(
                 imageUrl = user?.profileImageUrl,
+                bitmap = bitmap,
                 onClick = { showImageSelectionDialog = true },
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
 
-            Text( // User Name
+            Text(
                 text = user?.name ?: "User",
                 style = MaterialTheme.typography.h5,
                 modifier = Modifier.clickable {
@@ -175,21 +183,32 @@ fun ProfileScreen(
 }
 
 @Composable
-private fun ProfileImage(onClick: () -> Unit, imageUrl: String?) {
-    AsyncImage(
-        model = ImageRequest.Builder(LocalContext.current)
-            .data(imageUrl ?: R.drawable.account_circle_50dp)
-            .crossfade(true)
-            .placeholder(R.drawable.account_circle_50dp)
-            .error(R.drawable.account_circle_50dp)
-            .build(),
-        contentDescription = null,
-        modifier = Modifier
-            .size(100.dp)
-            .clip(CircleShape)
-            .clickable(onClick = onClick)
-    )
+private fun ProfileImage(onClick: () -> Unit, imageUrl: String?, bitmap: Bitmap?) {
+    val imageModifier = Modifier
+        .size(100.dp)
+        .clip(CircleShape)
+        .clickable(onClick = onClick)
+
+    if (bitmap != null) {
+        Image(
+            bitmap = bitmap.asImageBitmap(),
+            contentDescription = null,
+            modifier = imageModifier
+        )
+    } else {
+        AsyncImage(
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(imageUrl ?: R.drawable.account_circle_50dp)
+                .crossfade(true)
+                .placeholder(R.drawable.account_circle_50dp)
+                .error(R.drawable.account_circle_50dp)
+                .build(),
+            contentDescription = null,
+            modifier = imageModifier
+        )
+    }
 }
+
 
 @Composable
 private fun showImageSelectionDialog(

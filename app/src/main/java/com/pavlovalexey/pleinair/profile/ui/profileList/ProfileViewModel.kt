@@ -54,7 +54,14 @@ class ProfileViewModel @Inject constructor(
         viewModelScope.launch {
             val userId = auth.currentUser?.uid
             if (userId != null) {
-                _user.value = userRepository.getUserById(userId)
+                val loadedUser = userRepository.getUserById(userId)
+                _user.value = loadedUser
+                Log.d(TAG, "=== Загруженный пользователь: $loadedUser")
+                if (loadedUser?.profileImageUrl.isNullOrEmpty()) {
+                    checkAndGenerateAvatar {
+//                        loadUser()
+                    }
+                }
             }
         }
     }
@@ -151,6 +158,16 @@ class ProfileViewModel @Inject constructor(
             imageBitmap?.let {
                 val processedBitmap = ImageUtils.compressAndGetCircularBitmap(it)
                 _bitmap.value = processedBitmap
+                // Загружаем изображение на Firebase и обновляем URL
+                uploadAvatarImageToFirebase(
+                    imageBitmap = processedBitmap,
+                    onSuccess = { uri ->
+                        updateProfileImageUrl(uri.toString())
+                    },
+                    onFailure = {
+                        Log.w(TAG, "Ошибка при загрузке изображения", it)
+                    }
+                )
             }
         }
     }
@@ -164,6 +181,16 @@ class ProfileViewModel @Inject constructor(
                     val imageBitmap = BitmapFactory.decodeStream(inputStream)
                     val processedBitmap = ImageUtils.compressAndGetCircularBitmap(imageBitmap)
                     _bitmap.value = processedBitmap
+                    // Загружаем изображение на Firebase и обновляем URL
+                    uploadAvatarImageToFirebase(
+                        imageBitmap = processedBitmap,
+                        onSuccess = { uri ->
+                            updateProfileImageUrl(uri.toString())
+                        },
+                        onFailure = {
+                            Log.w(TAG, "Ошибка при загрузке изображения", it)
+                        }
+                    )
                 } catch (e: IOException) {
                     Log.e(TAG, "Ошибка при открытии InputStream для URI", e)
                 }
