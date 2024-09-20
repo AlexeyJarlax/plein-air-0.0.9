@@ -1,4 +1,4 @@
-package com.pavlovalexey.pleinair.event.ui.eventMap
+package com.pavlovalexey.pleinair.event.ui.eventLocation
 
 import androidx.compose.runtime.*
 import com.google.maps.android.compose.*
@@ -7,18 +7,13 @@ import android.location.Geocoder
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.BottomAppBar
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -33,7 +28,7 @@ import kotlinx.coroutines.withContext
 import java.io.IOException
 
 @Composable
-fun EventMapScreen(
+fun EventLocationScreen(
     navController: NavController,
     viewModel: MyLocationViewModel = hiltViewModel(),
     city: String,
@@ -83,23 +78,28 @@ fun EventMapScreen(
         }
     }
     Scaffold(
-        backgroundColor = Color.Transparent,
+        backgroundColor = Color.White,
         bottomBar = {
-            CustomButtonOne(
-                text = stringResource(R.string.geo_mark),
-                iconResId = R.drawable.ic_launcher_foreground,
-                textColor = MaterialTheme.colors.primary,
-                iconColor = MaterialTheme.colors.primary,
-                modifier = Modifier.fillMaxWidth(),
-                onClick = {
-                    markerPosition?.let {
-                        onLocationSelected(it.latitude, it.longitude)
-                    } ?: run {
-                        Toast.makeText(context, "Выберите местоположение", Toast.LENGTH_SHORT)
-                            .show()
+            BottomAppBar(
+                backgroundColor = Color.White,
+                modifier = Modifier.height(100.dp)
+            ) {
+                CustomButtonOne(
+                    text = stringResource(R.string.geo_mark),
+                    iconResId = R.drawable.palette_30dp,
+                    textColor = MaterialTheme.colors.primary,
+                    iconColor = MaterialTheme.colors.primary,
+                    modifier = Modifier.fillMaxWidth(),
+                    onClick = {
+                        markerPosition?.let {
+                            onLocationSelected(it.latitude, it.longitude)
+                        } ?: run {
+                            Toast.makeText(context, "Выберите местоположение", Toast.LENGTH_SHORT)
+                                .show()
+                        }
                     }
-                }
-            )
+                )
+            }
         }
     ) { innerPadding ->
         GoogleMap(

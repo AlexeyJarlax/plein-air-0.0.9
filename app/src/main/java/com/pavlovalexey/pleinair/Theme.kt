@@ -18,7 +18,7 @@ content: @Composable () -> Unit
 // моя палитра:
 val MyBlack = Color(0xFF1C1E27)
 val MyBlueLight = Color(0xFF9FBBF3)
-val MySecondaryBackground = colorResource(id = R.color.my_secondary_background)
+val MySecondaryBackground = colorResource(id = R.color.my_normal_blue)
 
 // день и ночь:
     val LightColorPalette = lightColors(

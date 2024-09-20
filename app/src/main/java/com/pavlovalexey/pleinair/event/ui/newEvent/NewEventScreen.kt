@@ -22,6 +22,7 @@ import com.pavlovalexey.pleinair.event.model.NewEventUiState
 @Composable
 fun NewEventScreen(
     navController: NavController,
+    onEventLocation: () -> Unit,
 ) {
     val viewModel: NewEventViewModel = hiltViewModel()
     val context = LocalContext.current
@@ -35,7 +36,8 @@ fun NewEventScreen(
     val event by viewModel.event.observeAsState()
 
     val savedStateHandle = navController.currentBackStackEntry?.savedStateHandle
-    val location = savedStateHandle?.getStateFlow<Pair<Double, Double>?>("location", null)?.collectAsState()
+    val location =
+        savedStateHandle?.getStateFlow<Pair<Double, Double>?>("location", null)?.collectAsState()
 
     if (location?.value != null) {
         val (lat, lng) = location.value!!
@@ -49,10 +51,12 @@ fun NewEventScreen(
             is CreationStatus.Loading -> {
                 // Показать индикатор загрузки
             }
+
             is CreationStatus.Success -> {
                 // Возврат назад после создания события
                 navController.popBackStack()
             }
+
             is CreationStatus.Error -> {
                 Toast.makeText(
                     context,
@@ -60,6 +64,7 @@ fun NewEventScreen(
                     Toast.LENGTH_LONG
                 ).show()
             }
+
             else -> Unit
         }
     }
@@ -85,10 +90,12 @@ fun NewEventScreen(
                     viewModel.createEvent(uiState.value)
                 },
                 onChooseLocation = {
-                    // Не используется, можно убрать или оставить для возможного использования
+//                    onEventLocation()
+                    navController.navigate("event_location?city=${uiState.value.city}")
                 },
                 onCitySelected = {
-                    navController.navigate("map?city=${uiState.value.city}")
+//                    onEventLocation()
+                    navController.navigate("event_location?city=${uiState.value.city}")
                 }
             )
         }

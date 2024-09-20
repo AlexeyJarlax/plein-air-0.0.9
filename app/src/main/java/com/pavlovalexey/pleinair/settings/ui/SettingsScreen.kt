@@ -23,6 +23,7 @@ import com.pavlovalexey.pleinair.R
 import com.pavlovalexey.pleinair.utils.uiComponents.CustomButtonOne
 import androidx.compose.ui.platform.LocalContext
 import com.pavlovalexey.pleinair.utils.uiComponents.BackgroundImage
+import com.pavlovalexey.pleinair.utils.uiComponents.CustomYesOrNoDialog
 
 @Composable
 fun SettingsScreen(
@@ -32,8 +33,9 @@ fun SettingsScreen(
     val isNightMode by viewModel.isNightMode.observeAsState(initial = false)
     val isLoading by viewModel.isLoading.observeAsState(initial = false)
     val context = LocalContext.current as Activity
-
     val eventFlow = viewModel.eventFlow.collectAsState(initial = null)
+    var showDonatDialog by remember { mutableStateOf(false) }
+    var showDeleteAccountDialog by remember { mutableStateOf(false) }
 
     eventFlow.value?.let { event ->
         when (event) {
@@ -63,16 +65,6 @@ fun SettingsScreen(
                 color = Color.Black,
                 modifier = Modifier.padding(bottom = 16.dp)
             )
-//            Row(
-//                verticalAlignment = Alignment.CenterVertically,
-//                modifier = Modifier.fillMaxWidth()
-//            ) {
-//                Text(text = "Темный режим", modifier = Modifier.weight(1f))
-//                CustomSwitch(
-//                    checked = isNightMode,
-//                    onCheckedChange = { viewModel.changeNightMode(it) }
-//                )
-//            }
 
             Spacer(modifier = Modifier.height(10.dp))
             CustomButtonOne(
@@ -87,7 +79,7 @@ fun SettingsScreen(
             CustomButtonOne(
                 onClick = { viewModel.goToHelp() },
                 text = stringResource(R.string.write_to_support),
-                iconResId = R.drawable.ic_btn_support,
+                iconResId = R.drawable.support_agent_30dp,
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -112,45 +104,46 @@ fun SettingsScreen(
             Spacer(modifier = Modifier.height(10.dp))
 
             CustomButtonOne(
-                onClick = {
-                    val builder = AlertDialog.Builder(context)
-                    builder.setTitle("Подтверждение")
-                    builder.setMessage("Пользователь перейдет на платежный терминал. Продолжить?")
-                    builder.setPositiveButton("Перейти") { dialog, _ ->
-                        viewModel.seeDonat()
-                        dialog.dismiss()
-                    }
-                    builder.setNegativeButton("Отмена") { dialog, _ ->
-                        dialog.dismiss()
-                    }
-                    builder.show()
-                },
+                onClick = { showDonatDialog = true },
                 text = stringResource(R.string.donats),
                 iconResId = R.drawable.currency_ruble_30dp,
                 modifier = Modifier.fillMaxWidth()
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(10.dp))
 
             CustomButtonOne(
-                onClick = {
-                    val builder = AlertDialog.Builder(context)
-                    builder.setTitle("Подтверждение удаления")
-                    builder.setMessage("Будут удалены все данные пользователя и аккаунт в этом приложении. Вы уверены, что хотите продолжить?")
-                    builder.setPositiveButton("Удалить") { dialog, _ ->
-                        viewModel.deleteUserAccount()
-                        dialog.dismiss()
-                    }
-                    builder.setNegativeButton("Отмена") { dialog, _ ->
-                        dialog.dismiss()
-                    }
-                    builder.show()
-                },
+                onClick = { showDeleteAccountDialog = true },
                 text = stringResource(R.string.delit_me),
                 iconResId = R.drawable.person_remove_30dp,
                 modifier = Modifier.fillMaxWidth()
             )
         }
+
+        if (showDonatDialog) {
+            CustomYesOrNoDialog(
+                title = stringResource(R.string.confirmation),
+                text = stringResource(R.string.confirmation_for_pay_terminal),
+                onDismiss = { showDonatDialog = false },
+                onConfirm = {
+                    viewModel.seeDonat()
+                    showDonatDialog = false
+                }
+            )
+        }
+
+        if (showDeleteAccountDialog) {
+            CustomYesOrNoDialog(
+                title = stringResource(R.string.confirmation),
+                text = stringResource(R.string.confirmation_for_delete),
+                onDismiss = { showDeleteAccountDialog = false },
+                onConfirm = {
+                    viewModel.deleteUserAccount()
+                    showDeleteAccountDialog = false
+                }
+            )
+        }
+
         if (isLoading) {
             Box(
                 modifier = Modifier.fillMaxSize(),
