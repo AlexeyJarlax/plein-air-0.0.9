@@ -76,7 +76,7 @@ fun EventLocationScreen(
         }
     }
     Scaffold(
-        backgroundColor = Color.Transparent,
+        backgroundColor = Color.White,
         bottomBar = {
             CustomButtonOne(
                 text = stringResource(R.string.geo_mark),

@@ -94,7 +94,7 @@ fun NavGraph(navController: NavHostController, activity: Activity, modifier: Mod
         }
 
         composable(
-            "event_location?city={city}",
+            "event_location",
             arguments = listOf(navArgument("city") { defaultValue = "" })
         ) { backStackEntry ->
             val city = backStackEntry.arguments?.getString("city") ?: ""

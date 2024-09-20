@@ -6,15 +6,16 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.DoorFront
 import androidx.compose.material.icons.filled.Event
-import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Map
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.pavlovalexey.pleinair.utils.uiComponents.CustomYesOrNoDialog
 
 @Composable
 fun BottomNavBar(navController: NavHostController) {
@@ -22,7 +23,7 @@ fun BottomNavBar(navController: NavHostController) {
     val currentRoute = navBackStackEntry?.destination?.route
 
     val primaryDayColor = colorResource(id = R.color.my_prime_day)
-    val primeBackground = colorResource(id = R.color.my_secondary_background)
+    val primeBackground = colorResource(id = R.color.my_normal_blue)
 
     val backgroundColor = primeBackground.copy(alpha = 0.9f)
 
@@ -163,25 +164,10 @@ fun BottomNavBar(navController: NavHostController) {
 
 @Composable
 fun ExitConfirmationDialog(onDismiss: () -> Unit, onConfirm: () -> Unit) {
-    AlertDialog(
-        onDismissRequest = { onDismiss() },
-        title = { Text(text = "Подтверждение выхода") },
-        text = { Text(text = "Вы уверены, что хотите выйти?") },
-        confirmButton = {
-            Button(
-                onClick = { onConfirm() }
-            ) {
-                Text("✔️")
-            }
-        },
-        dismissButton = {
-            Button(
-                onClick = { onDismiss() }
-            ) {
-                Text("❌")
-            }
-        },
-        backgroundColor = Color.White,
-        contentColor = Color.Black
+    CustomYesOrNoDialog(
+        stringResource(id = R.string.exit_dialog),
+        "",
+        onDismiss,
+        onConfirm
     )
 }

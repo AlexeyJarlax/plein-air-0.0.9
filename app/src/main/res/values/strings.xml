@@ -77,5 +77,8 @@
     <string name="loading">Загрузка…</string>
     <string name="logout">Сменить аккаунт</string>
     <string name="exit">Выход</string>
+    <string name="exit_dialog">Подтвердите, чтобы закрыть приложение</string>
     <string name="geo_mark">Выставить геометку</string>
+    <string name="change_name">Изменить имя</string>
+    <string name="new_name">Новое имя</string>
 </resources>

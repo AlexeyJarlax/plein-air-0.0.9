@@ -22,6 +22,8 @@ import coil.request.ImageRequest
 import com.pavlovalexey.pleinair.R
 import com.pavlovalexey.pleinair.utils.uiComponents.BackgroundImage
 import com.pavlovalexey.pleinair.utils.uiComponents.CustomButtonOne
+import com.pavlovalexey.pleinair.utils.uiComponents.CustomOptionDialog
+import com.pavlovalexey.pleinair.utils.uiComponents.CustomYesOrNoDialog
 
 @Composable
 fun ProfileScreen(
@@ -195,44 +197,29 @@ private fun showImageSelectionDialog(
     onDismissRequest: () -> Unit
 ) {
     val context = LocalContext.current
-    val options = arrayOf("Сделать фото", "Выбрать из галереи")
+    val options = listOf("Сделать фото", "Выбрать из галереи")
 
-    AlertDialog(
-        onDismissRequest = onDismissRequest,
-        title = { Text("Выберите аватарку") },
-        backgroundColor = MaterialTheme.colors.background,
-        text = {
-            Column {
-                options.forEachIndexed { index, option ->
-                    Text(
-                        text = option,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(8.dp)
-                            .clickable {
-                                if (index == 0) {
-                                    val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-                                    if (takePictureIntent.resolveActivity(context.packageManager) != null) {
-                                        cameraActivityResultLauncher.launch(takePictureIntent)
-                                    }
-                                } else {
-                                    val pickPhotoIntent = Intent(
-                                        Intent.ACTION_PICK,
-                                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-                                    )
-                                    galleryActivityResultLauncher.launch(pickPhotoIntent)
-                                }
-                                onDismissRequest()
-                            }
+    CustomOptionDialog(
+        title = "Выберите аватарку",
+        options = options,
+        onDismiss = onDismissRequest,
+        onOptionSelected = { selectedOption ->
+            when (selectedOption) {
+                "Сделать фото" -> {
+                    val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                    if (takePictureIntent.resolveActivity(context.packageManager) != null) {
+                        cameraActivityResultLauncher.launch(takePictureIntent)
+                    }
+                }
+                "Выбрать из галереи" -> {
+                    val pickPhotoIntent = Intent(
+                        Intent.ACTION_PICK,
+                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI
                     )
+                    galleryActivityResultLauncher.launch(pickPhotoIntent)
                 }
             }
-        },
-        confirmButton = { },
-        dismissButton = {
-            Button(onClick = onDismissRequest) {
-                Text("❌")
-            }
+            onDismissRequest()
         }
     )
 }
@@ -243,31 +230,16 @@ private fun showEditNameDialog(
     currentName: String,
     onDismissRequest: () -> Unit
 ) {
-    var newName by remember { mutableStateOf(currentName) }
+    val newName by remember { mutableStateOf(currentName) }
 
-    AlertDialog(
-        onDismissRequest = onDismissRequest,
-        title = { Text("Изменить имя") },
-        text = {
-            TextField(
-                value = newName,
-                onValueChange = { newName = it },
-                label = { Text("Новое имя") }
-            )
-        },
-        confirmButton = {
-            Button(onClick = {
-                viewModel.updateUserName(newName) {
-                    onDismissRequest()
-                }
-            }) {
-                Text("✔️")
+    CustomYesOrNoDialog(
+        stringResource(id = R.string.change_name),
+        stringResource(id = R.string.new_name),
+        onConfirm = {
+            viewModel.updateUserName(newName) {
+                onDismissRequest()
             }
         },
-        dismissButton = {
-            Button(onClick = onDismissRequest) {
-                Text("❌")
-            }
-        }
+        onDismiss = onDismissRequest
     )
 }
