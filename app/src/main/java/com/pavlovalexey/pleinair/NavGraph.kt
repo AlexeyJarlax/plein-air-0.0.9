@@ -85,7 +85,12 @@ fun NavGraph(navController: NavHostController, activity: Activity, modifier: Mod
             EventListScreen(navController)
         }
         composable("new_event") {
-            NewEventScreen(navController)
+            NewEventScreen(
+                navController,
+                onEventLocation = {
+                    navController.navigate("event_location")
+                },
+            )
         }
 
         composable(

@@ -22,6 +22,7 @@ import com.pavlovalexey.pleinair.event.model.NewEventUiState
 @Composable
 fun NewEventScreen(
     navController: NavController,
+    onEventLocation: () -> Unit,
 ) {
     val viewModel: NewEventViewModel = hiltViewModel()
     val context = LocalContext.current
@@ -85,10 +86,12 @@ fun NewEventScreen(
                     viewModel.createEvent(uiState.value)
                 },
                 onChooseLocation = {
-                    // Не используется, можно убрать или оставить для возможного использования
+//                    onEventLocation()
+                    navController.navigate("event_location?city=${uiState.value.city}")
                 },
                 onCitySelected = {
-                    navController.navigate("map?city=${uiState.value.city}")
+//                    onEventLocation()
+                    navController.navigate("event_location?city=${uiState.value.city}")
                 }
             )
         }
