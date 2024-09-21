@@ -1,6 +1,12 @@
 package com.pavlovalexey.pleinair.main.ui
 
 import android.app.Activity
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.CircularProgressIndicator
@@ -15,41 +21,41 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.pavlovalexey.pleinair.BottomNavBar
 import com.pavlovalexey.pleinair.NavGraph
+import com.pavlovalexey.pleinair.main.ui.authScreen.AuthScreen
 import kotlinx.coroutines.delay
 
 @Composable
 fun MainScreen(navController: NavHostController) {
-    // Отслеживаем текущий маршрут
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute = navBackStackEntry?.destination?.route
-
-    // Определяем, когда показывать нижнюю панель
-    val showBottomNav = currentRoute == "profile" || currentRoute == "settings" || currentRoute == "event_list" || currentRoute == "new_event"
-
     // Новое состояние загрузки
     var isLoading by remember { mutableStateOf(true) }
 
     LaunchedEffect(Unit) {
-        // Имитируем задержку для демонстрации прогресс-бара
+        // Задержка для имитации загрузки
         delay(2000)
         isLoading = false
     }
 
     Scaffold(
         bottomBar = {
-            if (showBottomNav) {
-                BottomNavBar(navController = navController)
-            }
+            BottomNavBar(navController = navController)
         }
     ) { innerPadding ->
         Box(modifier = Modifier.fillMaxSize()) {
-            NavGraph(
-                navController = navController,
-                activity = LocalContext.current as Activity,
-                modifier = Modifier.padding(innerPadding)
-            )
+            // Анимация появления экранов
+            AnimatedVisibility(
+                visible = !isLoading,
+                enter = fadeIn(animationSpec = tween(durationMillis = 1500)),
+                exit = fadeOut(animationSpec = tween(durationMillis = 1500))
+            ) {
+                // Отображение основного контента
+                NavGraph(
+                    navController = navController,
+                    activity = LocalContext.current as Activity,
+                    modifier = Modifier.padding(innerPadding)
+                )
+            }
 
-            // Отображение прогресс-бара во время загрузки
+            // Показ прогресс-бара во время загрузки
             if (isLoading) {
                 Box(
                     modifier = Modifier
@@ -58,7 +64,7 @@ fun MainScreen(navController: NavHostController) {
                     contentAlignment = Alignment.Center
                 ) {
                     CircularProgressIndicator(
-                        color = Color(0xFF008F9C),  // ваш цвет
+                        color = Color(0xFF008F9C),
                         modifier = Modifier.size(100.dp)
                     )
                 }

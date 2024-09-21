@@ -24,6 +24,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.google.android.gms.common.SignInButton
 import com.pavlovalexey.pleinair.R
+import com.pavlovalexey.pleinair.utils.uiComponents.BackgroundImage
 import com.pavlovalexey.pleinair.utils.uiComponents.CustomButtonOne
 
 @Composable
@@ -50,58 +51,47 @@ fun AuthScreen(
         }
     }
 
-    Scaffold(
-        bottomBar = {
-            BottomAppBar(
-                backgroundColor = colorResource(id = R.color.my_normal_blue).copy(alpha = 1f),
-                modifier = Modifier.height(80.dp)
-            ) {
-                    CustomButtonOne(
-                        onClick = onCancel,
-                        text = stringResource(R.string.exit),
-                        iconResId = R.drawable.door_open_30dp,
-                        textColor = Color.Black, // Пример цвета текста
-                        iconColor = Color.Black,
-                        modifier = Modifier
-                            .wrapContentSize(Alignment.Center)
-                    )
-            }
-        }
-    ) { innerPadding ->
-        Box(
+    Box(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        BackgroundImage(imageResId = R.drawable.back_lay)
+        Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding)
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.back_lay),
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .fillMaxSize()
+            AndroidView(
+                factory = { context ->
+                    SignInButton(context).apply {
+                        setSize(SignInButton.SIZE_WIDE)
+                        setOnClickListener {
+                            viewModel.signInWithGoogle(googleSignInLauncher)
+                        }
+                    }
+                },
+                modifier = Modifier.wrapContentSize()
             )
 
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                AndroidView(
-                    factory = { context ->
-                        SignInButton(context).apply {
-                            setSize(SignInButton.SIZE_WIDE)
-                            setOnClickListener {
-                                viewModel.signInWithGoogle(googleSignInLauncher)
-                            }
-                        }
-                    },
-                    modifier = Modifier.wrapContentSize()
-                )
+            Spacer(modifier = Modifier.height(16.dp))
+        }
 
-                Spacer(modifier = Modifier.height(16.dp))
-            }
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Bottom
+        ) {
+            CustomButtonOne(
+                onClick = onCancel,
+                text = stringResource(R.string.exit),
+                iconResId = R.drawable.door_open_30dp,
+//                modifier = Modifier.background(Color.Transparent),
+                textColor = Color.Red, // Пример цвета текста
+                iconColor = Color.Red
+            )
         }
     }
 }
