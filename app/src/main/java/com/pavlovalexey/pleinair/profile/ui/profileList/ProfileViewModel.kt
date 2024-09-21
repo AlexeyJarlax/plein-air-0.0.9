@@ -14,7 +14,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.pavlovalexey.pleinair.profile.model.User
 import com.pavlovalexey.pleinair.profile.data.UserRepository
 import com.pavlovalexey.pleinair.utils.firebase.FirebaseUserManager
@@ -74,6 +74,10 @@ class ProfileViewModel @Inject constructor(
     fun logout() {
         loginAndUserUtils.logout()
         _user.value = null
+    }
+
+    fun isUserSignedIn(): Boolean {
+        return loginAndUserUtils.isUserSignedIn()
     }
 
     fun updateUserName(newName: String, onComplete: () -> Unit) {

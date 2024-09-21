@@ -23,15 +23,13 @@ import javax.inject.Inject
 
 class FirebaseUserManager @Inject constructor(
     private val context: Context,
-    private val auth: FirebaseAuth,
     private val firestore: FirebaseFirestore,
     private val storage: FirebaseStorage,
-    private val sharedPreferences: SharedPreferences
+    private val loginAndUserUtils: LoginAndUserUtils
 ) {
 
     fun getCurrentUserId() : String {
-        val userId = auth.currentUser?.uid
-        return userId?: "class FirebaseUserManager не выдал ID"
+        return loginAndUserUtils.getCurrentUserId()
     }
 
     fun fetchUserFromServer(

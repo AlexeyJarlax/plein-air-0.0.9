@@ -8,10 +8,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.BottomAppBar
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
-import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -40,7 +38,7 @@ fun MyLocationScreen(
     val cameraPositionState = rememberCameraPositionState {
         position = viewModel.cameraPositionState.value.position
     }
-    var selectedLocation by remember { mutableStateOf<LatLng?>(null) }
+    var selectedLocation by remember { mutableStateOf<GeoPoint?>(null) }
 
     val requestPermissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -86,14 +84,15 @@ fun MyLocationScreen(
             GoogleMap(
                 modifier = Modifier.fillMaxSize(),
                 cameraPositionState = cameraPositionState,
-                onMapClick = { geoPoint ->
-                    selectedLocation = geoPoint
-                    viewModel.updateUserLocation(geoPoint)
+                onMapClick = { latLng ->
+                    selectedLocation = GeoPoint(latLng.latitude, latLng.longitude)
+                    viewModel.updateUserLocation(selectedLocation!!)
                 }
             ) {
                 selectedLocation?.let {
+                    val position = LatLng(it.latitude, it.longitude)
                     Marker(
-                        state = MarkerState(position = it)
+                        state = MarkerState(position = position)
                     )
                 }
             }

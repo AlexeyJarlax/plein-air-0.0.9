@@ -25,6 +25,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.pavlovalexey.pleinair.R
+import com.pavlovalexey.pleinair.utils.firebase.LoginAndUserUtils
 import com.pavlovalexey.pleinair.utils.uiComponents.BackgroundImage
 import com.pavlovalexey.pleinair.utils.uiComponents.CustomButtonOne
 import com.pavlovalexey.pleinair.utils.uiComponents.CustomOptionDialog
@@ -50,12 +51,13 @@ fun ProfileScreen(
     val context = LocalContext.current
 
     LaunchedEffect(user) {
-        if (user == null) { // прогоняю неавторизованного
-            Toast.makeText(context, "Требуется авторизация", Toast.LENGTH_SHORT).show()
-            viewModel.logout()
-            onLogout()
+        if (viewModel.isUserSignedIn()) { // прогоняю неавторизованного
+            Log.d("ProfileScreen", "=== Текущий пользователь: $user")
         } else {
             Log.d("ProfileScreen", "=== Текущий пользователь: $user")
+            Toast.makeText(context, "Переход на авторизацию...", Toast.LENGTH_SHORT).show()
+            viewModel.logout()
+            onLogout()
         }
     }
 

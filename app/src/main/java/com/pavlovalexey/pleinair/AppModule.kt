@@ -120,11 +120,10 @@ object AppModule {
     @Singleton
     fun provideFirebaseUserManager(
         @ApplicationContext appContext: Context,
-        auth: FirebaseAuth,
         firestore: FirebaseFirestore,
         storage: FirebaseStorage,
-        sharedPreferences: SharedPreferences
+        loginAndUserUtils: LoginAndUserUtils
     ): FirebaseUserManager {
-        return FirebaseUserManager(appContext, auth, firestore, storage, sharedPreferences)
+        return FirebaseUserManager(appContext, firestore, storage, loginAndUserUtils)
     }
 }

@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
 import com.pavlovalexey.pleinair.settings.domain.SettingsInteractor
+import com.pavlovalexey.pleinair.utils.firebase.LoginAndUserUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -20,6 +21,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
     private val settingsInteractor: SettingsInteractor,
+    private val loginAndUserUtils: LoginAndUserUtils,
     @ApplicationContext private val context: Context
 ) : ViewModel(), SettingsViewModelInterface {
 
@@ -78,7 +80,7 @@ class SettingsViewModel @Inject constructor(
                     }
                 }
             } finally {
-                FirebaseAuth.getInstance().signOut()
+                loginAndUserUtils.logout()
                 exitApplication()
                 _isLoading.value = false
             }

@@ -12,9 +12,9 @@ import androidx.datastore.preferences.core.edit
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.GeoPoint
 import com.pavlovalexey.pleinair.R
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
@@ -51,19 +51,29 @@ class LoginAndUserUtils @Inject constructor(
         }
     }
 
+    fun getCurrentUserId() : String {
+        val userId = auth.currentUser?.uid
+        return userId?: "class FirebaseUserManager не выдал ID"
+    }
+
+    fun isUserSignedIn(): Boolean {
+        val googleAccount = GoogleSignIn.getLastSignedInAccount(context)
+        val firebaseUser = auth.currentUser
+        // Пользователь считается авторизованным, если либо Google, либо Firebase аутентификация присутствует
+        return googleAccount != null || firebaseUser != null
+    }
+
     fun logout() {
         auth.signOut()
         googleSignInClient.signOut()
-
-        // Clear DataStore
         runBlocking {
             context.dataStore.edit { preferences ->
-                preferences.clear() // Remove all preferences
+                preferences.clear()
             }
         }
     }
 
-    private val defaultLocation = LatLng(59.9500019, 30.3166718)
+    private val defaultLocation = GeoPoint(59.9500019, 30.3166718)
     private val animals: List<String> by lazy { loadFile(R.raw.animals) }
     private val verbs: List<String> by lazy { loadFile(R.raw.verbs) }
     private val nouns: List<String> by lazy { loadFile(R.raw.nouns) }
@@ -91,15 +101,15 @@ class LoginAndUserUtils @Inject constructor(
                 val userProfile = hashMapOf(
                     "profileImageUrl" to "",
                     "name" to userName,
-                    "location" to hashMapOf(
-                        "latitude" to defaultLocation.latitude,
-                        "longitude" to defaultLocation.longitude
-                    )
+                    "location" to GeoPoint(defaultLocation.latitude, defaultLocation.longitude)
                 )
                 userDocRef.set(userProfile).addOnSuccessListener {
                     updateUserNameOnFirebase(userName)
                     saveUserNameLocally(userName)
                     onProfileSet(userName)
+                }.addOnFailureListener { e ->
+                    // Handle failure in setting user profile on Firestore
+                    e.printStackTrace()
                 }
             } else {
                 val userName = document.getString("name") ?: generateRandomUserName()
@@ -107,6 +117,9 @@ class LoginAndUserUtils @Inject constructor(
                 saveUserNameLocally(userName)
                 onProfileSet(userName)
             }
+        }.addOnFailureListener { e ->
+            // Handle failure in retrieving document
+            e.printStackTrace()
         }
     }
 

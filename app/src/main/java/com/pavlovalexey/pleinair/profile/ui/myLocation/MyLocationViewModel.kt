@@ -8,11 +8,11 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.CameraPosition
-import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.CameraPositionState
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import androidx.compose.runtime.State
+import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.firestore.GeoPoint
 import com.pavlovalexey.pleinair.utils.firebase.FirebaseUserManager
 import dagger.hilt.android.lifecycle.HiltViewModel

@@ -68,10 +68,9 @@ fun MapScreen(viewModel: MapViewModel = hiltViewModel()) {
                         }
                     } else {
                         users.forEach { user ->
-                            val latitude = user.location["latitude"]
-                            val longitude = user.location["longitude"]
-                            if (latitude != null && longitude != null) {
-                                val position = LatLng(latitude, longitude)
+                            val location = user.location
+                            if (location != null) {
+                                val position = LatLng(location.latitude, location.longitude)
                                 val icon = getUserMarkerIcon(user.profileImageUrl) ?: BitmapDescriptorFactory.defaultMarker()
                                 Marker(
                                     state = MarkerState(position = position),
@@ -95,3 +94,13 @@ fun MapScreen(viewModel: MapViewModel = hiltViewModel()) {
         }
     }
 }
+
+/**
+Как преобразовывать между GeoPoint и LatLng:
+Из LatLng в GeoPoint:
+kotlin
+val geoPoint = GeoPoint(latLng.latitude, latLng.longitude)
+Из GeoPoint в LatLng:
+kotlin
+val latLng = LatLng(geoPoint.latitude, geoPoint.longitude)
+ */

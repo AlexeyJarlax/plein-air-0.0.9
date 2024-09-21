@@ -35,6 +35,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.GeoPoint
 import com.google.firebase.storage.FirebaseStorage
 import com.pavlovalexey.pleinair.PleinairTheme
 import com.pavlovalexey.pleinair.main.ui.authScreen.AuthScreen
@@ -62,8 +63,8 @@ class MainActivity : ComponentActivity(), OnMapReadyCallback {
     private lateinit var storage: FirebaseStorage
     private lateinit var mMap: GoogleMap
     private lateinit var progressBar: ProgressBar
-    private var selectedLocation: LatLng? = null
-    private val defaultLocation = LatLng(59.9500019, 30.3166718)    // Координаты Петропавловской крепости
+    private var selectedLocation: GeoPoint? = null
+    private val defaultLocation = GeoPoint(59.94861210316355, 30.314633063971993)    // Координаты Петропавловской крепости
 
     private lateinit var authViewModel: AuthViewModel
 
@@ -175,10 +176,11 @@ class MainActivity : ComponentActivity(), OnMapReadyCallback {
         mMap.setOnMapClickListener { latLng ->
             mMap.clear()
             mMap.addMarker(MarkerOptions().position(latLng).title("Выбрано местоположение"))
-            selectedLocation = latLng
+            selectedLocation = GeoPoint(latLng.latitude, latLng.longitude)
         }
         val initialPosition = selectedLocation ?: defaultLocation
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(initialPosition, 12f))
+        val initialLatLng = LatLng(initialPosition.latitude, initialPosition.longitude)
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(initialLatLng, 12f))
     }
 
     private fun hideSystemUI() {
