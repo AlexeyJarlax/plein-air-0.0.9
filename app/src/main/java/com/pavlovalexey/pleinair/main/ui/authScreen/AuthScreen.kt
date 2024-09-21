@@ -5,6 +5,9 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.BottomAppBar
+import androidx.compose.material.BottomNavigation
+import androidx.compose.material.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -13,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.viewinterop.AndroidView
@@ -46,54 +50,58 @@ fun AuthScreen(
         }
     }
 
-    Box(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        Image(
-            painter = painterResource(id = R.drawable.back_lay),
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .fillMaxSize()
-        )
-
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            AndroidView(
-                factory = { context ->
-                    SignInButton(context).apply {
-                        setSize(SignInButton.SIZE_WIDE)
-                        setOnClickListener {
-                            viewModel.signInWithGoogle(googleSignInLauncher)
-                        }
-                    }
-                },
-                modifier = Modifier.wrapContentSize()
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
+    Scaffold(
+        bottomBar = {
+            BottomAppBar(
+                backgroundColor = colorResource(id = R.color.my_normal_blue).copy(alpha = 1f),
+                modifier = Modifier.height(80.dp)
+            ) {
+                    CustomButtonOne(
+                        onClick = onCancel,
+                        text = stringResource(R.string.exit),
+                        iconResId = R.drawable.door_open_30dp,
+                        textColor = Color.Black, // Пример цвета текста
+                        iconColor = Color.Black,
+                        modifier = Modifier
+                            .wrapContentSize(Alignment.Center)
+                    )
+            }
         }
-
-        Column(
+    ) { innerPadding ->
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Bottom
+                .padding(innerPadding)
         ) {
-            CustomButtonOne(
-                onClick = onCancel,
-                text = stringResource(R.string.exit),
-                iconResId = R.drawable.door_open_30dp,
-//                modifier = Modifier.background(Color.Transparent),
-                textColor = Color.Red, // Пример цвета текста
-                iconColor = Color.Red
+            Image(
+                painter = painterResource(id = R.drawable.back_lay),
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .fillMaxSize()
             )
+
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                AndroidView(
+                    factory = { context ->
+                        SignInButton(context).apply {
+                            setSize(SignInButton.SIZE_WIDE)
+                            setOnClickListener {
+                                viewModel.signInWithGoogle(googleSignInLauncher)
+                            }
+                        }
+                    },
+                    modifier = Modifier.wrapContentSize()
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+            }
         }
     }
 }

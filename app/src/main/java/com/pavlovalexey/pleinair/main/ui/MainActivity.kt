@@ -1,22 +1,14 @@
 package com.pavlovalexey.pleinair.main.ui
 
-/** Приложение построено как синглактивити на фрагментах с вью моделями и отправной точкой MainActivity.
- * Вместо xml применил Jetpack Compose — фреймворк для создания UI на Android, основанный на декларативном подходе.
- *
- * 1 Этап - подписание соглашений в TermsScreen
- * 2 Этап - авторизация в AuthScreen
- * 3 Этап - MainActivity и фрагменты по всему функционалу приложения с навигацией через НавГраф и BottomNavBar
- */
-
 import android.os.Bundle
 import android.view.View
 import android.widget.ProgressBar
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.compose.rememberNavController
@@ -84,21 +76,22 @@ class MainActivity : ComponentActivity(), OnMapReadyCallback {
             val authState by authViewModel.authState.collectAsState()
 
             PleinairTheme() {
-            if (authState.isAuthenticated && auth.currentUser != null) {
-                MainScreen(navController = navController)
-            } else {
-                AuthScreen(
-                    navController = navController,
-                    onAuthSuccess = {
-                        navController.navigate("profile") {
-                            popUpTo("auth") { inclusive = true }
-                        }
-                    },
-                    onCancel = { finish() }
-                )
-            }
+                if (authState.isAuthenticated && auth.currentUser != null) {
+                    MainScreen(navController = navController)
+                } else {
+                    AuthScreen(
+                        navController = navController,
+                        onAuthSuccess = {
+                            navController.navigate("profile") {
+                                popUpTo("auth") { inclusive = true }
+                            }
+                        },
+                        onCancel = { finish() }
+                    )
+                }
             }
         }
+
         setupOnlineStatusListener()
     }
 

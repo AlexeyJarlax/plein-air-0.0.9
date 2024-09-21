@@ -44,9 +44,7 @@ fun BottomNavBar(navController: NavHostController) {
         )
     }
 
-    BottomNavigation(
-//        backgroundColor = backgroundColor
-    ) {
+    BottomNavigation {
         BottomAppBar(
             backgroundColor =primeBackground.copy(alpha = 1f),
             modifier = Modifier.height(80.dp)
