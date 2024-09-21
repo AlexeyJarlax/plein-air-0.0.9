@@ -201,6 +201,7 @@ dependencies {
     implementation(libs.firebase.appcheck.playintegrity)
     implementation(libs.firebase.database)
     implementation(libs.firebase.core)
+    implementation (libs.play.services.auth.v1920)
 
     //изображения
     implementation(libs.picasso)

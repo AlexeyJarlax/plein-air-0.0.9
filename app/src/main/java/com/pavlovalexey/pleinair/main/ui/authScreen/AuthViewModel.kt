@@ -32,7 +32,7 @@ class AuthViewModel @Inject constructor(
     }
 
     private fun checkAuthState() {
-        _authState.value = AuthState(isAuthenticated = auth.currentUser != null)
+        _authState.value = AuthState(isAuthenticated = loginAndUserUtils.isUserSignedIn())
     }
 
     fun signInWithGoogle(launcher: ActivityResultLauncher<Intent>) {
@@ -53,19 +53,27 @@ class AuthViewModel @Inject constructor(
     private fun firebaseAuthWithGoogle(account: GoogleSignInAccount) {
         val credential = GoogleAuthProvider.getCredential(account.idToken, null)
         viewModelScope.launch {
-            val authResult = auth.signInWithCredential(credential).await()
-            if (authResult.user != null) {
-                loginAndUserUtils.setupUserProfile(onProfileSet = {
-                    _authState.value = AuthState(isAuthenticated = true)
-                })
-            } else {
+            try {
+                val authResult = auth.signInWithCredential(credential).await()
+                if (authResult.user != null) {
+                    if (loginAndUserUtils.isUserSignedIn()) {
+                        loginAndUserUtils.setupUserProfile {
+                            _authState.value = AuthState(isAuthenticated = true)
+                        }
+                    } else {
+                        _authState.value = AuthState(isAuthenticated = false)
+                    }
+                } else {
+                    _authState.value = AuthState(isAuthenticated = false)
+                }
+            } catch (e: Exception) {
+                Log.e("AuthViewModel", "Firebase authentication failed", e)
                 _authState.value = AuthState(isAuthenticated = false)
             }
         }
     }
 
     fun signOut() {
-        auth.signOut()
         loginAndUserUtils.logout()
         _authState.value = AuthState(isAuthenticated = false)
     }

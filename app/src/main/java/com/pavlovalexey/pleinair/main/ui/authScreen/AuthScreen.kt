@@ -88,7 +88,7 @@ fun AuthScreen(
         ) {
             CustomButtonOne(
                 onClick = onCancel,
-                text = stringResource(R.string.cancel),
+                text = stringResource(R.string.exit),
                 iconResId = R.drawable.door_open_30dp,
 //                modifier = Modifier.background(Color.Transparent),
                 textColor = Color.Red, // Пример цвета текста

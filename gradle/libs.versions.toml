@@ -96,6 +96,7 @@ peko = "3.0.5"
 picasso = "2.71828"
 picassoVersion = "2.8"
 playServicesAuth = "21.2.0"
+playServicesAuthVersion = "19.2.0"
 playServicesLocation = "21.3.0"
 playServicesLocationVersion = "21.0.1"
 playServicesMaps = "19.0.0"
@@ -253,6 +254,7 @@ peko = { module = "com.markodevcic:peko", version.ref = "peko" }
 picasso = { module = "com.squareup.picasso:picasso", version.ref = "picasso" }
 picasso-v28 = { module = "com.squareup.picasso:picasso", version.ref = "picassoVersion" }
 play-services-auth = { module = "com.google.android.gms:play-services-auth", version.ref = "playServicesAuth" }
+play-services-auth-v1920 = { module = "com.google.android.gms:play-services-auth", version.ref = "playServicesAuthVersion" }
 play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "playServicesLocation" }
 play-services-location-v2101 = { module = "com.google.android.gms:play-services-location", version.ref = "playServicesLocationVersion" }
 play-services-maps = { module = "com.google.android.gms:play-services-maps", version.ref = "playServicesMaps" }

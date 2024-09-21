@@ -64,7 +64,7 @@ class MainActivity : ComponentActivity(), OnMapReadyCallback {
     private lateinit var mMap: GoogleMap
     private lateinit var progressBar: ProgressBar
     private var selectedLocation: GeoPoint? = null
-    private val defaultLocation = GeoPoint(59.94861210316355, 30.314633063971993)    // Координаты Петропавловской крепости
+    private val defaultLocation = GeoPoint(59.948612, 30.314633)    // Координаты Петропавловской крепости
 
     private lateinit var authViewModel: AuthViewModel
 
@@ -82,6 +82,8 @@ class MainActivity : ComponentActivity(), OnMapReadyCallback {
 
             // проверка на авторизованного
             val authState by authViewModel.authState.collectAsState()
+
+            PleinairTheme() {
             if (authState.isAuthenticated && auth.currentUser != null) {
                 MainScreen(navController = navController)
             } else {
@@ -95,22 +97,7 @@ class MainActivity : ComponentActivity(), OnMapReadyCallback {
                     onCancel = { finish() }
                 )
             }
-
-//            PleinairTheme() {
-//                if (authState.isAuthenticated) {
-//                    MainScreen(navController = navController)
-//                } else {
-//                    AuthScreen(
-//                        navController = navController,
-//                        onAuthSuccess = {
-//                            navController.navigate("profile") {
-//                                popUpTo("auth") { inclusive = true }
-//                            }
-//                        },
-//                        onCancel = { finish() }
-//                    )
-//                }
-//            }
+            }
         }
         setupOnlineStatusListener()
     }
