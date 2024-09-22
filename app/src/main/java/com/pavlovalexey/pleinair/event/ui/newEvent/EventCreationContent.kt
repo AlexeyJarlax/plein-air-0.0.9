@@ -2,6 +2,7 @@ package com.pavlovalexey.pleinair.event.ui.newEvent
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -23,7 +24,9 @@ import com.pavlovalexey.pleinair.event.model.NewEventUiState
 import com.pavlovalexey.pleinair.event.ui.eventLocation.getAddressFromLatLng
 import com.pavlovalexey.pleinair.utils.uiComponents.CustomButtonOne
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.LocalTime
+import java.time.ZoneId
 
 @Composable
 fun EventCreationContent(
@@ -33,7 +36,7 @@ fun EventCreationContent(
     onUiStateChange: (NewEventUiState) -> Unit,
     onCreateEvent: () -> Unit,
     onChooseLocation: () -> Unit,
-    onCitySelected: (String) -> Unit // Новый параметр
+    onCitySelected: (String) -> Unit
 ) {
     val context = LocalContext.current
     var showDatePicker by remember { mutableStateOf(false) }
@@ -42,6 +45,8 @@ fun EventCreationContent(
         mutableStateOf<String?>(null)
     }
     val isButtonLocationVisible = false
+    val currentDateTime = LocalDateTime.now()
+    val maxDateTime = currentDateTime.plusHours(100)
 
     LaunchedEffect(key1 = uiState.latitude, key2 = uiState.longitude) {
         if (uiState.latitude != null && uiState.longitude != null) {
@@ -73,14 +78,22 @@ fun EventCreationContent(
             DatePickerDialog(
                 context,
                 { _, year, month, dayOfMonth ->
-                    val selectedDate = "$dayOfMonth/${month + 1}/$year"
-                    onUiStateChange(uiState.copy(date = selectedDate))
+                    val selectedDate = LocalDate.of(year, month + 1, dayOfMonth)
+                    if (selectedDate.isBefore(currentDateTime.toLocalDate()) || selectedDate.isAfter(maxDateTime.toLocalDate())) {
+                        Toast.makeText(context, "+100 часов от текущего времени - допустимые время и дата}", Toast.LENGTH_LONG).show()
+                        Toast.makeText(context, "Максимальная дата: ${maxDateTime.toLocalDate()}", Toast.LENGTH_LONG).show()
+                    } else {
+                        onUiStateChange(uiState.copy(date = selectedDate.toString()))
+                    }
                     showDatePicker = false
                 },
                 currentDate.year,
                 currentDate.monthValue - 1,
                 currentDate.dayOfMonth
-            ).show()
+            ).apply {
+                datePicker.minDate = currentDate.atStartOfDay(ZoneId.systemDefault()).toEpochSecond() * 1000
+//                datePicker.maxDate = maxDateTime.atStartOfDay(ZoneId.systemDefault()).toEpochSecond() * 1000
+            }.show()
         }
 
         if (showTimePicker) {
@@ -88,8 +101,14 @@ fun EventCreationContent(
             TimePickerDialog(
                 context,
                 { _, hourOfDay, minute ->
-                    val selectedTime = String.format("%02d:%02d", hourOfDay, minute)
-                    onUiStateChange(uiState.copy(time = selectedTime))
+                    val selectedTime = LocalTime.of(hourOfDay, minute)
+                    val selectedDateTime = LocalDateTime.of(uiState.date.toLocalDate(), selectedTime)
+                    if (selectedDateTime.isBefore(currentDateTime) || selectedDateTime.isAfter(maxDateTime)) {
+                        Toast.makeText(context, "+100 часов от текущего времени - допустимые время и дата}", Toast.LENGTH_LONG).show()
+                        Toast.makeText(context, "Максимальное время: ${maxDateTime}", Toast.LENGTH_LONG).show()
+                    } else {
+                        onUiStateChange(uiState.copy(time = selectedTime.toString()))
+                    }
                     showTimePicker = false
                 },
                 currentTime.hour,
@@ -125,7 +144,7 @@ fun EventCreationContent(
             Spacer(modifier = Modifier.height(8.dp))
 
             OutlinedTextField(
-                value = uiState.date,
+                value = uiState.date ?: "",
                 onValueChange = { /* Do nothing */ },
                 label = { Text("Date") },
                 modifier = Modifier
@@ -142,7 +161,7 @@ fun EventCreationContent(
             Spacer(modifier = Modifier.height(8.dp))
 
             OutlinedTextField(
-                value = uiState.time,
+                value = uiState.time ?: "",
                 onValueChange = { /* Do nothing */ },
                 label = { Text("Time") },
                 modifier = Modifier
@@ -168,11 +187,27 @@ fun EventCreationContent(
             Spacer(modifier = Modifier.height(16.dp))
 
             CustomButtonOne(
-                onClick = onCreateEvent,
+                onClick = {
+                    val selectedDateTime = LocalDateTime.of(uiState.date.toLocalDate(), uiState.time.toLocalTime())
+                    if (selectedDateTime.isBefore(currentDateTime) || selectedDateTime.isAfter(maxDateTime)) {
+                        Toast.makeText(context, "+100 часов от текущего времени - допустимые время и дата}", Toast.LENGTH_LONG).show()
+                        Toast.makeText(context, "Максимальное время: ${maxDateTime}", Toast.LENGTH_LONG).show()
+                    } else {
+                        onCreateEvent()
+                    }
+                },
                 text = stringResource(R.string.create),
                 iconResId = R.drawable.add_circle_50dp,
                 modifier = Modifier.align(Alignment.End)
             )
         }
     }
+}
+
+fun String.toLocalDate(): LocalDate {
+    return LocalDate.parse(this)
+}
+
+fun String.toLocalTime(): LocalTime {
+    return LocalTime.parse(this)
 }

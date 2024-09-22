@@ -76,21 +76,3 @@ fun EventListScreen(
         }
     )
 }
-
-
-@Composable
-fun EventItem(event: Event) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp),
-        elevation = 4.dp
-    ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Text(text = event.city, style = MaterialTheme.typography.h6)
-            Text(text = "Date: ${event.date}", style = MaterialTheme.typography.body2)
-            Text(text = "Time: ${event.time}", style = MaterialTheme.typography.body2)
-            Text(text = event.description, style = MaterialTheme.typography.body2)
-        }
-    }
-}
