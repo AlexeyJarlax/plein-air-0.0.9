@@ -1,5 +1,7 @@
 package com.pavlovalexey.pleinair.event.ui.newEvent
 
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.material.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions
@@ -19,10 +21,12 @@ fun CitySelectionField(
     city: String,
     onCityChange: (String) -> Unit,
     citiesList: List<String>,
-    onCitySelected: (String) -> Unit // Новый параметр
+    onCitySelected: (String) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
     var filteredCities by remember { mutableStateOf(citiesList) }
+    var selectedCity by remember { mutableStateOf<String?>(null) }
+    var isCitySelected by remember { mutableStateOf(false) }
 
     Column {
         ExposedDropdownMenuBox(
@@ -38,6 +42,7 @@ fun CitySelectionField(
                     } else {
                         citiesList
                     }
+                    isCitySelected = false // Сброс флага выбора, так как пользователь изменяет текст
                     expanded = filteredCities.isNotEmpty()
                 },
                 label = { Text("Выберите город") },
@@ -56,7 +61,13 @@ fun CitySelectionField(
                 keyboardActions = KeyboardActions(
                     onDone = {
                         expanded = false
-                        onCitySelected(city) // Вызываем обратный вызов при нажатии "Done"
+                        // Если пользователь выбрал город из списка
+                        if (isCitySelected && selectedCity != null) {
+                            onCitySelected(selectedCity!!)
+                        } else if (filteredCities.contains(city)) {
+                            // Если город найден в фильтрованном списке
+                            onCitySelected(city)
+                        }
                     }
                 ),
                 singleLine = true
@@ -66,13 +77,15 @@ fun CitySelectionField(
                 expanded = expanded,
                 onDismissRequest = { expanded = false }
             ) {
-                filteredCities.forEach { selectedCity ->
+                filteredCities.forEach { cityItem ->
                     DropdownMenuItem(onClick = {
-                        onCityChange(selectedCity)
+                        selectedCity = cityItem
+                        isCitySelected = true // Устанавливаем флаг, что город был выбран из списка
+                        onCityChange(cityItem)
+                        onCitySelected(cityItem) // Вызываем выбор города
                         expanded = false
-                        onCitySelected(selectedCity) // Вызываем обратный вызов при выборе из списка
                     }) {
-                        Text(text = selectedCity)
+                        Text(text = cityItem)
                     }
                 }
             }

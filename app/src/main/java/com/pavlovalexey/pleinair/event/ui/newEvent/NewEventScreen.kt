@@ -24,7 +24,7 @@ import com.pavlovalexey.pleinair.utils.uiComponents.CustomYesOrNoDialog
 @Composable
 fun NewEventScreen(
     navController: NavController,
-    onEventLocation: () -> Unit,
+    onCitySelected: () -> Unit,
 ) {
     val viewModel: NewEventViewModel = hiltViewModel()
     val context = LocalContext.current

@@ -1,6 +1,7 @@
 package com.pavlovalexey.pleinair
 
 import android.app.Activity
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -87,8 +88,8 @@ fun NavGraph(navController: NavHostController, activity: Activity, modifier: Mod
         composable("new_event") {
             NewEventScreen(
                 navController,
-                onEventLocation = {
-                    navController.navigate("event_location?city={city}")
+                onCitySelected = {
+                    navController.navigate("event_location?city=${it}")
                 },
             )
         }
@@ -97,7 +98,9 @@ fun NavGraph(navController: NavHostController, activity: Activity, modifier: Mod
             "event_location?city={city}",
             arguments = listOf(navArgument("city") { defaultValue = "" })
         ) { backStackEntry ->
+
             val city = backStackEntry.arguments?.getString("city") ?: ""
+            Log.d("=== NavGraph", "=== event_location?city={city} $city")
             EventLocationScreen(
                 navController = navController,
                 viewModel = hiltViewModel(),
@@ -108,6 +111,7 @@ fun NavGraph(navController: NavHostController, activity: Activity, modifier: Mod
                 }
             )
         }
+
 
         composable("map") {
             MapScreen(
