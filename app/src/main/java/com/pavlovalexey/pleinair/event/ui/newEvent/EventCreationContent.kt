@@ -49,9 +49,11 @@ fun EventCreationContent(
         }
     }
 
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .padding(16.dp)) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
         CitySelectionField(
             city = uiState.city,
             onCityChange = { query ->
@@ -96,19 +98,21 @@ fun EventCreationContent(
             ).show()
         }
 
-        Column(modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)) {
-
-            CustomButtonOne(
-                onClick = onChooseLocation,
-                text = stringResource(R.string.location),
-                iconResId = R.drawable.location_on_50dp,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 8.dp),
-            )
-
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
+        ) {
+            if (isButtonLocationVisible) {
+                CustomButtonOne(
+                    onClick = onChooseLocation,
+                    text = stringResource(R.string.location),
+                    iconResId = R.drawable.location_on_50dp,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 8.dp),
+                )
+            }
             if (uiState.latitude != null && uiState.longitude != null) {
                 Text(
                     text = address ?: "Getting address...",
