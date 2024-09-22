@@ -1,6 +1,7 @@
 package com.pavlovalexey.pleinair.event.ui.newEvent
 
 import android.app.DatePickerDialog
+import android.app.TimePickerDialog
 import androidx.compose.runtime.Composable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -22,6 +23,7 @@ import com.pavlovalexey.pleinair.event.model.NewEventUiState
 import com.pavlovalexey.pleinair.event.ui.eventLocation.getAddressFromLatLng
 import com.pavlovalexey.pleinair.utils.uiComponents.CustomButtonOne
 import java.time.LocalDate
+import java.time.LocalTime
 
 @Composable
 fun EventCreationContent(
@@ -34,23 +36,22 @@ fun EventCreationContent(
     onCitySelected: (String) -> Unit // Новый параметр
 ) {
     val context = LocalContext.current
-    val isButtonLocationVisible = false
     var showDatePicker by remember { mutableStateOf(false) }
-
+    var showTimePicker by remember { mutableStateOf(false) }
     var address by remember(uiState.latitude, uiState.longitude) {
         mutableStateOf<String?>(null)
     }
+    val isButtonLocationVisible = false
 
-    LaunchedEffect(key1 = uiState.latitude, key2 = uiState.longitude) {    // Получаем адрес при изменении широты и долготы
+    LaunchedEffect(key1 = uiState.latitude, key2 = uiState.longitude) {
         if (uiState.latitude != null && uiState.longitude != null) {
             address = getAddressFromLatLng(context, uiState.latitude, uiState.longitude)
         }
     }
 
-    Column(modifier = modifier
+    Column(modifier = Modifier
         .fillMaxSize()
         .padding(16.dp)) {
-        // Поле выбора города
         CitySelectionField(
             city = uiState.city,
             onCityChange = { query ->
@@ -62,98 +63,112 @@ fun EventCreationContent(
                 onCitySelected(selectedCity)
             }
         )
-    }
-    Spacer(modifier = Modifier.height(8.dp))
 
-    if (showDatePicker) {
-        val datePickerDialog = DatePickerDialog(
-            context,
-            { _, year, month, dayOfMonth ->
-                val selectedDate = "$dayOfMonth/${month + 1}/$year"
-                onUiStateChange(uiState.copy(date = selectedDate))
-                showDatePicker = false
-            },
-            LocalDate.now().year,
-            LocalDate.now().monthValue - 1,
-            LocalDate.now().dayOfMonth
-        )
-        datePickerDialog.show()
-    }
+        Spacer(modifier = Modifier.height(8.dp))
 
-    Column(modifier = modifier
-        .fillMaxSize()
-        .padding(16.dp)) {
+        if (showDatePicker) {
+            val currentDate = LocalDate.now()
+            DatePickerDialog(
+                context,
+                { _, year, month, dayOfMonth ->
+                    val selectedDate = "$dayOfMonth/${month + 1}/$year"
+                    onUiStateChange(uiState.copy(date = selectedDate))
+                    showDatePicker = false
+                },
+                currentDate.year,
+                currentDate.monthValue - 1,
+                currentDate.dayOfMonth
+            ).show()
+        }
 
-        if (isButtonLocationVisible) {
+        if (showTimePicker) {
+            val currentTime = LocalTime.now()
+            TimePickerDialog(
+                context,
+                { _, hourOfDay, minute ->
+                    val selectedTime = String.format("%02d:%02d", hourOfDay, minute)
+                    onUiStateChange(uiState.copy(time = selectedTime))
+                    showTimePicker = false
+                },
+                currentTime.hour,
+                currentTime.minute,
+                true
+            ).show()
+        }
+
+        Column(modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)) {
+
             CustomButtonOne(
-                // Location Input
                 onClick = onChooseLocation,
                 text = stringResource(R.string.location),
                 iconResId = R.drawable.location_on_50dp,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 60.dp),
+                    .padding(top = 8.dp),
             )
-        }
-        if (uiState.latitude != null && uiState.longitude != null) {
-            Text(
-                text = address ?: "Получение адреса...",
+
+            if (uiState.latitude != null && uiState.longitude != null) {
+                Text(
+                    text = address ?: "Getting address...",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 8.dp),
+                )
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            OutlinedTextField(
+                value = uiState.date,
+                onValueChange = { /* Do nothing */ },
+                label = { Text("Date") },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 80.dp),
+                    .padding(top = 8.dp),
+                trailingIcon = {
+                    IconButton(onClick = { showDatePicker = true }) {
+                        Icon(Icons.Default.CalendarToday, contentDescription = "Select Date")
+                    }
+                },
+                readOnly = true
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            OutlinedTextField(
+                value = uiState.time,
+                onValueChange = { /* Do nothing */ },
+                label = { Text("Time") },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp),
+                trailingIcon = {
+                    IconButton(onClick = { showTimePicker = true }) {
+                        Icon(Icons.Default.AccessTime, contentDescription = "Select Time")
+                    }
+                },
+                readOnly = true
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            OutlinedTextField(
+                value = uiState.description,
+                onValueChange = { onUiStateChange(uiState.copy(description = it)) },
+                label = { Text("Description") },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            CustomButtonOne(
+                onClick = onCreateEvent,
+                text = stringResource(R.string.create),
+                iconResId = R.drawable.add_circle_50dp,
+                modifier = Modifier.align(Alignment.End)
             )
         }
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-
-        OutlinedTextField(        // Date Input
-            value = uiState.date,
-            onValueChange = { /* Do nothing */ },
-            label = { Text("Date") },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 10.dp),
-            trailingIcon = {
-                IconButton(onClick = { showDatePicker = true }) {
-                    Icon(Icons.Default.CalendarToday, contentDescription = "Select Date")
-                }
-            },
-            readOnly = true
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-
-        // Time Input
-        OutlinedTextField(
-            value = uiState.time,
-            onValueChange = { onUiStateChange(uiState.copy(time = it)) },
-            label = { Text("Time") },
-            modifier = Modifier.fillMaxWidth(),
-            trailingIcon = {
-                IconButton(onClick = { /* Open time picker */ }) {
-                    Icon(Icons.Default.AccessTime, contentDescription = "Select Time")
-                }
-            },
-            readOnly = true // To prevent manual input
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-
-        // Description Input
-        OutlinedTextField(
-            value = uiState.description,
-            onValueChange = { onUiStateChange(uiState.copy(description = it)) },
-            label = { Text("Description") },
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-
-        CustomButtonOne( // Create Event Button
-            onClick = onCreateEvent,
-            text = stringResource(R.string.create),
-            iconResId = R.drawable.add_circle_50dp,
-            modifier = Modifier.align(Alignment.End)
-        )
     }
 }

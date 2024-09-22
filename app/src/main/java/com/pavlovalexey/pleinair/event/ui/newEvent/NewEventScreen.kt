@@ -9,15 +9,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.pavlovalexey.pleinair.event.model.NewEventUiState
 
 @Composable
 fun NewEventScreen(
@@ -26,14 +21,9 @@ fun NewEventScreen(
 ) {
     val viewModel: NewEventViewModel = hiltViewModel()
     val context = LocalContext.current
-    val scope = rememberCoroutineScope()
-    val uiState = remember { mutableStateOf(NewEventUiState()) }
-
-    // Загрузка списка городов
+    val creationStatus by viewModel.creationStatus.collectAsState()
+    val uiState by viewModel.uiState.collectAsState()
     val cities = loadCitiesFromFile()
-
-    val creationStatus by viewModel.creationStatus.observeAsState()
-    val event by viewModel.event.observeAsState()
 
     val savedStateHandle = navController.currentBackStackEntry?.savedStateHandle
     val location =
@@ -41,22 +31,19 @@ fun NewEventScreen(
 
     if (location?.value != null) {
         val (lat, lng) = location.value!!
-        uiState.value = uiState.value.copy(latitude = lat, longitude = lng)
-        // Очищаем сохраненное состояние, чтобы предотвратить повторное срабатывание
+        viewModel.updateUiState(uiState.copy(latitude = lat, longitude = lng))
         savedStateHandle?.remove<Pair<Double, Double>>("location")
     }
 
     LaunchedEffect(creationStatus) {
         when (creationStatus) {
             is CreationStatus.Loading -> {
-                // Показать индикатор загрузки
+                // Show loading indicator
             }
-
             is CreationStatus.Success -> {
-                // Возврат назад после создания события
+                // Navigate back after event creation
                 navController.popBackStack()
             }
-
             is CreationStatus.Error -> {
                 Toast.makeText(
                     context,
@@ -64,7 +51,6 @@ fun NewEventScreen(
                     Toast.LENGTH_LONG
                 ).show()
             }
-
             else -> Unit
         }
     }
@@ -72,10 +58,10 @@ fun NewEventScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Создание нового события") },
+                title = { Text("Create New Event") },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Назад")
+                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
                     }
                 }
             )
@@ -83,20 +69,12 @@ fun NewEventScreen(
         content = { innerPadding ->
             EventCreationContent(
                 modifier = Modifier.padding(innerPadding),
-                uiState = uiState.value,
+                uiState = uiState,
                 cities = cities,
-                onUiStateChange = { newState -> uiState.value = newState },
-                onCreateEvent = {
-                    viewModel.createEvent(uiState.value)
-                },
-                onChooseLocation = {
-//                    onEventLocation()
-                    navController.navigate("event_location?city=${uiState.value.city}")
-                },
-                onCitySelected = {
-//                    onEventLocation()
-                    navController.navigate("event_location?city=${uiState.value.city}")
-                }
+                onUiStateChange = { newState -> viewModel.updateUiState(newState) },
+                onCreateEvent = { viewModel.createEvent() },
+                onChooseLocation = { navController.navigate("event_location?city=${uiState.city}") },
+                onCitySelected = { navController.navigate("event_location?city=${uiState.city}") }
             )
         }
     )

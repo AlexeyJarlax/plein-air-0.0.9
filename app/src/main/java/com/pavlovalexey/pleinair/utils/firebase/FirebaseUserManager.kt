@@ -32,6 +32,10 @@ class FirebaseUserManager @Inject constructor(
         return loginAndUserUtils.getCurrentUserId()
     }
 
+    fun getCurrentUserProfileImageUrl(): String {
+        return loginAndUserUtils.getUserProfileImageUrl(getCurrentUserId())
+    }
+
     fun fetchUserFromServer(
         userId: String,
         onSuccess: (String, String) -> Unit,

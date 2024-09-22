@@ -17,6 +17,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.GeoPoint
 import com.pavlovalexey.pleinair.R
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
@@ -140,5 +141,14 @@ class LoginAndUserUtils @Inject constructor(
             .addOnFailureListener { e ->
                 Log.w("FirebaseUserManager", "Error updating user name", e)
             }
+    }
+
+    fun getUserProfileImageUrl(userId: String): String {
+        var profileImageUrl: String? = null
+        runBlocking {
+            val document = firestore.collection("users").document(userId).get().await()
+            profileImageUrl = document.getString("profileImageUrl")
+        }
+        return profileImageUrl ?: ""
     }
 }

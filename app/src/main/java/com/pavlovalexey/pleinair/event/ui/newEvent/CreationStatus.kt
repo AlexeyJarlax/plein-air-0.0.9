@@ -1,7 +1,8 @@
 package com.pavlovalexey.pleinair.event.ui.newEvent
 
 sealed class CreationStatus {
-    data object Loading : CreationStatus()
+    object Idle : CreationStatus() //ничего не происходит
+    object Loading : CreationStatus()
     data class Success(val eventId: String) : CreationStatus()
     data class Error(val message: String) : CreationStatus()
 }

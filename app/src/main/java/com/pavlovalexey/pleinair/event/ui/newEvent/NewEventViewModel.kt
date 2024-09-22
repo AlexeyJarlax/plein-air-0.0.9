@@ -11,37 +11,48 @@ import com.pavlovalexey.pleinair.event.model.NewEventUiState
 import com.pavlovalexey.pleinair.utils.firebase.FirebaseUserManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
 class NewEventViewModel @Inject constructor(
-    application: Application,
     private val firebaseUserManager: FirebaseUserManager,
-    private val eventRepository: EventRepository
+    private val eventRepository: EventRepository,
 ) : ViewModel() {
 
-    private val _creationStatus = MutableLiveData<CreationStatus>()
-    val creationStatus: LiveData<CreationStatus> get() = _creationStatus
-    val event = MutableLiveData<Event?>()
-    var uiState = MutableStateFlow(NewEventUiState())
+    val uiState: MutableStateFlow<NewEventUiState> = MutableStateFlow(NewEventUiState())
 
-    fun createEvent(uiState: NewEventUiState) {
+    private val _creationStatus = MutableStateFlow<CreationStatus>(CreationStatus.Idle)
+    val creationStatus: StateFlow<CreationStatus> get() = _creationStatus
+
+    fun createEvent() {
         _creationStatus.value = CreationStatus.Loading
 
         viewModelScope.launch {
             val userId = firebaseUserManager.getCurrentUserId()
+
+            val existingEvent = eventRepository.getEventByUserId(userId)
+            if (existingEvent != null) {
+                _creationStatus.value = CreationStatus.Error("You have already created an event.")
+                return@launch
+            }
+
+            val userProfileImageUrl = firebaseUserManager.getCurrentUserProfileImageUrl()
+
             val event = Event(
                 id = UUID.randomUUID().toString(),
                 userId = userId,
-                city = uiState.city,
-                date = uiState.date,
-                time = uiState.time,
-                description = uiState.description,
-                latitude = uiState.latitude ?: 0.0,
-                longitude = uiState.longitude ?: 0.0
+                city = uiState.value.city,
+                date = uiState.value.date,
+                time = uiState.value.time,
+                description = uiState.value.description,
+                latitude = uiState.value.latitude ?: 0.0,
+                longitude = uiState.value.longitude ?: 0.0,
+                profileImageUrl = userProfileImageUrl
             )
+
             try {
                 val eventId = eventRepository.createEvent(event)
                 _creationStatus.value = CreationStatus.Success(eventId)
@@ -49,5 +60,9 @@ class NewEventViewModel @Inject constructor(
                 _creationStatus.value = CreationStatus.Error(e.localizedMessage ?: "Error creating event")
             }
         }
+    }
+
+    fun updateUiState(newState: NewEventUiState) {
+        uiState.value = newState
     }
 }
