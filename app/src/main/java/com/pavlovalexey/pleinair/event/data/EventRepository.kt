@@ -31,7 +31,10 @@ class EventRepository @Inject constructor(
                     Log.e("EventRepository", "=== No event found with id $eventId")
                 }
             } catch (e: Exception) {
-                Log.e("EventRepository", "=== Failed to fetch event with id $eventId: ${e.localizedMessage}")
+                Log.e(
+                    "EventRepository",
+                    "=== Failed to fetch event with id $eventId: ${e.localizedMessage}"
+                )
             }
         }
         return event
@@ -54,7 +57,10 @@ class EventRepository @Inject constructor(
                     Log.e("EventRepository", "=== No event found for user with id $userId")
                 }
             } catch (e: Exception) {
-                Log.e("EventRepository", "=== Failed to fetch event for user with id $userId: ${e.localizedMessage}")
+                Log.e(
+                    "EventRepository",
+                    "=== Failed to fetch event for user with id $userId: ${e.localizedMessage}"
+                )
             }
         }
         return event
@@ -76,12 +82,20 @@ class EventRepository @Inject constructor(
         eventRef.update("profileImageUrl", imageUrl).await()
     }
 
-    suspend fun deleteEvent(eventId: String) {
+    suspend fun deleteEvent(userId: String, eventId: String) {
         try {
             firebase.collection("events").document(eventId).delete().await()
         } catch (e: Exception) {
-            Log.e("EventRepository", "=== Failed to delete event $eventId: ${e.localizedMessage}")
+            Log.e("EventRepository", "=== не удалилось eventId: $eventId: ${e.localizedMessage}")
+            throw e
+        }
+        try {
+            firebase.collection("events").document(userId).delete().await()
+        } catch (e: Exception) {
+            Log.e("EventRepository", "=== не удалилось userId: $userId: ${e.localizedMessage}")
             throw e
         }
     }
 }
+
+

@@ -26,7 +26,6 @@ import com.google.maps.android.compose.rememberCameraPositionState
 import com.pavlovalexey.pleinair.R
 import com.pavlovalexey.pleinair.utils.uiComponents.CustomButtonOne
 
-
 @Composable
 fun MyLocationScreen(
     navController: NavController,

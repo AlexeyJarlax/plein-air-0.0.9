@@ -1,5 +1,6 @@
 package com.pavlovalexey.pleinair.event.ui.newEvent
 
+import android.app.Application
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -73,17 +74,14 @@ class NewEventViewModel @Inject constructor(
         viewModelScope.launch {
             val userId = firebaseUserManager.getCurrentUserId()
             val eventId = _existingEvent.value?.id
-            eventId?.let {
-                Log.d("NewEventViewModel", "=== Attempting to delete event with id $it")
+                Log.d("NewEventViewModel", "=== Attempting to delete event with id $userId")
                 try {
-                    eventRepository.deleteEvent(it)
-                    Log.d("NewEventViewModel", "=== Event with id $it deleted")
-                    createEvent()
+                    eventRepository.deleteEvent(userId, eventId?: "")
+//                    createEvent()
                 } catch (e: Exception) {
                     _creationStatus.value = CreationStatus.Error(e.localizedMessage ?: "Error deleting existing event")
-                    Log.e("NewEventViewModel", "=== Failed to delete event with id $it: ${e.localizedMessage}")
+                    Log.e("NewEventViewModel", "=== Failed to delete event with id $userId: ${e.localizedMessage}")
                 }
-            }
         }
     }
 

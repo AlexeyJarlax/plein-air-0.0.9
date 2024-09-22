@@ -89,8 +89,8 @@ fun NavGraph(navController: NavHostController, activity: Activity, modifier: Mod
         composable("new_event") {
             NewEventScreen(
                 navController,
-                onEventLocation = { city ->
-                    navController.navigate("event_location?city=${city}")
+                onEventLocation = {  ->
+                    navController.navigate("event_location?city={city}")
                 },
             )
         }
