@@ -135,29 +135,16 @@ class FirebaseUserManager @Inject constructor(
             }
     }
 
-    fun updateSelectedStyles(userId: String, styles: Set<String>, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
-        firestore.collection("users").document(userId)
-            .update("artStyles", styles.toList())
-            .addOnSuccessListener {
-                onSuccess()
-            }
-            .addOnFailureListener { e ->
-                onFailure(e)
-            }
-    }
-
-    fun loadSelectedStyles(userId: String, onSuccess: (Set<String>) -> Unit, onFailure: (Exception) -> Unit) {
-        firestore.collection("users").document(userId)
-            .get()
-            .addOnSuccessListener { document ->
-                if (document != null) {
-                    val styles = document.get("artStyles") as? List<String> ?: emptyList()
-                    onSuccess(styles.toSet())
-                }
-            }
-            .addOnFailureListener { e ->
-                onFailure(e)
-            }
+    fun updateUserSelectedArtStyles(
+        userId: String,
+        selectedArtStyles: List<String>,
+        onSuccess: () -> Unit,
+        onFailure: (Exception) -> Unit
+    ) {
+        val userRef = FirebaseFirestore.getInstance().collection("users").document(userId)
+        userRef.update("selectedArtStyles", selectedArtStyles)
+            .addOnSuccessListener { onSuccess() }
+            .addOnFailureListener { e -> onFailure(e) }
     }
 
     fun loadProfileImageFromStorage(   // работает на User и Event

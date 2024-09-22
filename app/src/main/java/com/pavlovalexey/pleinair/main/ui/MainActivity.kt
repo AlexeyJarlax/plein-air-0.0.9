@@ -73,8 +73,8 @@ class MainActivity : ComponentActivity(), OnMapReadyCallback {
         setContent {
             val navController = rememberNavController()
             val settingsViewModel: SettingsViewModel = hiltViewModel()
-            val isNightMode by settingsViewModel.isNightMode.observeAsState(initial = false)
-            settingsViewModel.changeNightMode(isNightMode)
+//            val isNightMode by settingsViewModel.isNightMode.observeAsState(initial = false)
+//            settingsViewModel.changeNightMode(isNightMode) уберу ночную тему пока не решил по стилям
 
             // проверка на авторизованного
             val authState by authViewModel.authState.collectAsState()

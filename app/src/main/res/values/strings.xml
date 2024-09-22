@@ -77,7 +77,7 @@
     <string name="loading">Загрузка…</string>
     <string name="logout">Сменить аккаунт</string>
     <string name="exit">Выход</string>
-    <string name="exit_dialog">Подтвердите, чтобы закрыть приложение</string>
+    <string name="exit_dialog">Закрыть приложение?</string>
     <string name="geo_mark">Выставить геометку</string>
     <string name="change_name">Изменить имя</string>
     <string name="new_name">Новое имя</string>
@@ -88,4 +88,6 @@
     <string name="event">Ивенты</string>
     <string name="map">Карта</string>
     <string name="settings">Опции</string>
+    <string name="edit_description">Редактировать описание</string>
+    <string name="description_sample">Уровень владения техникой: ...\n\nРазмер компании предпочителен: ...\n\nТип компании (сверстники / более опытные / в той же технике): ...\n\nВозраст (юный, средний, почтенный): ...\n\nИная информация: ...</string>
 </resources>

@@ -18,7 +18,7 @@ fun UserDetailsDialog(user: User, onDismiss: () -> Unit) {
         title = { Text(user.name) },
         text = {
             Column {
-                Text("Техники: ${user.artStyles?.joinToString(", ") ?: "Не выбраны"}")
+                Text("Техники: ${user.selectedArtStyles?.joinToString(", ") ?: "Не выбраны"}")
                 Text("Описание: ${user.description ?: "Отсутствует"}")
             }
         },

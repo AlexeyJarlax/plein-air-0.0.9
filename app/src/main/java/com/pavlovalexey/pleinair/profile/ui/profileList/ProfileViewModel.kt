@@ -61,6 +61,7 @@ class ProfileViewModel @Inject constructor(
             if (userId != null) {
                 val loadedUser = userRepository.getUserById(userId)
                 _user.value = loadedUser
+                _selectedArtStyles.value = loadedUser?.selectedArtStyles?.toSet() ?: emptySet()
                 Log.d(TAG, "=== Загруженный пользователь: $loadedUser")
                 if (loadedUser?.profileImageUrl.isNullOrEmpty()) {
                     checkAndGenerateAvatar {
@@ -230,5 +231,22 @@ class ProfileViewModel @Inject constructor(
             putString("profileImageUrl", url)
             apply()
         }
+    }
+
+    fun updateSelectedArtStyles(newStyles: Set<String>, onComplete: () -> Unit) {
+        val userId = auth.currentUser?.uid ?: return
+        val newStylesList = newStyles.toList()
+        firebaseUserManager.updateUserSelectedArtStyles(
+            userId,
+            newStylesList,
+            onSuccess = {
+                _selectedArtStyles.value = newStyles
+                _user.value = _user.value?.copy(selectedArtStyles = newStylesList)
+                onComplete()
+            },
+            onFailure = { e ->
+                Log.w("ProfileViewModel", "Error updating selected art styles", e)
+            }
+        )
     }
 }

@@ -118,7 +118,7 @@ fun NavGraph(navController: NavHostController, activity: Activity, modifier: Mod
         composable("settings") {
             SettingsScreen(
                 onNavigateToAuth = {
-                    navController.navigate("auth") {
+                    navController.navigate("terms") {
                         popUpTo("settings") { inclusive = true }
                     }
                 }

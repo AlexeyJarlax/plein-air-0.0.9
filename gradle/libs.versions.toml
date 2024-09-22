@@ -1,4 +1,5 @@
 [versions]
+accompanistFlowlayoutVersion = "0.30.1"
 activityCompose = "1.9.1"
 activityComposeVersion = "1.7.0"
 agp = "8.5.0"
@@ -37,6 +38,7 @@ firebaseStorage = "21.0.0"
 flogger = "0.7.4"
 floggerLog4j2Backend = "0.7.4"
 floggerSystemBackend = "0.7.4"
+foundation = "1.7.2"
 fragmentKtx = "1.8.2"
 fragmentKtxVersion = "1.8.1"
 glide = "4.16.0"
@@ -137,6 +139,7 @@ androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = 
 androidx-core-ktx-v1101 = { module = "androidx.core:core-ktx", version.ref = "coreKtxVersion" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
 androidx-espresso-core-v351 = { module = "androidx.test.espresso:espresso-core", version.ref = "espressoCoreVersion" }
+androidx-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "foundation" }
 androidx-fragment-ktx = { module = "androidx.fragment:fragment-ktx", version.ref = "fragmentKtx" }
 androidx-fragment-ktx-v181 = { module = "androidx.fragment:fragment-ktx", version.ref = "fragmentKtxVersion" }
 androidx-hilt-compiler = { module = "androidx.hilt:hilt-compiler", version.ref = "hiltNavigationCompose" }
@@ -209,6 +212,7 @@ flogger = { module = "com.google.flogger:flogger", version.ref = "flogger" }
 flogger-log4j2-backend = { module = "com.google.flogger:flogger-log4j2-backend", version.ref = "floggerLog4j2Backend" }
 flogger-system-backend = { module = "com.google.flogger:flogger-system-backend", version.ref = "floggerSystemBackend" }
 glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
+google-accompanist-flowlayout = { module = "com.google.accompanist:accompanist-flowlayout", version.ref = "accompanistFlowlayoutVersion" }
 google-firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 google-firebase-auth = { module = "com.google.firebase:firebase-auth", version.ref = "firebaseAuth" }
 google-firebase-storage = { module = "com.google.firebase:firebase-storage", version.ref = "firebaseStorage" }

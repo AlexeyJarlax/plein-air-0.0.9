@@ -101,6 +101,7 @@ class SettingsRepositoryImpl @Inject constructor(
             val db = FirebaseFirestore.getInstance()
             val storage = FirebaseStorage.getInstance()
             val storageRef = storage.reference.child("profile_images/$userId/")
+            sharedPreferences.edit().clear().apply()
 
             // Удаление файлов из Firebase Storage
             storageRef.listAll().addOnSuccessListener { listResult ->
@@ -121,11 +122,9 @@ class SettingsRepositoryImpl @Inject constructor(
                 userDocRef.delete()
                     Log.d(TAG, "=== Данные пользователя успешно удалены из userDocRef.")
 
-            // Удаление данных из Firestore и SharedPreferences
+            // Удаление данных из Firestore
             db.collection("users").document(userId).delete().addOnSuccessListener {
                 Log.d("=== DeleteUser", "=== Данные пользователя успешно удалены из Firestore.")
-                sharedPreferences.edit().clear().apply()
-                Log.d("=== DeleteUser", "=== Данные пользователя успешно удалены из SharedPreferences.")
 
                 // Удаление файлов из локального хранилища
                 val filesDir = context.filesDir

@@ -3,7 +3,7 @@ package com.pavlovalexey.pleinair.utils
 internal object AppPreferencesKeys { // глобальные объекты
 
     // ключи и файлы в хранилище
-    const val PREFS_NAME = "MyVeryPrefs" // общее хранилище
+    const val PREFS_NAME = "PavlovVeryPrefs" // общее хранилище
 //    const val PREFS_FIRST_STEP = "MyVeryPrefs" // завязанное на первом входе
     const val KEY_NIGHT_MODE = "nightMode"
     const val SEARCH_HISTORY = "search_history"
