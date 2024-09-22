@@ -27,7 +27,7 @@ fun PleinairTheme(
         background = Color.White
     )
 
-    val DarkColorPalette = darkColors(
+    val DarkColorPalette = darkColors( // пока не разобрался с концепцией стиля отключил
         primary = MyBlueLight,
         primaryVariant = MySecondaryBackground,
         secondary = MyBlack,

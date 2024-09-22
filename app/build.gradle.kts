@@ -160,7 +160,7 @@ dependencies {
     implementation(libs.navigation.compose)
     implementation(libs.dagger.hilt.android.gradle.plugin.v244)
     implementation(libs.androidx.navigation.testing)
-    implementation(libs.androidx.material3.android)
+//    implementation(libs.androidx.material3.android)
     implementation(libs.runtime.livedata)
     implementation(libs.coil)
     implementation(libs.coil.compose)
