@@ -29,8 +29,8 @@ fun CustomButtonOne(
     Button(
         onClick = onClick,
         colors = ButtonDefaults.buttonColors(
-            backgroundColor = Color.Transparent, // Замените containerColor на backgroundColor
-            contentColor = textColor // Используем textColor для contentColor
+            backgroundColor = Color.Transparent,
+            contentColor = textColor
         ),
         modifier = modifier
             .padding(end = 12.dp, bottom = 12.dp)
@@ -75,19 +75,18 @@ fun CustomButtonTwo(
             .padding(end = 6.dp, bottom = 6.dp)
             .background(Color.Transparent)
             .height(IntrinsicSize.Min)
-            .fillMaxWidth(), // Занимает всю ширину
+            .fillMaxWidth(),
         elevation = ButtonDefaults.elevation(defaultElevation = 0.dp),
         shape = RoundedCornerShape(0.dp),
         contentPadding = PaddingValues(16.dp)
     ) {
-        // Переместили иконку правее
         Text(
             text = text,
             fontSize = 20.sp,
             letterSpacing = 0.0.sp,
             fontFamily = FontFamily.Default,
             color = textColor,
-            modifier = Modifier.weight(1f) // Заполняет пространство
+            modifier = Modifier.weight(1f)
         )
         Spacer(modifier = Modifier.width(8.dp))
         Icon(

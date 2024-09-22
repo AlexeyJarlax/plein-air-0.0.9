@@ -106,20 +106,20 @@ fun EventCreationContent(
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Date Input
-        OutlinedTextField(
+
+        OutlinedTextField(        // Date Input
             value = uiState.date,
             onValueChange = { /* Do nothing */ },
             label = { Text("Date") },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 60.dp),
+                .padding(top = 10.dp),
             trailingIcon = {
                 IconButton(onClick = { showDatePicker = true }) {
                     Icon(Icons.Default.CalendarToday, contentDescription = "Select Date")
                 }
             },
-            readOnly = true // To prevent manual input
+            readOnly = true
         )
         Spacer(modifier = Modifier.height(8.dp))
 

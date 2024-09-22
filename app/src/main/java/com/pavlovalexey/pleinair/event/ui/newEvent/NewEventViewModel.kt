@@ -10,6 +10,7 @@ import com.pavlovalexey.pleinair.event.model.Event
 import com.pavlovalexey.pleinair.event.model.NewEventUiState
 import com.pavlovalexey.pleinair.utils.firebase.FirebaseUserManager
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import java.util.UUID
 import javax.inject.Inject
@@ -23,8 +24,8 @@ class NewEventViewModel @Inject constructor(
 
     private val _creationStatus = MutableLiveData<CreationStatus>()
     val creationStatus: LiveData<CreationStatus> get() = _creationStatus
-
     val event = MutableLiveData<Event?>()
+    var uiState = MutableStateFlow(NewEventUiState())
 
     fun createEvent(uiState: NewEventUiState) {
         _creationStatus.value = CreationStatus.Loading
