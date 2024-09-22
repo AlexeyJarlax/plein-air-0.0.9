@@ -16,11 +16,12 @@ https://play.google.com/store/apps/details?id=com.pavlovalexey.pleinair
 
 Не возражаю в использовании данного кода или идей в ваших собственных проектах, за исключением визуального стиля, хотел бы, чтобы он остался моим достоянием:)
 Чтобы запустить работу текущей версии с поддержкой сервера вам потребуется google-services.json в корневой каталог приложения, собранный в console.firebase.google и ключи для Maps SDK for Android, можете поместить ключ прям в манифесте:
-*// meta-data
-android:name="com.google.android.geo.API_KEY"
-android:value="your_key" // *
+\n// meta-data
+\nandroid:name="com.google.android.geo.API_KEY"
+\nandroid:value="your_key" //
 
 stack:
+
 coroutines
 dagger-hilt
 firebase
