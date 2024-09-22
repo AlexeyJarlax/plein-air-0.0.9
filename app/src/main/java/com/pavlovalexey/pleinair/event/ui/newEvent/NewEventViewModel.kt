@@ -1,6 +1,6 @@
 package com.pavlovalexey.pleinair.event.ui.newEvent
 
-import android.app.Application
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -33,7 +33,9 @@ class NewEventViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             val userId = firebaseUserManager.getCurrentUserId()
-            _existingEvent.value = eventRepository.getEventByUserId(userId)
+            val event = eventRepository.getEventByUserId(userId)
+            _existingEvent.value = event
+            Log.d("NewEventViewModel", "=== Existing event for user $userId: $event")
         }
     }
 
@@ -42,7 +44,6 @@ class NewEventViewModel @Inject constructor(
 
         viewModelScope.launch {
             val userId = firebaseUserManager.getCurrentUserId()
-
             val userProfileImageUrl = firebaseUserManager.getCurrentUserProfileImageUrl()
 
             val event = Event(
@@ -60,20 +61,27 @@ class NewEventViewModel @Inject constructor(
             try {
                 val eventId = eventRepository.createEvent(event)
                 _creationStatus.value = CreationStatus.Success(eventId)
+                Log.d("NewEventViewModel", "=== Event created with id $eventId")
             } catch (e: Exception) {
                 _creationStatus.value = CreationStatus.Error(e.localizedMessage ?: "Error creating event")
+                Log.e("NewEventViewModel", "=== Failed to create event: ${e.localizedMessage}")
             }
         }
     }
 
     fun deleteExistingEventAndCreateNew() {
         viewModelScope.launch {
-            _existingEvent.value?.let { existingEvent ->
+            val userId = firebaseUserManager.getCurrentUserId()
+            val eventId = _existingEvent.value?.id
+            eventId?.let {
+                Log.d("NewEventViewModel", "=== Attempting to delete event with id $it")
                 try {
-                    eventRepository.deleteEvent(existingEvent.id)
+                    eventRepository.deleteEvent(it)
+                    Log.d("NewEventViewModel", "=== Event with id $it deleted")
                     createEvent()
                 } catch (e: Exception) {
                     _creationStatus.value = CreationStatus.Error(e.localizedMessage ?: "Error deleting existing event")
+                    Log.e("NewEventViewModel", "=== Failed to delete event with id $it: ${e.localizedMessage}")
                 }
             }
         }

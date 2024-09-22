@@ -24,7 +24,7 @@ import com.pavlovalexey.pleinair.utils.uiComponents.CustomYesOrNoDialog
 @Composable
 fun NewEventScreen(
     navController: NavController,
-    onEventLocation: (String) -> Unit, // Передача города как аргумент
+    onCitySelected: () -> Unit,
 ) {
     val viewModel: NewEventViewModel = hiltViewModel()
     val context = LocalContext.current
@@ -100,8 +100,8 @@ fun NewEventScreen(
                 cities = cities,
                 onUiStateChange = { newState -> viewModel.updateUiState(newState) },
                 onCreateEvent = { viewModel.createEvent() },
-                onChooseLocation = { onEventLocation(uiState.city) }, // Передается выбранный город
-                onCitySelected = { onEventLocation(it) } // Передается выбранный город
+                onChooseLocation = { navController.navigate("event_location?city=${uiState.city}") },
+                onCitySelected = { navController.navigate("event_location?city=${uiState.city}") }
             )
         }
     )

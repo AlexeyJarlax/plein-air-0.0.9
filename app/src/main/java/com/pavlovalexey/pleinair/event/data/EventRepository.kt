@@ -1,6 +1,7 @@
 package com.pavlovalexey.pleinair.event.data
 
 import android.content.SharedPreferences
+import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
 import com.pavlovalexey.pleinair.event.model.Event
 import kotlinx.coroutines.runBlocking
@@ -14,7 +15,52 @@ class EventRepository @Inject constructor(
     private val sharedPreferences: SharedPreferences
 ) {
 
-    suspend fun addEvent(event: Event): String {
+    fun getEventById(eventId: String): Event? {
+        var event: Event? = null
+        runBlocking {
+            try {
+                val documentSnapshot = firebase.collection("events")
+                    .document(eventId)
+                    .get()
+                    .await()
+
+                if (documentSnapshot.exists()) {
+                    event = documentSnapshot.toObject(Event::class.java)
+                    Log.d("EventRepository", "=== Event fetched: $event")
+                } else {
+                    Log.e("EventRepository", "=== No event found with id $eventId")
+                }
+            } catch (e: Exception) {
+                Log.e("EventRepository", "=== Failed to fetch event with id $eventId: ${e.localizedMessage}")
+            }
+        }
+        return event
+    }
+
+    fun getEventByUserId(userId: String): Event? {
+        var event: Event? = null
+        runBlocking {
+            try {
+                val querySnapshot = firebase.collection("events")
+                    .whereEqualTo("userId", userId)
+                    .limit(1)
+                    .get()
+                    .await()
+
+                if (querySnapshot.documents.isNotEmpty()) {
+                    event = querySnapshot.documents[0].toObject(Event::class.java)
+                    Log.d("EventRepository", "=== Event fetched: $event")
+                } else {
+                    Log.e("EventRepository", "=== No event found for user with id $userId")
+                }
+            } catch (e: Exception) {
+                Log.e("EventRepository", "=== Failed to fetch event for user with id $userId: ${e.localizedMessage}")
+            }
+        }
+        return event
+    }
+
+    suspend fun createEvent(event: Event): String {
         return try {
             val documentRef = firebase.collection("events")
                 .add(event)
@@ -23,25 +69,6 @@ class EventRepository @Inject constructor(
         } catch (e: Exception) {
             throw e
         }
-    }
-    suspend fun createEvent(event: Event): String {
-        return addEvent(event)
-    }
-
-    fun getEventByUserId(userId: String): Event? {
-        var event: Event? = null
-        runBlocking {
-            val querySnapshot = firebase.collection("events")
-                .whereEqualTo("userId", userId)
-                .get()
-                .await()
-
-            if (!querySnapshot.isEmpty) {
-                val document = querySnapshot.documents[0]
-                event = document.toObject(Event::class.java)
-            }
-        }
-        return event
     }
 
     suspend fun updateEventImageUrl(eventId: String, imageUrl: String) {
@@ -53,6 +80,7 @@ class EventRepository @Inject constructor(
         try {
             firebase.collection("events").document(eventId).delete().await()
         } catch (e: Exception) {
+            Log.e("EventRepository", "=== Failed to delete event $eventId: ${e.localizedMessage}")
             throw e
         }
     }
