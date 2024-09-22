@@ -11,7 +11,7 @@ fun getAddressFromLatLng(context: Context, latitude: Double, longitude: Double):
         val addresses: MutableList<Address>? = geocoder.getFromLocation(latitude, longitude, 1)
         if (!addresses.isNullOrEmpty()) {
             val address: Address = addresses[0]
-            address.getAddressLine(0) // Полный адрес, можно выбрать и другие части адреса
+            address.getAddressLine(0)
         } else {
             "Адрес не найден"
         }

@@ -1,8 +1,16 @@
 package com.pavlovalexey.pleinair.main.ui
 
+/** Приложение построено Jetpack Compose с сингл-активити и отправной точкой MainActivity.
+ * Вместо xml и фрагментов применил Jetpack Compose — фреймворк для создания UI на Android, основанный на декларативном подходе.
+ *
+ * Этапы входа в приложение:
+ * 1 Этап - подписание соглашений в TermsScreen
+ * 2 Этап - авторизация в AuthScreen
+ * 3 Этап - MainActivity и фрагменты по всему функционалу приложения с навигацией через НавГраф и BottomNavBar. Первый: Профиль фрагмент.
+ */
+
 import android.os.Build
 import android.os.Bundle
-import android.view.View
 import android.view.WindowInsets
 import android.view.WindowInsetsController
 import android.widget.ProgressBar
@@ -10,9 +18,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.compose.rememberNavController
@@ -150,7 +155,7 @@ class MainActivity : ComponentActivity(), OnMapReadyCallback {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                // Handle error
+
             }
         })
     }

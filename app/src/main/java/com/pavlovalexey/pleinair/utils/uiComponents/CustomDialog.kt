@@ -21,7 +21,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.font.FontWeight
 import com.google.accompanist.flowlayout.SizeMode
 
-
 @Composable
 fun CustomYesOrNoDialog(
     title: String,
@@ -69,9 +68,9 @@ onConfirm
 @Composable
 fun CustomOptionDialog(
     title: String,
-    options: List<String>, // Список опций для выбора
+    options: List<String>,
     onDismiss: () -> Unit,
-    onOptionSelected: (String) -> Unit // Коллбэк для обработки выбранной опции
+    onOptionSelected: (String) -> Unit
 ) {
     AlertDialog(
         onDismissRequest = { onDismiss() },
@@ -81,13 +80,13 @@ fun CustomOptionDialog(
                 options.forEach { option ->
                     Text(
                         text = option,
-                        style = TextStyle(fontSize = 18.sp), // Установка размера шрифта
+                        style = TextStyle(fontSize = 18.sp),
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(8.dp)
                             .clickable {
-                                onOptionSelected(option) // Выбор опции
-                                onDismiss() // Закрытие диалога
+                                onOptionSelected(option)
+                                onDismiss()
                             }
                     )
                 }
@@ -95,10 +94,10 @@ fun CustomOptionDialog(
         },
         confirmButton = {
             Button(onClick = onDismiss) {
-                Text("Закрыть", style = TextStyle(fontSize = 18.sp)) // Установка размера шрифта
+                Text("Закрыть", style = TextStyle(fontSize = 18.sp))
             }
         },
-        dismissButton = null, // Можно оставить кнопку "Закрыть" или убрать
+        dismissButton = null,
         backgroundColor = colorResource(id = R.color.my_very_blue),
         contentColor = colorResource(id = R.color.my_black)
     )
@@ -132,9 +131,9 @@ fun CustomTextInputDialog(
     title: String,
     initialText: String,
     onDismiss: () -> Unit,
-    onConfirm: (String) -> Unit // Принимает новое значение текста
+    onConfirm: (String) -> Unit
 ) {
-    var text by remember { mutableStateOf(initialText) } // Для отслеживания введенного текста
+    var text by remember { mutableStateOf(initialText) }
 
     AlertDialog(
         onDismissRequest = { onDismiss() },

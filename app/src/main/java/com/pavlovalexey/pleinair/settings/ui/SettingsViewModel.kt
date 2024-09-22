@@ -1,14 +1,11 @@
 package com.pavlovalexey.pleinair.settings.ui
 
-import android.app.Activity
 import android.content.Context
 import android.util.Log
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.StorageException
 import com.pavlovalexey.pleinair.settings.domain.SettingsInteractor
 import com.pavlovalexey.pleinair.utils.firebase.LoginAndUserUtils
@@ -40,14 +37,14 @@ class SettingsViewModel @Inject constructor(
     val eventFlow: SharedFlow<Event> = _eventFlow
 
     init {
-        _isNightMode.value = settingsInteractor.loadNightMode() // Загрузка текущего режима из SharedPreferences
+        _isNightMode.value = settingsInteractor.loadNightMode()
     }
 
     override fun changeNightMode(value: Boolean) {
         if (_isNightMode.value != value) {
             _isNightMode.value = value
             settingsInteractor.saveNightMode(value)
-            settingsInteractor.applyTheme() // Применение новой темы
+            settingsInteractor.applyTheme()
         }
     }
 
@@ -75,7 +72,6 @@ class SettingsViewModel @Inject constructor(
         deleteUserAccount(onNavigateToAuth = {})
     }
 
-    // Новый метод с лямбдой
     fun deleteUserAccount(onNavigateToAuth: () -> Unit) {
         viewModelScope.launch {
             _isLoading.value = true

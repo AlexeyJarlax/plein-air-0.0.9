@@ -1,6 +1,5 @@
 package com.pavlovalexey.pleinair.event.ui.newEvent
 
-import android.app.Application
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

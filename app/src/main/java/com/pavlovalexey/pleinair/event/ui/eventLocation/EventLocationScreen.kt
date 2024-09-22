@@ -48,11 +48,9 @@ fun EventLocationScreen(
                     val address = addresses[0]
                     val latLng = LatLng(address.latitude, address.longitude)
                     withContext(Dispatchers.Main) {
-                        // Перемещение камеры к найденной позиции
                         cameraPositionState.move(CameraUpdateFactory.newLatLngZoom(latLng, 12f))
                     }
-                } else {
-                    // Если геокодирование не удалось, установка начальной позиции в родном городе
+                } else {// Если геокодирование не удалось, установка начальной позиции в родном городе
                     withContext(Dispatchers.Main) {
                         Toast.makeText(context, "Город не найден, используем координаты Москвы.", Toast.LENGTH_SHORT).show()
                         cameraPositionState.move(
@@ -66,7 +64,6 @@ fun EventLocationScreen(
                     }
                 }
             } catch (e: IOException) {
-                // Обработка исключения
                 withContext(Dispatchers.Main) {
                     Toast.makeText(context, "Ошибка геокодирования: $e", Toast.LENGTH_SHORT).show()
                     cameraPositionState.move(
@@ -77,7 +74,6 @@ fun EventLocationScreen(
                     )
                 }
             } catch (e: IllegalArgumentException) {
-                // Обработка исключения неверного аргумента
                 withContext(Dispatchers.Main) {
                     Toast.makeText(context, "Ошибка ввода города: $e", Toast.LENGTH_SHORT).show()
                     cameraPositionState.move(

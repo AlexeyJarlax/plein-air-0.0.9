@@ -92,7 +92,6 @@ fun EventCreationContent(
                 currentDate.dayOfMonth
             ).apply {
                 datePicker.minDate = currentDate.atStartOfDay(ZoneId.systemDefault()).toEpochSecond() * 1000
-//                datePicker.maxDate = maxDateTime.atStartOfDay(ZoneId.systemDefault()).toEpochSecond() * 1000
             }.show()
         }
 
@@ -145,7 +144,7 @@ fun EventCreationContent(
 
             OutlinedTextField(
                 value = uiState.date ?: "",
-                onValueChange = { /* Do nothing */ },
+                onValueChange = {  },
                 label = { Text("Date") },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -162,7 +161,7 @@ fun EventCreationContent(
 
             OutlinedTextField(
                 value = uiState.time ?: "",
-                onValueChange = { /* Do nothing */ },
+                onValueChange = {  },
                 label = { Text("Time") },
                 modifier = Modifier
                     .fillMaxWidth()

@@ -1,6 +1,5 @@
 package com.pavlovalexey.pleinair.main.ui.termsScreen
 
-import android.app.Activity
 import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
@@ -10,8 +9,6 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pavlovalexey.pleinair.R
-import com.pavlovalexey.pleinair.utils.AppPreferencesKeys
-import com.pavlovalexey.pleinair.utils.AppPreferencesKeys.PREFS_NAME
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers

@@ -2,9 +2,7 @@ package com.pavlovalexey.pleinair.settings.ui
 
 
 import android.app.Activity
-import android.app.AlertDialog
 import android.widget.Toast
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
@@ -13,16 +11,12 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pavlovalexey.pleinair.R
-import com.pavlovalexey.pleinair.utils.uiComponents.CustomButtonOne
 import androidx.compose.ui.platform.LocalContext
 import com.pavlovalexey.pleinair.utils.uiComponents.BackgroundImage
 import com.pavlovalexey.pleinair.utils.uiComponents.CustomButtonTwo

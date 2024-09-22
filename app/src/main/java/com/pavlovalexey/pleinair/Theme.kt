@@ -35,7 +35,6 @@ fun PleinairTheme(
         background = MyBlack,
     )
 
-    // Всегда используем LightColorPalette
     val colors = LightColorPalette
 
     MaterialTheme(

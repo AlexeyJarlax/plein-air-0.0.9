@@ -16,7 +16,7 @@ fun loadCitiesFromFile(): List<String> {
         val citiesList = mutableListOf<String>()
         reader.useLines { lines ->
             lines.forEach { line ->
-                val cityName = line.split(",")[0] // Извлекаем только название города
+                val cityName = line.split(",")[0]
                 citiesList.add(cityName)
             }
         }

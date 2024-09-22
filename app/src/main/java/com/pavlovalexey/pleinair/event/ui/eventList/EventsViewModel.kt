@@ -32,7 +32,6 @@ class EventListViewModel @Inject constructor(
                 allEvents = eventsList
                 _events.value = eventsList
             } catch (e: Exception) {
-                // Handle the exception
             }
         }
     }

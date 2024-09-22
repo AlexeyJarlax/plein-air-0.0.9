@@ -78,10 +78,9 @@ object AppModule {
     }
     @Provides
     fun provideEventRepository(
-        firebase: FirebaseFirestore,
-        sharedPreferences: SharedPreferences
+        firebase: FirebaseFirestore
     ): EventRepository {
-        return EventRepository(firebase, sharedPreferences)
+        return EventRepository(firebase)
     }
 
     @Provides

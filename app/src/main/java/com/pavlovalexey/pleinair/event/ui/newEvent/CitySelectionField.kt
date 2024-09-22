@@ -1,7 +1,5 @@
 package com.pavlovalexey.pleinair.event.ui.newEvent
 
-import android.util.Log
-import android.widget.Toast
 import androidx.compose.material.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions
@@ -58,7 +56,7 @@ fun CitySelectionField(
                 keyboardActions = KeyboardActions(
                     onDone = {
                         expanded = false
-                        onCitySelected(city) // Передача города по завершению ввода
+                        onCitySelected(city)
                     }
                 ),
                 singleLine = true
@@ -72,7 +70,6 @@ fun CitySelectionField(
                     DropdownMenuItem(onClick = {
                         onCityChange(selectedCity)
                         expanded = false
-                        // Задержка для обновления состояния
                         onCitySelected(selectedCity)
                     }) {
                         Text(text = selectedCity)

@@ -18,7 +18,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.pavlovalexey.pleinair.R
-import com.pavlovalexey.pleinair.event.model.Event
 import com.pavlovalexey.pleinair.utils.uiComponents.BackgroundImage
 import kotlinx.coroutines.launch
 
@@ -47,7 +46,6 @@ fun EventListScreen(
                     .fillMaxSize()
             ) {
                 BackgroundImage(imageResId = R.drawable.back_lay)
-                // Main Content
                 Column(
                     modifier = Modifier
                         .fillMaxSize()

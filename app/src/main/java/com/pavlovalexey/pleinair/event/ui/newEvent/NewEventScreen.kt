@@ -65,10 +65,8 @@ fun NewEventScreen(
     LaunchedEffect(creationStatus) {
         when (creationStatus) {
             is CreationStatus.Loading -> {
-                // Show loading indicator
             }
             is CreationStatus.Success -> {
-                // Navigate back after event creation
                 navController.popBackStack()
             }
             is CreationStatus.Error -> {

@@ -1,6 +1,5 @@
 package com.pavlovalexey.pleinair.event.data
 
-import android.content.SharedPreferences
 import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
 import com.pavlovalexey.pleinair.event.model.Event
@@ -12,7 +11,6 @@ import javax.inject.Singleton
 @Singleton
 class EventRepository @Inject constructor(
     private val firebase: FirebaseFirestore,
-    private val sharedPreferences: SharedPreferences
 ) {
 
     fun getEventById(eventId: String): Event? {

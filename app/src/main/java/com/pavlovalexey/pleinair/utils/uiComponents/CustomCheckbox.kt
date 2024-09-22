@@ -20,8 +20,8 @@ fun CustomCheckbox(
 ) {
     val checkboxColors = CheckboxDefaults.colors(
         checkedColor = colorResource(id = R.color.my_prime_day),
-        uncheckedColor = Color.Gray, // Цвет для неотмеченного состояния
-        checkmarkColor = Color.White, // Цвет галочки
+        uncheckedColor = Color.Gray,
+        checkmarkColor = Color.White,
     )
 
     Checkbox(

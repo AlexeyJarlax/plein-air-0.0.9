@@ -3,21 +3,14 @@ package com.pavlovalexey.pleinair.main.ui.authScreen
 import android.app.Activity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.BottomAppBar
-import androidx.compose.material.BottomNavigation
-import androidx.compose.material.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -88,8 +81,7 @@ fun AuthScreen(
                 onClick = onCancel,
                 text = stringResource(R.string.exit),
                 iconResId = R.drawable.door_open_30dp,
-//                modifier = Modifier.background(Color.Transparent),
-                textColor = Color.Red, // Пример цвета текста
+                textColor = Color.Red,
                 iconColor = Color.Red
             )
         }
