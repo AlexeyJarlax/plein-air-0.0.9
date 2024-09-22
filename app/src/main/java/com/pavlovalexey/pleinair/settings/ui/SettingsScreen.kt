@@ -28,7 +28,7 @@ import com.pavlovalexey.pleinair.utils.uiComponents.CustomYesOrNoDialog
 @Composable
 fun SettingsScreen(
     viewModel: SettingsViewModel = hiltViewModel(),
-    onNavigateBack: () -> Unit
+    onNavigateToAuth: () -> Unit
 ) {
     val isNightMode by viewModel.isNightMode.observeAsState(initial = false)
     val isLoading by viewModel.isLoading.observeAsState(initial = false)
@@ -39,8 +39,10 @@ fun SettingsScreen(
 
     eventFlow.value?.let { event ->
         when (event) {
-            is SettingsViewModel.Event.FinishActivity -> context.finish()
-            is SettingsViewModel.Event.AccountDeleted -> context.finish()
+            is SettingsViewModel.Event.AccountDeleted -> {
+                onNavigateToAuth()
+                context.finish()
+            }
             is SettingsViewModel.Event.DeleteAccountFailed ->
                 Toast.makeText(context, "Ошибка удаления аккаунта", Toast.LENGTH_LONG).show()
             is SettingsViewModel.Event.ReauthenticationFailed ->
@@ -138,7 +140,7 @@ fun SettingsScreen(
                 text = stringResource(R.string.confirmation_for_delete),
                 onDismiss = { showDeleteAccountDialog = false },
                 onConfirm = {
-                    viewModel.deleteUserAccount()
+                    viewModel.deleteUserAccount(onNavigateToAuth)
                     showDeleteAccountDialog = false
                 }
             )

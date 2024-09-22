@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -34,6 +35,7 @@ fun TermsScreen(
     var isAgreementChecked by rememberSaveable { mutableStateOf(false) }
     var isPrivacyPolicyChecked by rememberSaveable { mutableStateOf(false) }
     var isAlreadySigned by remember { mutableStateOf(false) }
+    val color = colorResource(id = R.color.my_prime_day)
 
     LaunchedEffect(viewModel) {
         isAlreadySigned = viewModel.checkIfSigned()
@@ -62,27 +64,27 @@ fun TermsScreen(
                 Text(
                     text = viewModel.termsOfPrivacy,
                     fontSize = 21.sp,
-                    color = if (isSystemInDarkTheme()) Color.White else Color.Black,
+                    color = color,
                     modifier = Modifier.padding(bottom = 8.dp).fillMaxWidth(),
                     textAlign = TextAlign.Center
                 )
                 Text(
                     text = viewModel.privacyPolicyContent,
-                    color = if (isSystemInDarkTheme()) Color.White else Color.Black,
+                    color = color,
                     fontSize = 16.sp,
                     modifier = Modifier.padding(bottom = 16.dp).fillMaxWidth(),
                     textAlign = TextAlign.Center
                 )
                 Text(
                     text = viewModel.termsOfAgreement,
-                    color = if (isSystemInDarkTheme()) Color.White else Color.Black,
+                    color = color,
                     fontSize = 21.sp,
                     modifier = Modifier.padding(bottom = 8.dp).fillMaxWidth(),
                     textAlign = TextAlign.Center
                 )
                 Text(
                     text = viewModel.userAgreementContent,
-                    color = if (isSystemInDarkTheme()) Color.White else Color.Black,
+                    color = color,
                     fontSize = 16.sp,
                     modifier = Modifier.padding(bottom = 16.dp).fillMaxWidth(),
                     textAlign = TextAlign.Center
@@ -99,7 +101,7 @@ fun TermsScreen(
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
                         text = stringResource(R.string.i_have_read_privacy_policy),
-                        color = if (isSystemInDarkTheme()) Color.White else Color.Black,
+                        color = color,
                         fontSize = 16.sp
                     )
                 }
@@ -115,7 +117,7 @@ fun TermsScreen(
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
                         text = stringResource(R.string.i_have_read_user_policy),
-                        color = if (isSystemInDarkTheme()) Color.White else Color.Black,
+                        color = color,
                         fontSize = 16.sp
                     )
                 }
@@ -139,7 +141,7 @@ fun TermsScreen(
                 CustomButtonOne(
                     onClick = onCancel,
                     text = stringResource(R.string.cancel),
-                    iconResId = R.drawable.door_open_30dp // Замените на нужный ресурс
+                    iconResId = R.drawable.door_open_30dp
                 )
             }
         }

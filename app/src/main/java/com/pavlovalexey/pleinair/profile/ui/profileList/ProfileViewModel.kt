@@ -14,7 +14,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.pavlovalexey.pleinair.profile.model.User
 import com.pavlovalexey.pleinair.profile.data.UserRepository
 import com.pavlovalexey.pleinair.utils.firebase.FirebaseUserManager
@@ -47,14 +47,27 @@ class ProfileViewModel @Inject constructor(
     val bitmap: LiveData<Bitmap?> get() = _bitmap
 
     init {
-        loadUser()
+        val userId = auth.currentUser?.uid
+        if (userId != null) {
+            loadUser()
+        } else {
+            logout()
+        }
     }
 
     private fun loadUser() {
         viewModelScope.launch {
             val userId = auth.currentUser?.uid
             if (userId != null) {
-                _user.value = userRepository.getUserById(userId)
+                val loadedUser = userRepository.getUserById(userId)
+                _user.value = loadedUser
+                _selectedArtStyles.value = loadedUser?.selectedArtStyles?.toSet() ?: emptySet()
+                Log.d(TAG, "=== Загруженный пользователь: $loadedUser")
+                if (loadedUser?.profileImageUrl.isNullOrEmpty()) {
+                    checkAndGenerateAvatar {
+//                        loadUser()
+                    }
+                }
             }
         }
     }
@@ -62,6 +75,10 @@ class ProfileViewModel @Inject constructor(
     fun logout() {
         loginAndUserUtils.logout()
         _user.value = null
+    }
+
+    fun isUserSignedIn(): Boolean {
+        return loginAndUserUtils.isUserSignedIn()
     }
 
     fun updateUserName(newName: String, onComplete: () -> Unit) {
@@ -151,6 +168,16 @@ class ProfileViewModel @Inject constructor(
             imageBitmap?.let {
                 val processedBitmap = ImageUtils.compressAndGetCircularBitmap(it)
                 _bitmap.value = processedBitmap
+                // Загружаем изображение на Firebase и обновляем URL
+                uploadAvatarImageToFirebase(
+                    imageBitmap = processedBitmap,
+                    onSuccess = { uri ->
+                        updateProfileImageUrl(uri.toString())
+                    },
+                    onFailure = {
+                        Log.w(TAG, "Ошибка при загрузке изображения", it)
+                    }
+                )
             }
         }
     }
@@ -164,6 +191,16 @@ class ProfileViewModel @Inject constructor(
                     val imageBitmap = BitmapFactory.decodeStream(inputStream)
                     val processedBitmap = ImageUtils.compressAndGetCircularBitmap(imageBitmap)
                     _bitmap.value = processedBitmap
+                    // Загружаем изображение на Firebase и обновляем URL
+                    uploadAvatarImageToFirebase(
+                        imageBitmap = processedBitmap,
+                        onSuccess = { uri ->
+                            updateProfileImageUrl(uri.toString())
+                        },
+                        onFailure = {
+                            Log.w(TAG, "Ошибка при загрузке изображения", it)
+                        }
+                    )
                 } catch (e: IOException) {
                     Log.e(TAG, "Ошибка при открытии InputStream для URI", e)
                 }
@@ -189,34 +226,6 @@ class ProfileViewModel @Inject constructor(
         )
     }
 
-    fun updateUserLocation(location: LatLng, onSuccess: () -> Unit) {
-        val userId = auth.currentUser?.uid ?: return
-        firebaseUserManager.updateUserLocation(
-            userId,
-            location,
-            "users",
-            onSuccess = onSuccess,
-            onFailure = { e ->
-                Log.w("ProfileViewModel", "Error updating user location", e)
-            }
-        )
-    }
-
-    fun updateSelectedStyles(styles: Set<String>, onSuccess: () -> Unit) {
-        val userId = auth.currentUser?.uid ?: return
-        firebaseUserManager.updateSelectedStyles(
-            userId,
-            styles,
-            onSuccess = {
-                _selectedArtStyles.value = styles
-                onSuccess()
-            },
-            onFailure = { e ->
-                Log.w("ProfileViewModel", "Error updating art styles", e)
-            }
-        )
-    }
-
     private fun saveProfileImageUrl(url: String) {
         with(sharedPreferences.edit()) {
             putString("profileImageUrl", url)
@@ -224,7 +233,20 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    fun onImageSelected(bitmap: Bitmap) {
-        _bitmap.value = bitmap
+    fun updateSelectedArtStyles(newStyles: Set<String>, onComplete: () -> Unit) {
+        val userId = auth.currentUser?.uid ?: return
+        val newStylesList = newStyles.toList()
+        firebaseUserManager.updateUserSelectedArtStyles(
+            userId,
+            newStylesList,
+            onSuccess = {
+                _selectedArtStyles.value = newStyles
+                _user.value = _user.value?.copy(selectedArtStyles = newStylesList)
+                onComplete()
+            },
+            onFailure = { e ->
+                Log.w("ProfileViewModel", "Error updating selected art styles", e)
+            }
+        )
     }
 }

@@ -8,10 +8,10 @@
 <!-- ║║║║ ║╚╝║   ║║ ║╚═╝║ -->
 <!-- ╚╝╚╝ ╚══╝   ╚╝ ╚═══╝ -->
 
-    <color name="my_prime_day">#9FBBF3</color> // MyBlueLight else MyBlack
-    <color name="my_prime_background">#252833</color> // white else MyBlack
+    <color name="my_prime_day">#252833</color> // MyBlack else MyBlueLight
+    <color name="my_prime_background">#F0F2F8</color> // white else MyBlack
     <color name="my_normal_blue">#008F9C</color>
-    <color name="my_very_blue">#9FBBF3</color>
+    <color name="my_very_blue">#e1ebfe</color>
     <color name="my_black">#1C1E27</color>
     <color name="my_blue_light">#9FBBF3</color>
 </resources>

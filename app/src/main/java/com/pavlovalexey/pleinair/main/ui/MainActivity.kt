@@ -1,22 +1,18 @@
 package com.pavlovalexey.pleinair.main.ui
 
-/** Приложение построено как синглактивити на фрагментах с вью моделями и отправной точкой MainActivity.
- * Вместо xml применил Jetpack Compose — фреймворк для создания UI на Android, основанный на декларативном подходе.
- *
- * 1 Этап - подписание соглашений в TermsScreen
- * 2 Этап - авторизация в AuthScreen
- * 3 Этап - MainActivity и фрагменты по всему функционалу приложения с навигацией через НавГраф и BottomNavBar
- */
-
+import android.os.Build
 import android.os.Bundle
 import android.view.View
+import android.view.WindowInsets
+import android.view.WindowInsetsController
 import android.widget.ProgressBar
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.annotation.RequiresApi
+import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.compose.rememberNavController
@@ -35,6 +31,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.GeoPoint
 import com.google.firebase.storage.FirebaseStorage
 import com.pavlovalexey.pleinair.PleinairTheme
 import com.pavlovalexey.pleinair.main.ui.authScreen.AuthScreen
@@ -62,8 +59,8 @@ class MainActivity : ComponentActivity(), OnMapReadyCallback {
     private lateinit var storage: FirebaseStorage
     private lateinit var mMap: GoogleMap
     private lateinit var progressBar: ProgressBar
-    private var selectedLocation: LatLng? = null
-    private val defaultLocation = LatLng(59.9500019, 30.3166718)    // Координаты Петропавловской крепости
+    private var selectedLocation: GeoPoint? = null
+    private val defaultLocation = GeoPoint(59.948612, 30.314633)    // Координаты Петропавловской крепости
 
     private lateinit var authViewModel: AuthViewModel
 
@@ -71,20 +68,19 @@ class MainActivity : ComponentActivity(), OnMapReadyCallback {
         super.onCreate(savedInstanceState)
 
         googleSignInClient = GoogleSignIn.getClient(this, GoogleSignInOptions.DEFAULT_SIGN_IN)
-
-        // Инициализируем ViewModel без контекста Compose
         authViewModel = ViewModelProvider(this).get(AuthViewModel::class.java)
 
         setContent {
             val navController = rememberNavController()
             val settingsViewModel: SettingsViewModel = hiltViewModel()
-            val isNightMode by settingsViewModel.isNightMode.observeAsState(initial = false)
-            settingsViewModel.changeNightMode(isNightMode)
+//            val isNightMode by settingsViewModel.isNightMode.observeAsState(initial = false)
+//            settingsViewModel.changeNightMode(isNightMode) уберу ночную тему пока не решил по стилям
+
+            // проверка на авторизованного
             val authState by authViewModel.authState.collectAsState()
 
             PleinairTheme() {
-
-                if (authState.isAuthenticated) {
+                if (authState.isAuthenticated && auth.currentUser != null) {
                     MainScreen(navController = navController)
                 } else {
                     AuthScreen(
@@ -99,6 +95,7 @@ class MainActivity : ComponentActivity(), OnMapReadyCallback {
                 }
             }
         }
+
         setupOnlineStatusListener()
     }
 
@@ -163,20 +160,24 @@ class MainActivity : ComponentActivity(), OnMapReadyCallback {
         mMap.setOnMapClickListener { latLng ->
             mMap.clear()
             mMap.addMarker(MarkerOptions().position(latLng).title("Выбрано местоположение"))
-            selectedLocation = latLng
+            selectedLocation = GeoPoint(latLng.latitude, latLng.longitude)
         }
         val initialPosition = selectedLocation ?: defaultLocation
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(initialPosition, 12f))
+        val initialLatLng = LatLng(initialPosition.latitude, initialPosition.longitude)
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(initialLatLng, 12f))
     }
 
+    @RequiresApi(Build.VERSION_CODES.R)
     private fun hideSystemUI() {
-        window.decorView.systemUiVisibility = (
-                View.SYSTEM_UI_FLAG_FULLSCREEN
-                        or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                        or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                )
+        val windowInsetsController = window.insetsController
+        if (windowInsetsController != null) {
+            windowInsetsController.systemBarsBehavior =
+                WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+            windowInsetsController.hide(WindowInsets.Type.systemBars())
+        }
     }
 
+    @RequiresApi(Build.VERSION_CODES.R)
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
         if (hasFocus) {

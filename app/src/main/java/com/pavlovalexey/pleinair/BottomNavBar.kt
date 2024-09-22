@@ -24,7 +24,9 @@ import com.pavlovalexey.pleinair.utils.uiComponents.CustomYesOrNoDialog
 fun BottomNavBar(navController: NavHostController) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
-
+    if (currentRoute in listOf("auth", "terms")) {
+        return
+    }
     val primaryDayColor = colorResource(id = R.color.my_prime_day)
     val primeBackground = colorResource(id = R.color.my_normal_blue)
 
@@ -44,9 +46,7 @@ fun BottomNavBar(navController: NavHostController) {
         )
     }
 
-    BottomNavigation(
-//        backgroundColor = backgroundColor
-    ) {
+    BottomNavigation {
         BottomAppBar(
             backgroundColor =primeBackground.copy(alpha = 1f),
             modifier = Modifier.height(80.dp)
@@ -172,8 +172,8 @@ fun BottomNavBar(navController: NavHostController) {
 @Composable
 fun ExitConfirmationDialog(onDismiss: () -> Unit, onConfirm: () -> Unit) {
     CustomYesOrNoDialog(
+        stringResource(id = R.string.confirmation),
         stringResource(id = R.string.exit_dialog),
-        "",
         onDismiss,
         onConfirm
     )

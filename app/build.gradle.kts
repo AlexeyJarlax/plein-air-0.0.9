@@ -17,8 +17,8 @@ android {
         resourceConfigurations += setOf("ru", "en")
         minSdk = 29
         targetSdk = 34
-        versionCode = 8
-        versionName = "0.0.8"
+        versionCode = 9
+        versionName = "0.0.9"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -115,10 +115,6 @@ dependencies {
 
     // Библиотека для создания функций отправки в Intents с помощью mailto: URI
     implementation(libs.email.intent.builder)
-/////////////////////////////////////////////////////////////  новые зависимости
-
-
-///////////////////////////////////////////////////////////// новые зависимости
 
     // glide для пикч
     implementation(libs.glide)
@@ -172,6 +168,8 @@ dependencies {
     implementation(libs.play.services.location)
     implementation(libs.androidx.material.icons.extended)
     implementation(libs.maps.compose.v272)
+    implementation(libs.androidx.foundation)
+    implementation (libs.google.accompanist.flowlayout)
 
     // Jetpack DataStore
     implementation(libs.androidx.datastore.preferences)
@@ -201,6 +199,7 @@ dependencies {
     implementation(libs.firebase.appcheck.playintegrity)
     implementation(libs.firebase.database)
     implementation(libs.firebase.core)
+    implementation (libs.play.services.auth.v1920)
 
     //изображения
     implementation(libs.picasso)

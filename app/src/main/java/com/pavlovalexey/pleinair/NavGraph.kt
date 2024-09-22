@@ -117,7 +117,11 @@ fun NavGraph(navController: NavHostController, activity: Activity, modifier: Mod
 
         composable("settings") {
             SettingsScreen(
-                onNavigateBack = { navController.popBackStack() }
+                onNavigateToAuth = {
+                    navController.navigate("terms") {
+                        popUpTo("settings") { inclusive = true }
+                    }
+                }
             )
         }
     }

@@ -9,6 +9,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.pavlovalexey.pleinair.event.data.EventRepository
+import com.pavlovalexey.pleinair.map.data.ImageRepository
+import com.pavlovalexey.pleinair.profile.data.UserRepository
 import com.pavlovalexey.pleinair.settings.data.SettingsRepositoryImpl
 import com.pavlovalexey.pleinair.settings.domain.SettingsInteractor
 import com.pavlovalexey.pleinair.settings.domain.SettingsInteractorImpl
@@ -82,6 +84,19 @@ object AppModule {
         return EventRepository(firebase, sharedPreferences)
     }
 
+    @Provides
+    @Singleton
+    fun provideUserRepository(
+        firebase: FirebaseFirestore,
+    ): UserRepository {
+        return UserRepository(firebase)
+    }
+
+    @Provides
+    fun provideImageRepository(): ImageRepository {
+        return ImageRepository()
+    }
+
     ////////// Interactor
     @Provides
     @Singleton
@@ -89,12 +104,6 @@ object AppModule {
         return SettingsInteractorImpl(settingsRepository)
     }
 
-    ////////// Adapter
-//    @Provides
-//    @Singleton
-//    fun provideEventAdapter(): EventAdapter {
-//        return EventAdapter()
-//    }
 
 ////////// Utils
     @Provides
@@ -111,11 +120,10 @@ object AppModule {
     @Singleton
     fun provideFirebaseUserManager(
         @ApplicationContext appContext: Context,
-        auth: FirebaseAuth,
         firestore: FirebaseFirestore,
         storage: FirebaseStorage,
-        sharedPreferences: SharedPreferences
+        loginAndUserUtils: LoginAndUserUtils
     ): FirebaseUserManager {
-        return FirebaseUserManager(appContext, auth, firestore, storage, sharedPreferences)
+        return FirebaseUserManager(appContext, firestore, storage, loginAndUserUtils)
     }
 }
