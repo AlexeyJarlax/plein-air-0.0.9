@@ -2,27 +2,24 @@ package com.pavlovalexey.pleinair.settings.ui
 
 
 import android.app.Activity
-import android.app.AlertDialog
 import android.widget.Toast
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
+import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pavlovalexey.pleinair.R
-import com.pavlovalexey.pleinair.utils.uiComponents.CustomButtonOne
 import androidx.compose.ui.platform.LocalContext
 import com.pavlovalexey.pleinair.utils.uiComponents.BackgroundImage
+import com.pavlovalexey.pleinair.utils.uiComponents.CustomButtonTwo
 import com.pavlovalexey.pleinair.utils.uiComponents.CustomYesOrNoDialog
 
 @Composable
@@ -62,14 +59,14 @@ fun SettingsScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "Настройки",
-                style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
+                text = stringResource(R.string.settings),
+                style = MaterialTheme.typography.h6.copy(fontWeight = FontWeight.Bold),
                 color = Color.Black,
                 modifier = Modifier.padding(bottom = 16.dp)
             )
 
             Spacer(modifier = Modifier.height(10.dp))
-            CustomButtonOne(
+            CustomButtonTwo(
                 onClick = { viewModel.shareApp() },
                 text = stringResource(R.string.share_app_title),
                 iconResId = R.drawable.share_30dp,
@@ -78,7 +75,7 @@ fun SettingsScreen(
 
             Spacer(modifier = Modifier.height(10.dp))
 
-            CustomButtonOne(
+            CustomButtonTwo(
                 onClick = { viewModel.goToHelp() },
                 text = stringResource(R.string.write_to_support),
                 iconResId = R.drawable.support_agent_30dp,
@@ -87,7 +84,7 @@ fun SettingsScreen(
 
             Spacer(modifier = Modifier.height(10.dp))
 
-            CustomButtonOne(
+            CustomButtonTwo(
                 onClick = { viewModel.seeUserAgreement() },
                 text = stringResource(R.string.ua),
                 iconResId = R.drawable.description_30dp,
@@ -96,7 +93,7 @@ fun SettingsScreen(
 
             Spacer(modifier = Modifier.height(10.dp))
 
-            CustomButtonOne(
+            CustomButtonTwo(
                 onClick = { viewModel.seePrivacyPolicy() },
                 text = stringResource(R.string.pp),
                 iconResId = R.drawable.description_30dp,
@@ -105,7 +102,7 @@ fun SettingsScreen(
 
             Spacer(modifier = Modifier.height(10.dp))
 
-            CustomButtonOne(
+            CustomButtonTwo(
                 onClick = { showDonatDialog = true },
                 text = stringResource(R.string.donats),
                 iconResId = R.drawable.currency_ruble_30dp,
@@ -114,7 +111,7 @@ fun SettingsScreen(
 
             Spacer(modifier = Modifier.height(10.dp))
 
-            CustomButtonOne(
+            CustomButtonTwo(
                 onClick = { showDeleteAccountDialog = true },
                 text = stringResource(R.string.delit_me),
                 iconResId = R.drawable.person_remove_30dp,

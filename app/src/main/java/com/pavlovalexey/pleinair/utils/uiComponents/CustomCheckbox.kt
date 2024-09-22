@@ -1,7 +1,7 @@
 package com.pavlovalexey.pleinair.utils.uiComponents
 
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.CheckboxDefaults
+import androidx.compose.material.Checkbox
+import androidx.compose.material.CheckboxDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -20,10 +20,8 @@ fun CustomCheckbox(
 ) {
     val checkboxColors = CheckboxDefaults.colors(
         checkedColor = colorResource(id = R.color.my_prime_day),
-        uncheckedColor = Color.Gray, // Цвет для неотмеченного состояния
-        checkmarkColor = Color.White, // Цвет галочки
-        disabledCheckedColor = Color.LightGray, // Цвет для отмеченного состояния при отключенной чекбоксе
-        disabledUncheckedColor = Color.DarkGray // Цвет для неотмеченного состояния при отключенной чекбоксе
+        uncheckedColor = Color.Gray,
+        checkmarkColor = Color.White,
     )
 
     Checkbox(

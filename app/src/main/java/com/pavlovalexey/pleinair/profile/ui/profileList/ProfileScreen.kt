@@ -105,8 +105,8 @@ fun ProfileScreen(
                     modifier = Modifier
                         .weight(1f)
                         .clickable { showEditNameDialog = true },
-                    maxLines = 3,  // Ограничение до 3 строк
-                    overflow = TextOverflow.Ellipsis  // Добавляем многоточие при переполнении
+                    maxLines = 3,
+                    overflow = TextOverflow.Ellipsis
                 )
             }
         }
@@ -204,7 +204,7 @@ fun ProfileScreen(
     @Composable
     private fun ProfileImage(onClick: () -> Unit, imageUrl: String?, bitmap: Bitmap?) {
         val imageModifier = Modifier
-            .size(150.dp)  // Увеличиваем размер до 200dp
+            .size(150.dp)
             .clip(CircleShape)
             .clickable(onClick = onClick)
 
@@ -315,10 +315,8 @@ fun TechniquesSelectionDialog(
     onDismissRequest: () -> Unit,
     onConfirm: (Set<String>) -> Unit
 ) {
-    // Отслеживаем выбранные элементы
     val selectedItems = remember { mutableStateMapOf<String, Boolean>() }
 
-    // Инициализируем выбранные элементы
     LaunchedEffect(Unit) {
         artStyles.forEach { style ->
             selectedItems[style] = selectedArtStyles.contains(style)

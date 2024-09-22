@@ -18,7 +18,7 @@ class ImageRepository {
         Glide.with(context)
             .asBitmap()
             .load(url)
-            .apply(RequestOptions().override(100, 100)) // Укажите размеры изображения
+            .apply(RequestOptions().override(100, 100))
             .into(object : CustomTarget<Bitmap>() {
                 override fun onLoadCleared(placeholder: Drawable?) {}
 

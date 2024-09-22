@@ -73,4 +73,22 @@
     <string name="user_agreement_url">https://raw.githubusercontent.com/AlexeyJarlax/Privacy-Policy/main/UA2.0.txt</string>
     <string name="donat">https://pay.cloudtips.ru/p/da048bc5</string>
     <string name="delit_me">Delete account</string>
+    <string name="button_next">Next</string>
+    <string name="loading">Loading…</string>
+    <string name="logout">Switch Account</string>
+    <string name="exit">Exit</string>
+    <string name="exit_dialog">Close the app?</string>
+    <string name="geo_mark">Set Geomark</string>
+    <string name="change_name">Change Name</string>
+    <string name="new_name">New Name</string>
+    <string name="confirmation">Confirmation</string>
+    <string name="confirmation_for_pay_terminal">The user will proceed to the payment terminal</string>
+    <string name="confirmation_for_delete">All user data and the account in this app will be deleted. Are you sure you want to continue?</string>
+    <string name="profile">Profile</string>
+    <string name="event">Events</string>
+    <string name="map">Map</string>
+    <string name="settings">Settings</string>
+    <string name="edit_description">Edit Description</string>
+    <string name="description_sample">Technique proficiency level: …\n\nPreferred company size: …\n\nCompany type (peers / more experienced / same technique): …\n\nAge (young, middle, senior): …\n\nOther information: …</string>
+    <string name="confirmation_del_event">The system restricts one event per user. You still have an active event. Delete the old event?</string>
 </resources>

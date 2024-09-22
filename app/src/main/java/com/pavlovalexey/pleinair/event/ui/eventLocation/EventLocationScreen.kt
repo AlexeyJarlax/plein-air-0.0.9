@@ -39,7 +39,7 @@ fun EventLocationScreen(
     val cameraPositionState = rememberCameraPositionState()
     var markerPosition by remember { mutableStateOf<LatLng?>(null) }
 
-    LaunchedEffect(city) {    // Геокодирование города для получения начальной позиции
+    LaunchedEffect(city) {
         withContext(Dispatchers.IO) {
             val geocoder = Geocoder(context)
             try {
@@ -48,12 +48,11 @@ fun EventLocationScreen(
                     val address = addresses[0]
                     val latLng = LatLng(address.latitude, address.longitude)
                     withContext(Dispatchers.Main) {
-                        // Перемещение камеры к найденной позиции
                         cameraPositionState.move(CameraUpdateFactory.newLatLngZoom(latLng, 12f))
                     }
-                } else {
-                    // Если геокодирование не удалось, установка начальной позиции в Москве
+                } else {// Если геокодирование не удалось, установка начальной позиции в родном городе
                     withContext(Dispatchers.Main) {
+                        Toast.makeText(context, "Город не найден, используем координаты Москвы.", Toast.LENGTH_SHORT).show()
                         cameraPositionState.move(
                             CameraUpdateFactory.newLatLngZoom(
                                 LatLng(
@@ -65,8 +64,18 @@ fun EventLocationScreen(
                     }
                 }
             } catch (e: IOException) {
-                // Обработка исключения
                 withContext(Dispatchers.Main) {
+                    Toast.makeText(context, "Ошибка геокодирования: $e", Toast.LENGTH_SHORT).show()
+                    cameraPositionState.move(
+                        CameraUpdateFactory.newLatLngZoom(
+                            LatLng(55.75, 37.61),
+                            12f
+                        )
+                    )
+                }
+            } catch (e: IllegalArgumentException) {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(context, "Ошибка ввода города: $e", Toast.LENGTH_SHORT).show()
                     cameraPositionState.move(
                         CameraUpdateFactory.newLatLngZoom(
                             LatLng(55.75, 37.61),
@@ -77,6 +86,7 @@ fun EventLocationScreen(
             }
         }
     }
+
     Scaffold(
         backgroundColor = Color.White,
         bottomBar = {
@@ -105,7 +115,7 @@ fun EventLocationScreen(
         GoogleMap(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding), // Применяем внутренние отступы
+                .padding(innerPadding),
             cameraPositionState = cameraPositionState,
             onMapClick = { latLng ->
                 markerPosition = latLng
@@ -113,9 +123,7 @@ fun EventLocationScreen(
             properties = mapProperties
         ) {
             markerPosition?.let {
-                Marker(
-                    state = MarkerState(position = it)
-                )
+                Marker(state = MarkerState(position = it))
             }
         }
     }

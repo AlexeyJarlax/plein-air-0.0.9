@@ -77,10 +77,8 @@ class MyLocationViewModel @Inject constructor(
                     location = geoPoint,
                     collectionName = "users",
                     onSuccess = {
-                        // Успешно обновлено
                     },
                     onFailure = { e ->
-                        // Обработка ошибки
                     }
                 )
             }

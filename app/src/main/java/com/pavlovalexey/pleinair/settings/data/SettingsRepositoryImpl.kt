@@ -117,7 +117,6 @@ class SettingsRepositoryImpl @Inject constructor(
                 Log.w("=== DeleteUser", "=== Ошибка при получении списка файлов для удаления из Firebase Storage", e)
             }
 
-            // удаления коллекции с документами
             val userDocRef = db.collection("users").document(userId)
                 userDocRef.delete()
                     Log.d(TAG, "=== Данные пользователя успешно удалены из userDocRef.")

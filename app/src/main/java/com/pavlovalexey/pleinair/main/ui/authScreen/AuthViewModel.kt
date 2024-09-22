@@ -45,7 +45,7 @@ class AuthViewModel @Inject constructor(
             val account = task.getResult(ApiException::class.java)!!
             firebaseAuthWithGoogle(account)
         } catch (e: ApiException) {
-            Log.w("AuthViewModel", "Google sign in failed", e)
+            Log.w("AuthViewModel", "=== Google sign in failed", e)
             _authState.value = AuthState(isAuthenticated = false)
         }
     }
@@ -67,7 +67,7 @@ class AuthViewModel @Inject constructor(
                     _authState.value = AuthState(isAuthenticated = false)
                 }
             } catch (e: Exception) {
-                Log.e("AuthViewModel", "Firebase authentication failed", e)
+                Log.e("AuthViewModel", "=== Firebase authentication failed", e)
                 _authState.value = AuthState(isAuthenticated = false)
             }
         }
