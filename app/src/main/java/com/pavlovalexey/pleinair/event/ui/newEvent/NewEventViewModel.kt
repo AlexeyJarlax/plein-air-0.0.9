@@ -27,17 +27,21 @@ class NewEventViewModel @Inject constructor(
     private val _creationStatus = MutableStateFlow<CreationStatus>(CreationStatus.Idle)
     val creationStatus: StateFlow<CreationStatus> get() = _creationStatus
 
+    private val _existingEvent = MutableLiveData<Event?>()
+    val existingEvent: LiveData<Event?> get() = _existingEvent
+
+    init {
+        viewModelScope.launch {
+            val userId = firebaseUserManager.getCurrentUserId()
+            _existingEvent.value = eventRepository.getEventByUserId(userId)
+        }
+    }
+
     fun createEvent() {
         _creationStatus.value = CreationStatus.Loading
 
         viewModelScope.launch {
             val userId = firebaseUserManager.getCurrentUserId()
-
-            val existingEvent = eventRepository.getEventByUserId(userId)
-            if (existingEvent != null) {
-                _creationStatus.value = CreationStatus.Error("You have already created an event.")
-                return@launch
-            }
 
             val userProfileImageUrl = firebaseUserManager.getCurrentUserProfileImageUrl()
 
@@ -58,6 +62,19 @@ class NewEventViewModel @Inject constructor(
                 _creationStatus.value = CreationStatus.Success(eventId)
             } catch (e: Exception) {
                 _creationStatus.value = CreationStatus.Error(e.localizedMessage ?: "Error creating event")
+            }
+        }
+    }
+
+    fun deleteExistingEventAndCreateNew() {
+        viewModelScope.launch {
+            _existingEvent.value?.let { existingEvent ->
+                try {
+                    eventRepository.deleteEvent(existingEvent.id)
+                    createEvent()
+                } catch (e: Exception) {
+                    _creationStatus.value = CreationStatus.Error(e.localizedMessage ?: "Error deleting existing event")
+                }
             }
         }
     }

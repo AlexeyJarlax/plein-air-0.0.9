@@ -48,4 +48,12 @@ class EventRepository @Inject constructor(
         val eventRef = firebase.collection("events").document(eventId)
         eventRef.update("profileImageUrl", imageUrl).await()
     }
+
+    suspend fun deleteEvent(eventId: String) {
+        try {
+            firebase.collection("events").document(eventId).delete().await()
+        } catch (e: Exception) {
+            throw e
+        }
+    }
 }

@@ -9,10 +9,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.pavlovalexey.pleinair.R
+import com.pavlovalexey.pleinair.utils.uiComponents.CustomYesOrNoDialog
 
 @Composable
 fun NewEventScreen(
@@ -24,15 +31,35 @@ fun NewEventScreen(
     val creationStatus by viewModel.creationStatus.collectAsState()
     val uiState by viewModel.uiState.collectAsState()
     val cities = loadCitiesFromFile()
-
+    val existingEvent by viewModel.existingEvent.observeAsState()
     val savedStateHandle = navController.currentBackStackEntry?.savedStateHandle
     val location =
         savedStateHandle?.getStateFlow<Pair<Double, Double>?>("location", null)?.collectAsState()
+    var showDeleteEventDialog by remember { mutableStateOf(false) }
 
     if (location?.value != null) {
         val (lat, lng) = location.value!!
         viewModel.updateUiState(uiState.copy(latitude = lat, longitude = lng))
         savedStateHandle?.remove<Pair<Double, Double>>("location")
+    }
+
+    existingEvent?.let {
+        showDeleteEventDialog = true
+    }
+
+    if (showDeleteEventDialog) {
+        CustomYesOrNoDialog(
+            title = stringResource(R.string.confirmation),
+            text = stringResource(R.string.confirmation_del_event),
+            onDismiss = {
+                showDeleteEventDialog = false
+                navController.popBackStack()
+            },
+            onConfirm = {
+                viewModel.deleteExistingEventAndCreateNew()
+                showDeleteEventDialog = false
+            }
+        )
     }
 
     LaunchedEffect(creationStatus) {
