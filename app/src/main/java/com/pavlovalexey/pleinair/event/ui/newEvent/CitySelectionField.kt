@@ -25,8 +25,6 @@ fun CitySelectionField(
 ) {
     var expanded by remember { mutableStateOf(false) }
     var filteredCities by remember { mutableStateOf(citiesList) }
-    var selectedCity by remember { mutableStateOf<String?>(null) }
-    var isCitySelected by remember { mutableStateOf(false) }
 
     Column {
         ExposedDropdownMenuBox(
@@ -42,7 +40,6 @@ fun CitySelectionField(
                     } else {
                         citiesList
                     }
-                    isCitySelected = false // Сброс флага выбора, так как пользователь изменяет текст
                     expanded = filteredCities.isNotEmpty()
                 },
                 label = { Text("Выберите город") },
@@ -61,13 +58,7 @@ fun CitySelectionField(
                 keyboardActions = KeyboardActions(
                     onDone = {
                         expanded = false
-                        // Если пользователь выбрал город из списка
-                        if (isCitySelected && selectedCity != null) {
-                            onCitySelected(selectedCity!!)
-                        } else if (filteredCities.contains(city)) {
-                            // Если город найден в фильтрованном списке
-                            onCitySelected(city)
-                        }
+                        onCitySelected(city) // Передача города по завершению ввода
                     }
                 ),
                 singleLine = true
@@ -77,15 +68,14 @@ fun CitySelectionField(
                 expanded = expanded,
                 onDismissRequest = { expanded = false }
             ) {
-                filteredCities.forEach { cityItem ->
+                filteredCities.forEach { selectedCity ->
                     DropdownMenuItem(onClick = {
-                        selectedCity = cityItem
-                        isCitySelected = true // Устанавливаем флаг, что город был выбран из списка
-                        onCityChange(cityItem)
-                        onCitySelected(cityItem) // Вызываем выбор города
+                        onCityChange(selectedCity)
                         expanded = false
+                        // Задержка для обновления состояния
+                        onCitySelected(selectedCity)
                     }) {
-                        Text(text = cityItem)
+                        Text(text = selectedCity)
                     }
                 }
             }

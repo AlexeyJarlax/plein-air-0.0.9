@@ -85,11 +85,12 @@ fun NavGraph(navController: NavHostController, activity: Activity, modifier: Mod
         composable("event_list") {
             EventListScreen(navController)
         }
+
         composable("new_event") {
             NewEventScreen(
                 navController,
-                onCitySelected = {
-                    navController.navigate("event_location?city=${it}")
+                onEventLocation = { city ->
+                    navController.navigate("event_location?city=${city}")
                 },
             )
         }
@@ -98,9 +99,7 @@ fun NavGraph(navController: NavHostController, activity: Activity, modifier: Mod
             "event_location?city={city}",
             arguments = listOf(navArgument("city") { defaultValue = "" })
         ) { backStackEntry ->
-
             val city = backStackEntry.arguments?.getString("city") ?: ""
-            Log.d("=== NavGraph", "=== event_location?city={city} $city")
             EventLocationScreen(
                 navController = navController,
                 viewModel = hiltViewModel(),
@@ -111,7 +110,6 @@ fun NavGraph(navController: NavHostController, activity: Activity, modifier: Mod
                 }
             )
         }
-
 
         composable("map") {
             MapScreen(
